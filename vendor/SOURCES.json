@@ -1,0 +1,24 @@
+{
+ "kind": "watch-dream-remember.vendor",
+ "v": 1,
+ "note": "Copied verbatim from fall-kit (the estate's shared foundation) at the commit named. Never edit a vendored file; re-vendor.",
+ "repo": "sjgant80-hub/fall-kit",
+ "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97",
+ "files": [
+  {
+   "path": "vendor/fall-kit/core/identity.mjs",
+   "src": "core/identity.mjs",
+   "sha256": "429caa25bf0e104f6a664224d81fd8215d2f6c79aad3323a8acb476f85a3856e"
+  },
+  {
+   "path": "vendor/fall-kit/core/vendor/light/sha256.mjs",
+   "src": "core/vendor/light/sha256.mjs",
+   "sha256": "cf60afffd36df071b277da214ed61a7b3f4923e443bfadb06656bb7da4756bc1"
+  },
+  {
+   "path": "vendor/fall-kit/core/vendor/light/codec.mjs",
+   "src": "core/vendor/light/codec.mjs",
+   "sha256": "4f018272a05989fe8fbd0f675e0460b35365710a174a88dbf628165ef21f431d"
+  }
+ ]
+}

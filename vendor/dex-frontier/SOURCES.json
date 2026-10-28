@@ -1,0 +1,59 @@
+{
+ "kind": "watch-dream-remember.vendor.dex-frontier",
+ "v": 1,
+ "repo": "sjgant80-hub/dex-frontier",
+ "commit": "2bb72d18bf615db5d3d38bd319733b9d9993eba5",
+ "note": "dex-frontier’s gated loaders, copied verbatim from its committed blobs; the data is fetched from dex-frontier at this commit into .data/ and checked against these SHA-256. Never edit a vendored file.",
+ "loaders": [
+  {
+   "path": "src/fresh.mjs",
+   "sha256": "280d702d33bb691776d795292c3cedcab09013972f027d34db0b0c408056fe1c"
+  },
+  {
+   "path": "src/fresh2.mjs",
+   "sha256": "87811bb14b93698d17fe569def653496ddb13ec5d58548923947321d945a45e5"
+  },
+  {
+   "path": "src/fresh3.mjs",
+   "sha256": "25d7ccbfa38955ce9547ab8e12e9b95948b6287abd1ebbf9992748d4f2cd944a"
+  },
+  {
+   "path": "src/silos.mjs",
+   "sha256": "2de9959bacfdd2c9a4b771226cd1ae1521fc1175211704ea60fcb0815c534894"
+  },
+  {
+   "path": "vendor/living-seed/vendor/seed-library/seedlib.mjs",
+   "sha256": "f1904ed31b48794ac3454453d5853e799509dcdf8b8695ffea8bcedfd6f60e72"
+  },
+  {
+   "path": "vendor/living-seed/vendor/seed-library/sha256.mjs",
+   "sha256": "8ebd4260e8b79fbdf9824ecbe6d6cde621cc003f1d358255101c01bb26763233"
+  }
+ ],
+ "data": [
+  {
+   "path": "data/online_shoppers_intention.csv",
+   "sha256": "d8e130ba51532985f93281a73ce299e6ce150cb915769a7962a11e595eadd6a1"
+  },
+  {
+   "path": "data/bank-additional-full.csv",
+   "sha256": "74adfc578bf77a7ff4bb1ba4a9f8709d9e3c6907342959c2c8416847e0afb4d8"
+  },
+  {
+   "path": "data/adult.data",
+   "sha256": "5b00264637dbfec36bdeaab5676b0b309ff9eb788d63554ca0a249491c86603d"
+  },
+  {
+   "path": "data/adult.test",
+   "sha256": "a2a9044bc167a35b2361efbabec64e89d69ce82d9790d2980119aac5fd7e9c05"
+  },
+  {
+   "path": "data/credit-default.csv",
+   "sha256": "4edce6da569b2c30788a85fd98a9bafb1a983e8ca1a7aac875dd7ff853cbd0bb"
+  },
+  {
+   "path": "data/in-vehicle-coupon-recommendation.csv",
+   "sha256": "d47897367f5a12a31dece0f4e42d7bd9da76d7016b568da511b50335d08dcb43"
+  }
+ ]
+}
