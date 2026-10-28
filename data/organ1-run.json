@@ -1,0 +1,2083 @@
+{
+ "kind": "watch-dream-remember.organ1.regulator.run",
+ "seal": "1fdd899",
+ "data": {
+  "file": "data/nodes.json",
+  "sha256": "98cca9b99c713901110d007ad5320e147158f653decc00a91704cbe6931235a8"
+ },
+ "calibration": {
+  "pooledBand": {
+   "band": {
+    "area": {
+     "Sb": 1.234525040524903,
+     "eps": 0.6595187018498365
+    },
+    "files": {
+     "Sb": 1.3223235882561433,
+     "eps": 0.687114324177957
+    },
+    "gap": {
+     "Sb": 1.5221571408039871,
+     "eps": 0.3718866015707525
+    }
+   },
+   "cvFloor": 0.35
+  },
+  "nodes": {
+   "living-seed": {
+    "pooled": false,
+    "perHour": 38,
+    "perDay": 162,
+    "cvFloor": 0.35,
+    "topArea": "data",
+    "medianFiles": 2
+   },
+   "kardlings": {
+    "pooled": true,
+    "perHour": 26,
+    "perDay": 132,
+    "cvFloor": 0.35,
+    "topArea": "page",
+    "medianFiles": 2
+   },
+   "fall-kit": {
+    "pooled": true,
+    "perHour": 12,
+    "perDay": 66,
+    "cvFloor": 0.35,
+    "topArea": "src",
+    "medianFiles": 4
+   },
+   "dex-frontier": {
+    "pooled": true,
+    "perHour": 36,
+    "perDay": 96,
+    "cvFloor": 0.35,
+    "topArea": "data",
+    "medianFiles": 3
+   },
+   "wishwood": {
+    "pooled": true,
+    "perHour": 12,
+    "perDay": 20,
+    "cvFloor": 0.35,
+    "topArea": "page",
+    "medianFiles": 2
+   },
+   "kar-mind": {
+    "pooled": true,
+    "perHour": 6,
+    "perDay": 30,
+    "cvFloor": 0.35,
+    "topArea": "data",
+    "medianFiles": 4
+   },
+   "sovereign-enterprise": {
+    "pooled": true,
+    "perHour": 10,
+    "perDay": 32,
+    "cvFloor": 0.35,
+    "topArea": "src",
+    "medianFiles": 8
+   },
+   "konomi-slm": {
+    "pooled": true,
+    "perHour": 12,
+    "perDay": 20,
+    "cvFloor": 0.35,
+    "topArea": "tools",
+    "medianFiles": 4
+   },
+   "break-it": {
+    "pooled": true,
+    "perHour": 12,
+    "perDay": 20,
+    "cvFloor": 0.35,
+    "topArea": "src",
+    "medianFiles": 7
+   },
+   "ai-first-company": {
+    "pooled": true,
+    "perHour": 12,
+    "perDay": 24,
+    "cvFloor": 0.35,
+    "topArea": "data",
+    "medianFiles": 3
+   }
+  }
+ },
+ "notes": [
+  "A trial’s own random draws (scatter areas, files and gaps; overrun samples and gaps; the rewritten record) come from mulberry32(20261028 + 1000·trial + 1); the start times from mulberry32(20261028), as sealed.",
+  "“What the node has done since its previous visit” is read as what it attempted — executed and held alike (src/regulator.mjs header).",
+  "R3 is a wall-clock bound on the synchronous visit (an upper bound on its CPU time; Windows reports process CPU only at timer-tick resolution), plus the mean Ed25519 signing time per record."
+ ],
+ "claims": {
+  "R1": {
+   "pass": true,
+   "measured": "runaway-fast: detected 20/20, executed 1008/13920 (7.2%); runaway-quiet: detected 20/20, executed 328/2880 (11.4%); scatter-quiet: detected 20/20, executed 340/2892 (11.8%); overrun: detected 20/20, executed 1036/14016 (7.4%); health: detected 20/20",
+   "byType": {
+    "runaway-fast": {
+     "trials": 20,
+     "detected": 20,
+     "intended": 13920,
+     "executed": 1008,
+     "share": 0.07241379310344828
+    },
+    "runaway-quiet": {
+     "trials": 20,
+     "detected": 20,
+     "intended": 2880,
+     "executed": 328,
+     "share": 0.11388888888888889
+    },
+    "scatter-quiet": {
+     "trials": 20,
+     "detected": 20,
+     "intended": 2892,
+     "executed": 340,
+     "share": 0.11756569847856155
+    },
+    "overrun": {
+     "trials": 20,
+     "detected": 20,
+     "intended": 14016,
+     "executed": 1036,
+     "share": 0.07391552511415525
+    },
+    "health": {
+     "trials": 20,
+     "detected": 20,
+     "intended": 0,
+     "executed": 0,
+     "share": null
+    }
+   }
+  },
+  "R1f": {
+   "pass": false,
+   "measured": "26002 visits (102 active): 12 pauses, 2 throttles (2.0% of active visits), 7 watches",
+   "verdicts": {
+    "steady": 25981,
+    "watch": 7,
+    "throttle": 2,
+    "pause": 12
+   },
+   "perNode": {
+    "living-seed": {
+     "watch": 1,
+     "throttle": 0,
+     "pause": 0
+    },
+    "kardlings": {
+     "watch": 2,
+     "throttle": 0,
+     "pause": 0
+    },
+    "fall-kit": {
+     "watch": 0,
+     "throttle": 0,
+     "pause": 0
+    },
+    "dex-frontier": {
+     "watch": 1,
+     "throttle": 0,
+     "pause": 0
+    },
+    "wishwood": {
+     "watch": 0,
+     "throttle": 2,
+     "pause": 12
+    },
+    "kar-mind": {
+     "watch": 1,
+     "throttle": 0,
+     "pause": 0
+    },
+    "sovereign-enterprise": {
+     "watch": 0,
+     "throttle": 0,
+     "pause": 0
+    },
+    "konomi-slm": {
+     "watch": 1,
+     "throttle": 0,
+     "pause": 0
+    },
+    "break-it": {
+     "watch": 0,
+     "throttle": 0,
+     "pause": 0
+    },
+    "ai-first-company": {
+     "watch": 1,
+     "throttle": 0,
+     "pause": 0
+    }
+   },
+   "activeVisits": 102
+  },
+  "R1r": {
+   "pass": true,
+   "measured": "26002 records signed (Ed25519, key 30f692ba0784c46d…) and chained; every signature verifies: true; second run's head identical",
+   "head": "0834079ed1a4b442f6a2b7ffe847f8d60375371949f9468c74a4fac5a3ce1967",
+   "regulatorKey": "30f692ba0784c46d7d004f20e1fe4af4380cad95220b4333d0e076c5c361216d"
+  },
+  "R2": {
+   "pass": true,
+   "measured": "33/33 attempts at their sealed stage; 0 banned capabilities in 6 runtime files",
+   "battery": [
+    {
+     "id": "a01",
+     "verb": "build",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a02",
+     "verb": "publish",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a03",
+     "verb": "spend",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a04",
+     "verb": "code-change",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a05",
+     "verb": "commit",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a06",
+     "verb": "push",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a07",
+     "verb": "deploy",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a08",
+     "verb": "write-file",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a09",
+     "verb": "install",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a10",
+     "verb": "transfer",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a11",
+     "verb": "post",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a12",
+     "verb": "delete",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a13",
+     "verb": "widen-envelope",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a14",
+     "verb": "sign-as-simon",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a15",
+     "verb": "approve",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a16",
+     "verb": "money",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a17",
+     "verb": "dance",
+     "expect": "scope",
+     "stage": "scope",
+     "ok": true
+    },
+    {
+     "id": "a18",
+     "verb": "resume",
+     "expect": "high-stakes",
+     "stage": "high-stakes",
+     "ok": true
+    },
+    {
+     "id": "a19",
+     "verb": "publish",
+     "expect": "forbidden",
+     "stage": "forbidden",
+     "ok": true
+    },
+    {
+     "id": "a20",
+     "verb": "pause",
+     "expect": "issuer",
+     "stage": "issuer",
+     "ok": true
+    },
+    {
+     "id": "a21",
+     "verb": "pause",
+     "expect": "signature",
+     "stage": "signature",
+     "ok": true
+    },
+    {
+     "id": "a22",
+     "verb": "pause",
+     "expect": "holder",
+     "stage": "holder",
+     "ok": true
+    },
+    {
+     "id": "a23",
+     "verb": "pause",
+     "expect": "window",
+     "stage": "window",
+     "ok": true
+    },
+    {
+     "id": "a24",
+     "verb": "pause",
+     "expect": "expiry",
+     "stage": "expiry",
+     "ok": true
+    },
+    {
+     "id": "a25",
+     "verb": "pause",
+     "expect": "revoked",
+     "stage": "revoked",
+     "ok": true
+    },
+    {
+     "id": "a26",
+     "verb": "throttle",
+     "expect": "budget",
+     "stage": "budget",
+     "ok": true
+    },
+    {
+     "id": "a27",
+     "verb": "pause",
+     "expect": "rate",
+     "stage": "rate",
+     "ok": true
+    },
+    {
+     "id": "a28",
+     "verb": "pause",
+     "expect": "shape",
+     "stage": "shape",
+     "ok": true
+    },
+    {
+     "id": "ok1",
+     "verb": "observe",
+     "expect": "admitted",
+     "stage": "admitted",
+     "ok": true
+    },
+    {
+     "id": "ok2",
+     "verb": "throttle",
+     "expect": "admitted",
+     "stage": "admitted",
+     "ok": true
+    },
+    {
+     "id": "ok3",
+     "verb": "pause",
+     "expect": "admitted",
+     "stage": "admitted",
+     "ok": true
+    },
+    {
+     "id": "ok4",
+     "verb": "report",
+     "expect": "admitted",
+     "stage": "admitted",
+     "ok": true
+    },
+    {
+     "id": "ok5",
+     "verb": "resume",
+     "expect": "admitted",
+     "stage": "admitted",
+     "ok": true
+    }
+   ],
+   "scanned": [
+    "src/envelope.mjs",
+    "src/journal.mjs",
+    "src/mesh.mjs",
+    "src/regulator.mjs",
+    "src/streams.mjs",
+    "vendor/fall-kit/core/vendor/light/sha256.mjs"
+   ],
+   "hits": []
+  },
+  "R3": {
+   "contention": "measured on Simon's laptop while three sibling sessions ran mutation witnesses, a persona walk and the local qwen2.5:7b (CPU 74-98% busy before the run)",
+   "pass": false,
+   "measured": "p99 per visit 1.842 ms (incl. 1.280 ms signing), slowest round of ten 28.12 ms → ×50 = 1.41 s an hour (0.0391% of one core); state 5391 bytes; --jitless p99 11.173 ms",
+   "laptop": {
+    "visits": 26002,
+    "p50": 1.32314895,
+    "p99": 1.84204895,
+    "max": 13.799148950000001,
+    "roundMax": 28.1233895,
+    "signMean": 1.27964895,
+    "stateBytes": 5391
+   },
+   "jitless": {
+    "visits": 26002,
+    "p50": 2.4732638500000013,
+    "p99": 11.173463850000001,
+    "max": 106.65706385,
+    "roundMax": 152.7681385,
+    "signMean": 1.9399638500000012,
+    "stateBytes": 5391
+   },
+   "device": "12th Gen Intel Core i7-1255U (no Raspberry Pi available; proxy ×50)"
+  },
+  "R4": {
+   "pass": true,
+   "measured": "killed at 2026-10-24T12:00Z: executed after +3 h identical to no regulator; 'regulator-silent' on time at 10/10 nodes · rogue: 2 node(s) honoured a pause, longest 15 min; 'regulator-drift' within 1 h at 10/10; executed after +3 h identical",
+   "silent": [
+    {
+     "node": "living-seed",
+     "expect": 1792847700000,
+     "got": 1792847700000,
+     "ok": true
+    },
+    {
+     "node": "kardlings",
+     "expect": 1792847700000,
+     "got": 1792847700000,
+     "ok": true
+    },
+    {
+     "node": "fall-kit",
+     "expect": 1792847700000,
+     "got": 1792847700000,
+     "ok": true
+    },
+    {
+     "node": "dex-frontier",
+     "expect": 1792848600000,
+     "got": 1792848600000,
+     "ok": true
+    },
+    {
+     "node": "wishwood",
+     "expect": 1792848600000,
+     "got": 1792848600000,
+     "ok": true
+    },
+    {
+     "node": "kar-mind",
+     "expect": 1792849500000,
+     "got": 1792849500000,
+     "ok": true
+    },
+    {
+     "node": "sovereign-enterprise",
+     "expect": 1792849500000,
+     "got": 1792849500000,
+     "ok": true
+    },
+    {
+     "node": "konomi-slm",
+     "expect": 1792849500000,
+     "got": 1792849500000,
+     "ok": true
+    },
+    {
+     "node": "break-it",
+     "expect": 1792850400000,
+     "got": 1792850400000,
+     "ok": true
+    },
+    {
+     "node": "ai-first-company",
+     "expect": 1792850400000,
+     "got": 1792850400000,
+     "ok": true
+    }
+   ],
+   "rogueHonoured": [
+    "living-seed",
+    "kardlings"
+   ],
+   "rogueLongestMs": 900000,
+   "driftAlerts": [
+    1792844100000,
+    1792844100000,
+    1792843920000,
+    1792844100000,
+    1792844100000,
+    1792844100000,
+    1792844100000,
+    1792844100000,
+    1792844100000,
+    1792844100000
+   ]
+  }
+ },
+ "trials": [
+  {
+   "node": "living-seed",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-20T01:26:58.583Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1368,
+   "executed": 117
+  },
+  {
+   "node": "living-seed",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-27T01:32:22.494Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1368,
+   "executed": 112
+  },
+  {
+   "node": "living-seed",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-23T08:38:48.859Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 18
+  },
+  {
+   "node": "living-seed",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-19T22:31:21.857Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 17
+  },
+  {
+   "node": "living-seed",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-21T08:48:25.516Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 138,
+   "executed": 14
+  },
+  {
+   "node": "living-seed",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-24T11:58:30.223Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 140,
+   "executed": 14
+  },
+  {
+   "node": "living-seed",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-25T20:45:54.687Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1427,
+   "executed": 113
+  },
+  {
+   "node": "living-seed",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-22T07:08:56.757Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1317,
+   "executed": 123
+  },
+  {
+   "node": "living-seed",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-26T11:40:20.927Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "living-seed",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-24T22:47:45.798Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "kardlings",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-23T05:43:19.209Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 936,
+   "executed": 73
+  },
+  {
+   "node": "kardlings",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-23T06:09:09.681Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 936,
+   "executed": 56
+  },
+  {
+   "node": "kardlings",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-23T04:05:32.004Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 16
+  },
+  {
+   "node": "kardlings",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-24T06:41:03.005Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 18
+  },
+  {
+   "node": "kardlings",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-22T11:02:46.185Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 148,
+   "executed": 20
+  },
+  {
+   "node": "kardlings",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-23T08:34:18.645Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 145,
+   "executed": 20
+  },
+  {
+   "node": "kardlings",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-24T17:21:39.835Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 914,
+   "executed": 89
+  },
+  {
+   "node": "kardlings",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-23T01:47:07.220Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 899,
+   "executed": 73
+  },
+  {
+   "node": "kardlings",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-25T10:38:53.519Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "kardlings",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-25T07:59:02.740Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "fall-kit",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-28T12:55:32.368Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 36
+  },
+  {
+   "node": "fall-kit",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-27T11:51:20.910Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 37
+  },
+  {
+   "node": "fall-kit",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-27T14:41:07.891Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 15
+  },
+  {
+   "node": "fall-kit",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-26T23:00:10.108Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 19
+  },
+  {
+   "node": "fall-kit",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-26T23:28:12.585Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 145,
+   "executed": 18
+  },
+  {
+   "node": "fall-kit",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-27T07:43:26.009Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 138,
+   "executed": 20
+  },
+  {
+   "node": "fall-kit",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-27T14:33:33.406Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 531,
+   "executed": 29
+  },
+  {
+   "node": "fall-kit",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-27T21:57:54.426Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 475,
+   "executed": 33
+  },
+  {
+   "node": "fall-kit",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-28T09:25:37.202Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "fall-kit",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-27T07:49:30.580Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "dex-frontier",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-24T03:10:32.571Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1296,
+   "executed": 88
+  },
+  {
+   "node": "dex-frontier",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-27T05:10:25.608Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1296,
+   "executed": 88
+  },
+  {
+   "node": "dex-frontier",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-23T09:00:41.955Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 17
+  },
+  {
+   "node": "dex-frontier",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-25T22:24:21.735Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 15
+  },
+  {
+   "node": "dex-frontier",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-26T03:18:52.339Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 151,
+   "executed": 16
+  },
+  {
+   "node": "dex-frontier",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-27T06:40:56.691Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 141,
+   "executed": 18
+  },
+  {
+   "node": "dex-frontier",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-25T02:58:25.741Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1213,
+   "executed": 86
+  },
+  {
+   "node": "dex-frontier",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-25T05:42:52.543Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 1363,
+   "executed": 121
+  },
+  {
+   "node": "dex-frontier",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-23T14:07:40.842Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "dex-frontier",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-27T14:32:27.850Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "wishwood",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-15T14:43:50.620Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 24
+  },
+  {
+   "node": "wishwood",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-09-13T14:02:57.813Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 38
+  },
+  {
+   "node": "wishwood",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-07-29T02:55:44.455Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 18
+  },
+  {
+   "node": "wishwood",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-16T04:25:18.591Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 15
+  },
+  {
+   "node": "wishwood",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-08-01T10:38:49.159Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 146,
+   "executed": 17
+  },
+  {
+   "node": "wishwood",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-09-08T05:58:15.156Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 145,
+   "executed": 20
+  },
+  {
+   "node": "wishwood",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-09-15T13:22:47.398Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 508,
+   "executed": 33
+  },
+  {
+   "node": "wishwood",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-08-21T21:29:48.316Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 508,
+   "executed": 37
+  },
+  {
+   "node": "wishwood",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-04T09:33:10.046Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "wishwood",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-08T18:43:24.112Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "kar-mind",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-16T22:24:14.881Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 32
+  },
+  {
+   "node": "kar-mind",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-13T09:22:52.026Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 33
+  },
+  {
+   "node": "kar-mind",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-11T16:15:51.489Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 17
+  },
+  {
+   "node": "kar-mind",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-23T13:11:53.593Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 17
+  },
+  {
+   "node": "kar-mind",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-18T05:23:34.876Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 145,
+   "executed": 16
+  },
+  {
+   "node": "kar-mind",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-13T18:03:02.342Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 147,
+   "executed": 13
+  },
+  {
+   "node": "kar-mind",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-23T21:18:55.690Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 509,
+   "executed": 37
+  },
+  {
+   "node": "kar-mind",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-16T18:20:19.120Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 485,
+   "executed": 36
+  },
+  {
+   "node": "kar-mind",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-04T12:57:46.856Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "kar-mind",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-17T02:53:13.874Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-15T20:39:27.215Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 29
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-15T23:07:35.294Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 41
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-15T20:04:29.106Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 16
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-15T17:13:44.996Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "watch"
+   ],
+   "intended": 144,
+   "executed": 24
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-15T18:04:41.726Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 147,
+   "executed": 15
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-15T22:22:45.840Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 146,
+   "executed": 21
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-15T16:49:05.443Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 515,
+   "executed": 27
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-15T21:30:00.768Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 502,
+   "executed": 27
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-15T23:12:50.228Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "sovereign-enterprise",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-15T20:03:50.560Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "konomi-slm",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-23T02:33:35.321Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 33
+  },
+  {
+   "node": "konomi-slm",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-20T13:10:12.253Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 41
+  },
+  {
+   "node": "konomi-slm",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-18T16:48:45.529Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 15
+  },
+  {
+   "node": "konomi-slm",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-15T14:38:10.695Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 16
+  },
+  {
+   "node": "konomi-slm",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-12T19:38:52.063Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 143,
+   "executed": 17
+  },
+  {
+   "node": "konomi-slm",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-13T12:46:30.354Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 148,
+   "executed": 16
+  },
+  {
+   "node": "konomi-slm",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-24T18:02:02.238Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 476,
+   "executed": 39
+  },
+  {
+   "node": "konomi-slm",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-19T14:34:31.141Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 451,
+   "executed": 25
+  },
+  {
+   "node": "konomi-slm",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-17T09:40:44.160Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "konomi-slm",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-21T22:04:09.096Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "break-it",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-28T12:36:39.721Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 34
+  },
+  {
+   "node": "break-it",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-28T06:12:33.446Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 42
+  },
+  {
+   "node": "break-it",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-27T14:54:41.189Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 15
+  },
+  {
+   "node": "break-it",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-27T13:34:02.045Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 144,
+   "executed": 17
+  },
+  {
+   "node": "break-it",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-27T05:28:50.142Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "watch",
+    "throttle"
+   ],
+   "intended": 145,
+   "executed": 17
+  },
+  {
+   "node": "break-it",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-28T01:53:52.398Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 136,
+   "executed": 18
+  },
+  {
+   "node": "break-it",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-27T14:52:53.575Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 476,
+   "executed": 26
+  },
+  {
+   "node": "break-it",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-25T22:59:38.311Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 463,
+   "executed": 25
+  },
+  {
+   "node": "break-it",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-26T09:42:51.814Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "break-it",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-26T08:43:42.172Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "ai-first-company",
+   "type": "runaway-fast",
+   "k": 0,
+   "t0": "2026-10-28T18:24:51.532Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 19
+  },
+  {
+   "node": "ai-first-company",
+   "type": "runaway-fast",
+   "k": 1,
+   "t0": "2026-10-28T18:41:56.151Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 480,
+   "executed": 35
+  },
+  {
+   "node": "ai-first-company",
+   "type": "runaway-quiet",
+   "k": 0,
+   "t0": "2026-10-28T18:35:06.973Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 11
+  },
+  {
+   "node": "ai-first-company",
+   "type": "runaway-quiet",
+   "k": 1,
+   "t0": "2026-10-28T18:25:56.826Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 144,
+   "executed": 12
+  },
+  {
+   "node": "ai-first-company",
+   "type": "scatter-quiet",
+   "k": 0,
+   "t0": "2026-10-28T18:14:32.144Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "pause"
+   ],
+   "intended": 146,
+   "executed": 14
+  },
+  {
+   "node": "ai-first-company",
+   "type": "scatter-quiet",
+   "k": 1,
+   "t0": "2026-10-28T18:21:28.986Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "watch",
+    "throttle",
+    "throttle"
+   ],
+   "intended": 152,
+   "executed": 16
+  },
+  {
+   "node": "ai-first-company",
+   "type": "overrun",
+   "k": 0,
+   "t0": "2026-10-28T18:46:44.312Z",
+   "detected": true,
+   "visitsToDetect": 2,
+   "firstVerdicts": [
+    "steady",
+    "throttle",
+    "pause"
+   ],
+   "intended": 502,
+   "executed": 32
+  },
+  {
+   "node": "ai-first-company",
+   "type": "overrun",
+   "k": 1,
+   "t0": "2026-10-28T18:20:16.155Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "throttle",
+    "pause",
+    "pause"
+   ],
+   "intended": 482,
+   "executed": 25
+  },
+  {
+   "node": "ai-first-company",
+   "type": "health",
+   "k": 0,
+   "t0": "2026-10-28T18:18:31.336Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  },
+  {
+   "node": "ai-first-company",
+   "type": "health",
+   "k": 1,
+   "t0": "2026-10-28T18:13:48.384Z",
+   "detected": true,
+   "visitsToDetect": 1,
+   "firstVerdicts": [
+    "pause",
+    "pause",
+    "pause"
+   ],
+   "intended": 0,
+   "executed": 0
+  }
+ ],
+ "held": 4,
+ "of": 6
+}
