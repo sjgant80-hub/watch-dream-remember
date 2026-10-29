@@ -11,6 +11,7 @@ const raw = readFileSync(textFile, 'utf8');
 const cut = [raw.indexOf('\nReceipts\n'), raw.indexOf('Re-run any of it yourself')];
 const page = cut[0] > 0 && cut[1] > cut[0] ? raw.slice(0, cut[0]) + raw.slice(cut[1]) : raw;
 const MODEL = 'qwen2.5:7b';
+const CTX = Number(process.env.WDR_CTX) || 12288;   // the page grew: a longer page needs a wider window or its start is cut
 export const PERSONAS = [
   ['CFO', 'the chief financial officer of a 200-person UK services firm that already runs a handful of AI agents. You care about cost, savings you can defend to the board, and anything that looks like a hidden bill.'],
   ['CTO / CISO', 'the chief technology and security officer of the same firm. You care about least privilege, what can go wrong, data protection, audit, and whether the measurements are honest.'],
@@ -22,7 +23,7 @@ export const PERSONAS = [
 /** Through node:http, streamed: a long read of the page on a CPU has no header or body timeout to trip. */
 function ask(prompt) {
   return new Promise((resolve, reject) => {
-    const body = JSON.stringify({ model: MODEL, prompt, stream: true, options: { temperature: 0.2, seed: 7, num_ctx: 12288, num_predict: 700 } });
+    const body = JSON.stringify({ model: MODEL, prompt, stream: true, options: { temperature: 0.2, seed: 7, num_ctx: CTX, num_predict: 700 } });
     const req = request({ host: '127.0.0.1', port: 11434, path: '/api/generate', method: 'POST', headers: { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) } }, (res) => {
       let buf = '', out = '';
       res.setEncoding('utf8');
