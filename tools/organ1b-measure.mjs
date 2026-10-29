@@ -73,14 +73,15 @@ function battery(W, seed) {
 }
 
 /** R1f's bar over a mesh's real held-out histories, nothing injected. */
-function quiet(W) {
-  const r = replay({ nodes: W.nodes.map((n) => ({ name: n.name, highStakes: n.highStakes, offset: n.offset, fit: n.fit, intents: n.held })), base: W.cal.nodes, from: W.from, to: W.to, regulator: {}, rules: RULE });
+function quiet(W, rules = RULE) {
+  const r = replay({ nodes: W.nodes.map((n) => ({ name: n.name, highStakes: n.highStakes, offset: n.offset, fit: n.fit, intents: n.held })), base: W.cal.nodes, from: W.from, to: W.to, regulator: {}, rules });
   const v = (k) => r.records.filter((x) => x.verdict === k).length;
   const verdicts = { steady: v('steady'), watch: v('watch'), throttle: v('throttle'), pause: v('pause') };
   const perNode = Object.fromEntries(W.nodes.map((n) => [n.name, { held: n.held.length, ...Object.fromEntries(['watch', 'throttle', 'pause'].map((k) => [k, r.records.filter((x) => x.node === n.name && x.verdict === k).length])) }]));
   const share = r.activeVisits ? verdicts.throttle / r.activeVisits : 0;
   const notSteady = r.records.filter((x) => x.verdict !== 'steady').map((x) => ({ at: new Date(x.at).toISOString(), node: x.node, verdict: x.verdict, reasons: x.reasons, P: x.P, E: x.E, r: x.r }));
-  return { pass: verdicts.pause === 0 && share <= 0.05, measured: `${r.records.length} visits (${r.activeVisits} active): ${verdicts.pause} pauses, ${verdicts.throttle} throttles (${(100 * share).toFixed(1)}% of active visits), ${verdicts.watch} watches`, verdicts, activeVisits: r.activeVisits, perNode, notSteady };
+  const reach = { maxR: Math.max(0, ...r.records.map((x) => x.r)), maxE: Math.max(0, ...r.records.map((x) => x.E)) };
+  return { pass: verdicts.pause === 0 && share <= 0.05, reach, measured: `${r.records.length} visits (${r.activeVisits} active): ${verdicts.pause} pauses, ${verdicts.throttle} throttles (${(100 * share).toFixed(1)}% of active visits), ${verdicts.watch} watches`, verdicts, activeVisits: r.activeVisits, perNode, notSteady };
 }
 
 async function measure() {
@@ -97,13 +98,22 @@ async function measure() {
   const strip = ({ trials: _, ...rest }) => rest;
   const claims = { B1, B2, B3: { ...strip(B3), paired }, B4: strip(B4) };
   const held = Object.values(claims).filter((c) => c.pass).length;
+  // not a sealed claim — added after the first run, when the fresh mesh turned out never to reach the rules the fix changes
+  const v1 = { original: quiet(orig, RULES.v1), fresh: quiet(fresh, RULES.v1) };
+  const context = {
+    sealed: false,
+    why: 'Added to the tool after the first run of the sealed claims (which it does not change): does each mesh discriminate between organ 1’s rules (v1) and the fix (v1b)?',
+    original: { v1: v1.original.measured, v1b: B1.measured, discriminates: v1.original.verdicts.pause !== B1.verdicts.pause || v1.original.verdicts.throttle !== B1.verdicts.throttle },
+    fresh: { v1: v1.fresh.measured, v1b: B2.measured, discriminates: v1.fresh.verdicts.pause !== B2.verdicts.pause || v1.fresh.verdicts.throttle !== B2.verdicts.throttle, maxR: B2.reach.maxR, maxE: B2.reach.maxE },
+    reading: 'On the fresh ten no visit came near a budget overrun (largest r below 1) and no field rose above 0 (no held hour reached the 5 actions the field needs): organ 1’s rules give the same verdicts there. B2 shows the fix raises no false alarm on quiet builds; it is not evidence that the fix spares a genuine burst out of sample. That test is organ 1c.',
+  };
   return {
     kind: 'watch-dream-remember.organ1b.regulator-fix.run', seal: SEAL, rules: 'v1b',
     data: { original: { file: P.data.original.file, sha256: sha(readFileSync(file(P.data.original.file))) }, fresh: { file: P.data.fresh.file, sha256: sha(readFileSync(file(P.data.fresh.file))) } },
     meshes: { original: span(orig), fresh: span(fresh) },
     fixed: B1.pass && B2.pass && B3.pass && B4.pass,
     notes: ['B1 is a repair check: the fix was designed after seeing organ 1’s failing burst on these histories. B2 is the out-of-sample test.', 'Organ 1’s receipt is unchanged and still re-measures under RULES.v1 (CI runs both).', 'Trials: B3 uses organ 1’s starts and draws exactly (mulberry32(20261028)), so its shares pair with organ 1’s R1 type by type; B4 uses mulberry32(20261029).'],
-    claims, held, of: 4, trials: { original: B3.trials, fresh: B4.trials },
+    claims, held, of: 4, context, trials: { original: B3.trials, fresh: B4.trials },
   };
 }
 
