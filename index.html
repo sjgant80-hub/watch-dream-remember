@@ -131,7 +131,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
       <li><b>Drift.</b> How surprising the hour's actions are against this build's own normal: which part of the build it touched, how many files, and the rhythm. A stuck loop is too regular; a hijacker is too random.</li>
       <li><b>Rate.</b> How fast that surprise is rising.</li>
       <li><b>Budget.</b> Actions per hour and per day, against this build's own signed envelope.</li>
-      <li><b>Health.</b> Whether the build's hash-chained journal still matches what the regulator verified last time.</li></ul></div>
+      <li><b>Health.</b> Whether the build's hash-chained journal still matches what the regulator verified last time. In plain words: has anyone quietly rewritten the record of what this agent did?</li></ul></div>
     <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most two new pauses in any six hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module. <span id="w-r2"></span></p><p><b>High-stakes</b> means an agent that spends money or speaks for you in public; in the measured mesh, two of the ten builds are marked that way. Every other agent is <b>low-stakes</b>: the regulator may lift its pause itself, on probation (throttled), after a cool-down that doubles each time.</p></div>
   </div>
   <div class="panel" id="w-receipt"></div>
@@ -164,7 +164,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 
 <section id="remember">
   <h2>Remember: per-mind memory and inherited history</h2>
-  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents, and it inherits each parent's eight best verified lessons, tagged with who learnt them. Its own memory starts empty.</p>
+  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents. It inherits its <b>inherited slice</b>: up to eight of each parent's best verified lessons, tagged with who learnt them. Its own memory starts empty.</p>
   <div class="grid g2">
     <div class="panel"><h3>Memory vs no memory, and inheritance vs none</h3><div id="m-chart"></div><p class="note" id="m-chart-note"></p></div>
     <div class="panel"><h3>Breed two minds, then delete memories (in your browser, demo data)</h3>
@@ -246,7 +246,8 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <h2>Receipts</h2>
   <p>Every sealed claim, as measured. A claim that failed stays failed. Fixes are sealed as new steps, never as edits.</p>
   <div class="scroll"><table id="r-table"><thead><tr><th>Claim</th><th>Result</th><th>What was measured</th></tr></thead><tbody></tbody></table></div>
-  <details><summary>Re-run any of it yourself</summary><p class="mono">git clone https://github.com/sjgant80-hub/watch-dream-remember<br>cd watch-dream-remember<br>node tools/data.mjs --fetch<br>node tools/organ1-measure.mjs --verify<br>node tools/organ2-measure.mjs --verify<br>node tools/organ3-measure.mjs --verify</p></details>
+  <p>Each claim names the commit that sealed it, which fixes the code and data version it was measured against. The <a href="https://github.com/sjgant80-hub/watch-dream-remember/actions">continuous integration</a> re-derives the data from its pinned commits, re-measures every receipt and mutation-tests every kernel on every change.</p>
+  <details open><summary>Re-run any of it yourself (Node 22 or later and git; about half an hour)</summary><p class="mono">git clone https://github.com/sjgant80-hub/watch-dream-remember<br>cd watch-dream-remember<br>node tools/data.mjs --fetch<br>node tools/organ1-measure.mjs --verify<br>node tools/organ2-measure.mjs --verify<br>node tools/organ3-measure.mjs --verify</p></details>
 </section>
 
 <section id="faq">
