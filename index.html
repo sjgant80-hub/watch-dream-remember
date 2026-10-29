@@ -194,13 +194,14 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <div class="controls">
       <label>Hours a week someone checks agents now <input id="c-watch" type="number" min="0" step="0.5" value="5" style="width:80px"></label>
       <label>after <input id="c-after" type="number" min="0" step="0.5" value="0.5" style="width:70px"></label>
-      <label>Hours per improvement found <input id="c-idea" type="number" min="0" step="1" value="6" style="width:70px"></label>
+      <label>Model improvements a month <input id="c-ideas" type="number" min="0" step="1" value="4" style="width:70px"></label>
+      <label>Hours a person spends finding one <input id="c-idea" type="number" min="0" step="1" value="6" style="width:70px"></label>
       <label>New agents a year <input id="c-minds" type="number" min="0" step="1" value="12" style="width:70px"></label>
       <label>Hours to bring one up to speed <input id="c-hand" type="number" min="0" step="1" value="8" style="width:70px"></label>
     </div>
     <div class="scroll" id="c-table"></div><p class="note" id="c-note"></p></div>
   <div class="grid g2">
-    <div class="panel"><h3>Against what you pay now</h3><p>The usual answers are a person on call to watch the agents, analyst time spent hunting for improvements, and re-training each new agent from scratch. Agent-monitoring products are usually priced per seat or per event, and usually send your agents' activity to someone else's cloud. Here, everything runs on hardware you already own: the regulator's whole hourly round was measured at a fraction of a millisecond per visit, and the daydream uses a local model under a hard daily cap. Nothing is sent out. The licence is MIT.</p></div>
+    <div class="panel"><h3>Against what you pay now</h3><p>The usual answers are a person on call to watch the agents, analyst time spent hunting for improvements, and re-training each new agent from scratch. Agent-monitoring products usually charge by the user or by the event, and usually send your agents' activity to someone else's cloud. Here, everything runs on hardware you already own: the regulator's whole hourly round was measured at a fraction of a millisecond per visit, and the daydream uses a local model under a hard daily cap. Nothing is sent out. The licence is MIT.</p></div>
     <div class="panel"><h3>Security, data protection, compliance</h3><ul>
       <li><b>Narrow authority by construction.</b> The regulator's signed envelope refuses build, publish, spend and code-change. Its code imports no file, network or process module (measured).</li>
       <li><b>Fail-safe.</b> If it dies, every agent keeps running on its own safeguards and you are alerted (measured).</li>
@@ -210,10 +211,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   </div>
   <div class="grid g2">
     <div class="panel"><h3>Ownership, support, exit</h3><p>MIT licence: you own the code you run. Support, service levels and warranty are agreed per deployment, in each deployment's agreement. The software keeps running without us. Supplier: <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a>. To start, use the contact route on that site.</p></div>
-    <div class="panel"><h3>Risks, answered straight</h3><ul>
-      <li><b>False alarms.</b> On the real history, one real burst of work on one build was paused, by the budget rule. It is recorded as a failure. The fix is a throttle on budget alone, and it will be sealed and measured as its own step.</li>
-      <li><b>Speed claim.</b> The per-visit time missed its bar on a busy laptop (1.84 ms against 1 ms), mostly the cost of signing each verdict. The whole round still costs 0.04% of one core on a device 50 times slower. It is recorded as a failure.</li>
-      <li><b>No Raspberry Pi was used.</b> The Pi-class figure is a proxy (this laptop × 50), and it is labelled as one.</li></ul></div>
+    <div class="panel"><h3>Risks, answered straight</h3><ul id="c-risks"></ul></div>
   </div>
   <div class="panel"><h3>The case for the board</h3><p id="c-board"></p></div>
 </section>

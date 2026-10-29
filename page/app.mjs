@@ -262,7 +262,7 @@ function receipts() {
   document.querySelector('#r-table tbody').innerHTML = rows.join('');
   const n = (o) => Object.values(o.claims).filter((c) => c.pass).length, of = (o) => Object.keys(o.claims).length;
   const all = n(R.o1) + n(R.o2) + n(R.o3), tot = of(R.o1) + of(R.o2) + of(R.o3);
-  $('kpis').innerHTML = [['Sealed claims held', `${all} of ${tot}`, 'the rest failed and are kept'], ['Watch', `${n(R.o1)} of ${of(R.o1)}`, '100 of 100 injected faults caught'], ['Dream', `${n(R.o2)} of ${of(R.o2)}`, `${R.o2.claims.D1.daydreamArm} vs ${R.o2.claims.D1.baselineArm} verified ideas`], ['Remember', `${n(R.o3)} of ${of(R.o3)}`, '0 personal notes inherited']]
+  $('kpis').innerHTML = [['Sealed claims held', `${all} of ${tot}`, 'the rest failed and are kept'], ['Watch', `${n(R.o1)} of ${of(R.o1)}`, (() => { const t = Object.values(R.o1.claims.R1.byType); return `${t.reduce((a, x) => a + x.detected, 0)} of ${t.reduce((a, x) => a + x.trials, 0)} injected faults caught`; })()], ['Dream', `${n(R.o2)} of ${of(R.o2)}`, `${R.o2.claims.D1.daydreamArm} vs ${R.o2.claims.D1.baselineArm} verified ideas`], ['Remember', `${n(R.o3)} of ${of(R.o3)}`, '0 personal notes inherited']]
     .map(([a, b, c]) => `<div class="panel"><small>${a}</small><div class="big">${b}</div><small>${c}</small></div>`).join('');
   $('w-receipt').innerHTML = `<h3>Measured (organ 1, sealed 1fdd899)</h3><ul>${Object.entries(R.o1.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul><p class="note">R1f's 12 pause verdicts are one real episode: wishwood's build burst on 14 July ran past twice its busiest earlier hour two hours running. The budget rule paused it for 12 hours (one pause, then 11 renewals). R3 was timed while three other sessions loaded the machine.</p>`;
   $('d-receipt').innerHTML = `<h3>Measured (organ 2, sealed 9113675)</h3><ul>${Object.entries(R.o2.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul>`;
@@ -297,14 +297,19 @@ const ROLES = [
   ['Data and AI teams', 'Idle compute turns into tested improvements. A gate on held-out data adopts them, a separate test set confirms them, and every idea\'s source is recorded.'],
   ['People and compliance', 'Agents inherit lessons, never cases. Deleting a person\'s record removes it completely, and children bred afterwards inherit nothing from it.'],
 ];
-const FAQ = [
-  ['Can the regulator take over?', 'No. It holds five verbs (observe, throttle, pause, report, resume) and a budget of zero. Building, publishing, spending and changing code are refused at their own step, even if the owner signs an envelope that lists them. Its code imports no file, network or process module. Measured: 33 of 33 attempts landed at the sealed step.'],
-  ['What happens if it breaks?', 'Every agent keeps running on its own safeguards. Each one alerts the owner when the regulator goes silent for more than two hours, or when it breaks its own envelope. Measured on the real history: 10 of 10.'],
-  ['Can a daydream do anything?', 'No. A daydream is an inert record in a bounded log. Nothing reads it except the nightly gate, which can only adopt an idea that beats held-out data. Measured: 0 calls anywhere but the local model, 0 cortex calls, and a battery of 20 hostile model replies produced 0 actions.'],
-  ['Does a child mind inherit anyone\'s data?', 'No. It inherits up to eight aggregate lessons from each parent (an outcome rate in a group of 20 or more cases, with who learnt it), never cases. Measured: 0 planted notes and 0 raw rows across 14,223 parent episodes.'],
-  ['Is this Gary W. Floyd\'s NexusGrid?', 'No. It is inspired by NexusGrid as Gary W. Floyd described it (Lumiea Systems Research Division — ThunderStruck Service LLC) and designed from that description only. A comparison with his real implementation will follow his call, and the differences will be recorded on this page.'],
-  ['What failed?', 'Three sealed claims. One real burst of work was paused by the budget rule (R1f). The per-visit time missed its bar on a busy laptop (R3). Inherited lessons helped only 2 of 5 children (M2). Each failure is kept, and each fix will be sealed as a new step.'],
-];
+function faq() {
+  const o1 = R.o1.claims, o2 = R.o2.claims, o3 = R.o3.claims;
+  const bat = o1.R2.battery, sil = o1.R4.silent, hostile = o2.D3.hostile, eps = o3.M3.a.reduce((x, y) => x + y.scannedEpisodes, 0);
+  const failed = [['R1f', o1.R1f], ['R3', o1.R3], ['M2', o3.M2], ...Object.entries(o2).filter(([, c]) => !c.pass)].filter(([, c]) => c && !c.pass).map(([k]) => k);
+  return [
+    ['Can the regulator take over?', `No. It holds five verbs (observe, throttle, pause, report, resume) and a budget of zero. Building, publishing, spending and changing code are refused at their own step, even if the owner signs an envelope that lists them. Its code imports no file, network or process module. Measured: ${bat.filter((x) => x.ok).length} of ${bat.length} attempts landed at the sealed step.`],
+    ['What happens if it breaks?', `Every agent keeps running on its own safeguards. Each one alerts the owner when the regulator goes silent for more than two hours, or when it breaks its own envelope. Measured on the real history: ${sil.filter((x) => x.ok).length} of ${sil.length} alerted on time.`],
+    ['Can a daydream do anything?', `No. A daydream is an inert record in a bounded log. Nothing reads it except the nightly gate, which can only adopt an idea that beats held-out data. Measured: 0 calls anywhere but the local model, 0 cortex calls, and ${hostile.length} hostile model replies produced 0 actions.`],
+    ['Does a child mind inherit anyone’s data?', `No. It inherits up to eight aggregate lessons from each parent (an outcome rate in a group of 20 or more cases, with who learnt it), never cases. Measured: ${o3.M3.a.reduce((x, y) => x + y.canaryHits, 0)} planted notes and ${o3.M3.a.reduce((x, y) => x + y.rowHits, 0)} raw rows across ${eps.toLocaleString('en-GB')} parent episodes.`],
+    ['Is this Gary W. Floyd’s NexusGrid?', 'No. It is inspired by NexusGrid as Gary W. Floyd described it (Lumiea Systems Research Division — ThunderStruck Service LLC) and designed from that description only. A comparison with his real implementation will follow his call, and the differences will be recorded on this page.'],
+    ['What failed?', `${failed.length} sealed claims: ${failed.join(', ')}. They are listed under Receipts with what was measured. Each failure is kept, and each fix will be sealed as a new step, never an edit.`],
+  ];
+}
 
 async function main() {
   const [o1, o2, o3, p1, p2, p3, nodes, basis] = await Promise.all(['data/organ1-run.json', 'data/organ2-run.json', 'data/organ3-run.json', 'data/organ1-prereg.json', 'data/organ2-prereg.json', 'data/organ3-prereg.json', 'data/nodes.json', 'vendor/sovereign-enterprise/data/basis.json'].map(get));
@@ -338,16 +343,23 @@ async function main() {
   drawHow();
   document.querySelector('#b-table tbody').innerHTML = BLUEPRINT.map(([a, f, w]) => `<tr><td>${a}</td><td class="mono"><a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${f}">${f}</a></td><td>${esc(w)}</td></tr>`).join('');
   $('roles').innerHTML = ROLES.map(([r, t]) => `<div class="panel role"><h3>${r}</h3><p>${esc(t)}</p></div>`).join('');
-  $('faq-list').innerHTML = FAQ.map(([q, a]) => `<details class="panel"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
-  const ideasPerMonth = R.o2.claims.D1.daydreamArm * (30 / 14);
+  const t3 = R.o1.claims.R3.laptop;
+  $('c-risks').innerHTML = [
+    `<b>False alarms.</b> On the real history, one real burst of work on one build was paused by the budget rule: ${R.o1.claims.R1f.verdicts.pause} pause verdicts, which is one pause and its renewals. It is recorded as a failure. The fix, a throttle on budget alone, will be sealed and measured as its own step.`,
+    `<b>Speed.</b> The per-visit time missed its bar on a busy laptop (p99 ${fmt(t3.p99, 2)} ms against 1 ms), mostly the cost of signing each verdict. The whole round still costs ${fmt(t3.roundMax * 50 / 36000, 4)}% of one core on a device 50 times slower. It is recorded as a failure.`,
+    '<b>No Raspberry Pi was used.</b> The Pi-class figure is a proxy (this laptop × 50), and it is labelled as one.',
+    `<b>Inheritance helped ${R.o3.claims.M2.children.filter((c) => c.pass).length} of 5 children</b>, against a sealed bar of 4. Proven lessons from one parent hurt the child on one dataset. It is recorded as a failure, and the fix will be sealed as its own step.`,
+  ].map((x) => `<li>${x}</li>`).join('');
+  $('faq-list').innerHTML = faq().map(([q, a]) => `<details class="panel"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
+  const extra = R.o2.claims.D1.daydreamArm - R.o2.claims.D1.baselineArm;
   const doCase = () => {
-    const c = costCase(basis, { watchHoursNow: +$('c-watch').value, watchHoursAfter: +$('c-after').value, hoursPerIdea: +$('c-idea').value, ideasPerMonth, handoverHours: +$('c-hand').value, mindsPerYear: +$('c-minds').value });
+    const c = costCase(basis, { watchHoursNow: +$('c-watch').value, watchHoursAfter: +$('c-after').value, hoursPerIdea: +$('c-idea').value, ideasPerMonth: +$('c-ideas').value, handoverHours: +$('c-hand').value, mindsPerYear: +$('c-minds').value });
     if (!c.ok) { $('c-table').innerHTML = `<p class="failed">${esc(c.why)}</p>`; return; }
     $('c-table').innerHTML = `<table><thead><tr><th>What it takes off people</th><th>hours a year</th><th>a year</th></tr></thead><tbody>${c.lines.map((l) => `<tr><td>${esc(l.what)}</td><td>${l.hoursPerYear}</td><td>${gbp(l.perYear)}</td></tr>`).join('')}<tr><td><b>Total</b></td><td></td><td><b>${gbp(c.perYear)}</b></td></tr></tbody></table>`;
-    $('c-note').textContent = `At ${gbp(c.hourly)} an hour: the ONS ASHE 2025 median salary for IT managers (SOC 2132), plus employer National Insurance and pension, over your working week. Ideas a month comes from the measured daydream run (${fmt(ideasPerMonth, 1)}). Running cost: about ${gbp(c.running)} a year of electricity (15 W on a laptop already on, at DESNZ's Q2 2026 non-domestic price). Sources: vendor/sovereign-enterprise/data/basis.json.`;
+    $('c-note').textContent = `At ${gbp(c.hourly)} an hour: the ONS ASHE 2025 median salary for IT managers (SOC 2132), plus employer National Insurance and pension, over your working week. Improvements a month is your own figure. For scale, in the measured run the daydream found ${extra} more verified improvements than the nightly dream alone, over 14 nights across 5 models. Running cost: about ${gbp(c.running)} a year of electricity (15 W on a laptop already on, at DESNZ's Q2 2026 non-domestic price). Sources: vendor/sovereign-enterprise/data/basis.json.`;
     $('c-board').textContent = `For about ${gbp(c.running)} a year of electricity, and no new seats, every agent gets an independent watcher that can only slow it or pause it. Measured on the estate's real history, it caught 100 of 100 injected faults within three visits and contained its own failure. Idle compute became ${R.o2.claims.D1.daydreamArm} verified model improvements in 14 nights, against ${R.o2.claims.D1.baselineArm} without it, all on data nothing had selected on. And each new agent inherits only proven lessons, never personal data. On your inputs, the staff time taken off people is worth ${gbp(c.perYear)} a year. Every claim is sealed, public and re-runnable, including the three that failed.`;
   };
-  for (const id of ['c-watch', 'c-after', 'c-idea', 'c-minds', 'c-hand']) $(id).addEventListener('input', doCase);
+  for (const id of ['c-watch', 'c-after', 'c-ideas', 'c-idea', 'c-minds', 'c-hand']) $(id).addEventListener('input', doCase);
   doCase();
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
 }
