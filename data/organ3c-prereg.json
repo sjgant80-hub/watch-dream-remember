@@ -1,0 +1,36 @@
+{
+ "kind": "watch-dream-remember.organ3c.inheritance-trust.prereg",
+ "v": 1,
+ "sealed": "2026-10-29",
+ "question": "If a child trusts each inherited lesson from birth — counting its parent's record as evidence — but checks it against its own cases one by one and drops it the moment its own evidence outweighs the parent's, does a child with an inherited slice beat the same child bred without one?",
+ "why": "M2 has now failed twice, and each failure says something. Organ 3 (seal 4da8aa4) applied the slice blind: a head start where the parents' lessons held (credit +0.011, census +0.0035), and harm where they did not (shop −0.131). Organ 3b (seal 348da53) made the child prove each lesson first: the harm went (N3 held) but so did the head start, because proving a lesson takes as many cases as learning it (N1 2/5, N2 1/5). This third sealed try keeps both halves: trust at birth, on the parent's word, and stop at once, on the child's own evidence. Organ 3's and 3b's receipts stay as they are. Inspired, like organ 3, by Gary W. Floyd's NexusGrid as he described it in chat (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC); designed from that description only — no parity is claimed; the comparison follows his catch-up call.",
+ "honesty": [
+  "Minds are MODELS of thought-patterns — small predictive models of an outcome — never the people in the data and never claimed conscious.",
+  "This is the third sealed try at M2. Its rule was chosen knowing how the first two did, per child, on these rows. D1 is the third look at M2's rows and D2 the second look at the gate rows (organ 3b scored there). A try that passes here after two that failed is weaker evidence than a first try would be, and is reported that way.",
+  "The child's early life is still scored as it is lived: each prediction is made before that case's outcome is read, and a lesson's use for a case is decided only by earlier cases.",
+  "Both arms learn their own lessons by organ 3's batch cycle; the only difference is the slice.",
+  "The kernel change is written after this seal is committed."
+ ],
+ "data": {
+  "what": "Organ 3's five datasets, loaders, parents, lives, slices and children, unchanged, rebuilt and checked against organ 3's receipt as in organ 3b.",
+  "sources": "vendor/dex-frontier/SOURCES.json",
+  "sha256": "cb63d077bc8ba7f8765c04119295fa7a1eb81e06aca2ac8321a44d0fe59c2eb5",
+  "lives": { "D1": "TEST rows 0 to min(2,000, |TEST|) − 1 — M2's rows", "D2": "GATE rows 0 to min(2,000, |GATE|) − 1 — organ 3b's second life" }
+ },
+ "design": {
+  "trust": "Each inherited lesson the child can apply (organ 3's rule: n ≥ 20, ≥ 5 founder cases) starts in use, carrying its parent's record as evidence worth MIN_LATER = 30 of the child's own cases: prior = 30 × (the lesson's gain in its parent's life ÷ its n). The child keeps its own evidence for it, case by case: after each case in the lesson's cell and context, ownGain += loss(genes alone) − loss(genes + the lesson's shift). The lesson is used for a case exactly when prior + ownGain > 0 over the cases before it. So it is dropped the moment the child's own evidence outweighs the parent's, and taken up again only if the child's evidence turns back.",
+  "own": "The child's own lessons: organ 3's batch cycle, unchanged (batches of 200; verified when gain > 0 over ≥ 30 later cases; used only when verified).",
+  "apply": "As organ 3: logit += the mean shift over the lessons in use that hold for the case.",
+  "history": "An 'adopted' entry at birth for each lesson taken up on trust, and a 'dropped' / 'adopted' entry each time one crosses the line { batch, cell, context, lineage, gain, later }, batch = the batch the crossing case falls in — never a case. Per batch an 'outcome' entry; verified own lessons at the end.",
+  "score": "As organ 3b: per case, the loss of each arm's prediction; mean improvement and 95% bootstrap bounds (1,000 resamples, mulberry32(20261029 + 4)).",
+  "constants": "No new constant: the 30 is organ 3's MIN_LATER; batch 200, n ≥ 20, ≥ 5 founder cases, w = n/(n + 50) and the slice of 8 are organ 3's."
+ },
+ "claims": [
+  { "id": "T1", "claim": "On M2's rows, a child that trusts its inheritance and checks it beats the same child bred without it.", "pass": "D1: for at least 4 of the 5 datasets, mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0 (M2's bar)", "note": "third look at these rows; chosen knowing organs 3 and 3b" },
+  { "id": "T2", "claim": "The same on the gate rows.", "pass": "D2: for at least 4 of the 5 datasets, mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0" },
+  { "id": "T3", "claim": "Trust does not bring the harm back.", "pass": "in all 10 early lives the 95% bootstrap upper bound of the improvement is ≥ 0 (no child significantly worse with its slice)" },
+  { "id": "T4", "claim": "No leak.", "pass": "organ 3b's N4 test, unchanged, on the children after both lives" }
+ ],
+ "fixedMeans": "M2 is fixed only if T1 AND T2 hold, with T3 and T4. Any failure is kept and reported. If this try fails, no further try on these rows: a next one needs rows no try has seen.",
+ "predictions": "Written before the kernel change. T1: credit and census should keep most of what blind inheritance gave (+0.011, +0.0035); shop's harmful lessons should be dropped within a few cases each, leaving parent B's; bank and coupon are uncertain. 3 of 5 likely, 4 possible — again near the bar. T2: a little worse than T1. T3: the main risk is shop — every one of parent A's lessons is used until the child's evidence outweighs 30 cases' worth of its parent's record, and those first cases cost; likely holds, not certain. T4: by construction."
+}
