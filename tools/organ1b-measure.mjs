@@ -41,7 +41,7 @@ async function measure() {
     why: 'Added to the tool after the first run of the sealed claims (which it does not change): does each mesh discriminate between organ 1’s rules (v1) and the fix (v1b)?',
     original: { v1: v1.original.measured, v1b: B1.measured, discriminates: v1.original.verdicts.pause !== B1.verdicts.pause || v1.original.verdicts.throttle !== B1.verdicts.throttle },
     fresh: { v1: v1.fresh.measured, v1b: B2.measured, discriminates: v1.fresh.verdicts.pause !== B2.verdicts.pause || v1.fresh.verdicts.throttle !== B2.verdicts.throttle, maxR: B2.reach.maxR, maxE: B2.reach.maxE },
-    reading: 'On the fresh ten no visit came near a budget overrun (largest r below 1) and no field rose above 0 (no held hour reached the 5 actions the field needs): organ 1’s rules give the same verdicts there. B2 shows the fix raises no false alarm on quiet builds; it is not evidence that the fix spares a genuine burst out of sample. That test is organ 1c.',
+    reading: 'On the fresh ten no visit came near a budget overrun (largest r below 1) and no field rose above 0 (no held hour reached the 5 actions the field needs): organ 1’s rules give the same verdicts there. B2 shows the fix raises no false alarm on quiet builds; it is not evidence that the fix spares a genuine burst out of sample. That test was sought (tools/nodes-burst.mjs, every other public estate build) and no build qualifies: the only real case is the burst the fix was designed on.',
   };
   return {
     kind: 'watch-dream-remember.organ1b.regulator-fix.run', seal: SEAL, rules: 'v1b',

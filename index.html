@@ -81,7 +81,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <div class="grid g3">
     <div class="panel card"><h3>Watch: the independent regulator</h3><p>A small, separate program with its own key. Once an hour it visits each agent and checks it against that agent's own normal behaviour: drift, speed, budget and integrity. Its verdict is <i>steady</i>, <i>watch</i>, <i>throttle</i> or <i>pause</i>. It can do nothing else. If it dies or goes rogue, every agent keeps running and you are told.</p></div>
     <div class="panel card"><h3>Dream: the daydream tier</h3><p>While nothing else is running, a cheap local model and plain code propose ideas. They carry a fix from one domain to another, look for buyer segments that respond together, notice weak spots, and replay recent work with a twist. Each idea is a record that cannot act. Each night a gate tests it on held-out data. Only the winners become real, and a separate test set confirms them.</p></div>
-    <div class="panel card"><h3>Remember: per-mind memory</h3><p>Each AI mind keeps its own life memory and a signed history of the lessons that held up. When two minds are bred, the child gets a fused model plus a short list of its parents' proven lessons. It never gets the cases themselves. Deleting a memory removes it completely.</p></div>
+    <div class="panel card"><h3>Remember: per-mind memory</h3><p>Each AI mind keeps its own life memory and a signed history of the lessons that held up. When two minds are bred, the child gets a fused model plus a short list of its parents' proven lessons, which it must prove again on its own cases before it uses them. It never gets the cases themselves. Deleting a memory removes it completely.</p></div>
   </div>
   <p class="note">A "mind" here is a small predictive model of a pattern in data. It is never a person and is never claimed to be conscious. The regulator cannot operate anything. Daydreams never act.</p>
 </section>
@@ -93,6 +93,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <li><b>Kill it, or turn it rogue.</b> Press <b>Kill the regulator</b> or <b>Make it rogue</b>. Every build keeps working on its own safeguards, and each one raises an alert to the owner.</li>
     <li><b>See what daydreaming bought.</b> In <a href="#dream">Dream</a>, compare verified ideas over 14 nights with and without the daydream tier. Then try to make a daydream act: type any reply into the box, as if you were the local model, and see what the parser does with it.</li>
     <li><b>Breed two minds and delete a memory.</b> In <a href="#remember">Remember</a>, press <b>Breed</b>. You see which lessons the child inherited and that no personal note came with them. Then press <b>Delete 25 memories</b> and watch the scan come back clean.</li>
+    <li><b>See a failure fixed, or not.</b> Two claims failed on the first measurement, and each fix was sealed as a new step. In <a href="#watch">Watch</a>, pick <b>wishwood</b> and <b>no fault</b>, press <b>Run 24 hours</b>, then switch <b>Rules</b> between the first version and the fix and run it again: the first version pauses its real burst of work, the fix only slows it. In <a href="#remember">Remember</a>, press <b>Breed</b>, then <b>Live the early life</b>.</li>
     <li><b>Check every number.</b> <a href="#receipts">Receipts</a> lists every sealed claim: held or failed, the measurement, and the commit that sealed it. Anyone can re-run them: <code>node tools/organ1-measure.mjs --verify</code>.</li>
   </ol>
 </section>
@@ -111,6 +112,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
         <option value="health">its history rewritten behind its back</option>
         <option value="none">no fault: its real history only</option>
       </select></label>
+      <label>Rules <select id="w-rules"><option value="v1b">the fix (organ 1b)</option><option value="v1">as first sealed (organ 1)</option></select></label>
       <button class="go" id="w-run">Run 24 hours</button>
       <button id="w-kill">Kill the regulator</button>
       <button id="w-rogue">Make it rogue</button>
@@ -135,6 +137,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most two new pauses in any six hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module. <span id="w-r2"></span></p><p><b>High-stakes</b> means an agent that spends money or speaks for you in public; in the measured mesh, two of the ten builds are marked that way. Every other agent is <b>low-stakes</b>: the regulator may lift its pause itself, on probation (throttled), after a cool-down that doubles each time.</p></div>
   </div>
   <div class="panel" id="w-receipt"></div>
+  <div class="panel" id="w-fix"></div>
 </section>
 
 <section id="dream">
@@ -173,6 +176,14 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
       <p class="out" id="m-out" aria-live="polite"></p><div class="scroll" id="m-lessons"></div></div>
   </div>
   <div class="panel" id="m-receipt"></div>
+  <div class="grid g2">
+    <div class="panel"><h3>The fix for inheritance: prove it before you use it</h3><div id="m-fix-chart"></div><p class="note" id="m-fix-note"></p></div>
+    <div class="panel"><h3>Live a child's early life (in your browser, demo data)</h3>
+      <p class="note">Breed first. The child then lives its first 1,200 demo cases twice: once with its inherited lessons, once without. Both lives learn their own lessons the same way. An inherited lesson is used only after it has lowered the child's own later loss over at least 30 cases, and is dropped as soon as it stops doing so. Halfway through, the demo population changes, the way real customers do.</p>
+      <div class="controls"><button class="go" id="m-early" disabled>Live the early life</button></div>
+      <p class="out" id="m-early-out" aria-live="polite"></p></div>
+  </div>
+  <div class="panel" id="m-fix"></div>
 </section>
 
 <section id="how">
@@ -238,7 +249,8 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <h3>3. The daydream tier</h3><p>In idle time, sliced into pieces of 5 ms or less and stopped the instant a real job arrives, the daydream proposes candidates from four sources. It carries an adopted change to a similar column of another domain, by distribution shape (plain code) or by asking the local model which column is the closest analogue. It finds lead and market associations: pairs of features whose joint outcome rate departs from what each predicts alone. It notices gaps: in the weakest domain, it looks for the split that best separates the cases the model is least sure of. And it rehearses: last night's adoptions, replayed with a variation. Candidates are inert records in a bounded LIGHT log. Each night the gate tests the dream's own ideas and the ten best daydreams on held-out data, and a separate test set confirms them.</p>
     <h3>4. Memory and inheritance</h3><p>A mind's genes are a small logistic model. Its life memory holds episodes. Its lessons are outcome rates in cells of the data, carried with the context they were learnt in. A lesson becomes trusted only after it improved the mind's later predictions in its life. A child is the gated fusion of both parents' models. It inherits the top eight verified lessons of each parent, never episodes. Deletion removes episodes and salts, recomputes lessons, and appends a tombstone that holds no content.</p>
     <h3>5. Method</h3><p>Every claim was committed (sealed) before the code that measures it, measured once on real public data, and kept whether it held or failed. Continuous integration re-derives every receipt from the pinned data and mutation-tests every kernel.</p>
-    <h3>6. Credit</h3><p>These upgrades are inspired by Gary W. Floyd's NexusGrid, as he described it in conversation (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC). They are designed from that description only, and no parity with his system is claimed. A comparison with his real implementation will follow his catch-up call: what he does better will be adopted, and the differences recorded here. The regulator's field and rate terms draw on Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "GEP-Based Security: Behavioral Entropy Signatures for Cybersecurity and DevOps," 2025. The inert-until-reviewed rule for dreams draws on his "Dream State Architecture: GEP-Guided Memory Consolidation and Entropy Regulation in Artificial Consciousness Systems," 2025.</p>
+    <h3>6. The fixes</h3><p>Two claims failed on their first measurement, and both failures are kept. Each fix was sealed as a new step (its claims and pass marks committed publicly before its code ran) and measured once. <b>The regulator's false alarm (R1f).</b> On one build, a real burst of work (many actions in a short time) ran over its day budget at two visits in a row, and the first rules paused it whatever the size of the overrun. The fix (organ 1b) changes two things. The 24-hour count is read only at a visit where the agent did something, so a burst that has ended is no longer treated as an overrun. And an overrun alone pauses only when the pressure has already reached the level at which the regulator would slow the agent anyway: a mild overrun slows an agent, a large one stops it. No new constant was introduced. It was re-measured on the original builds and on ten builds the regulator had never seen, and every injected fault was re-run. A harder test was looked for: every other public build of the estate was scanned for a real burst over its own budget, and none had one. So the fix is proven on the one real case that exists, which it was designed on, but not yet on a real burst it has never seen. <b>Inheritance (M2).</b> The first child applied every inherited lesson from birth, and on one dataset a parent's lessons, proven in that parent's life, did badly on later cases. The fix (organ 3b) makes a child prove each inherited lesson on its own early cases, by the rule its parents used, before using it. That removed the harm. It did not make inheritance clearly useful. Proving a lesson takes as many cases as learning one, so by the time an inherited lesson is trusted, the child has usually learnt the same thing itself. That result is kept as measured.</p>
+    <h3>7. Credit</h3><p>These upgrades are inspired by Gary W. Floyd's NexusGrid, as he described it in conversation (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC). They are designed from that description only, and no parity with his system is claimed. A comparison with his real implementation will follow his catch-up call: what he does better will be adopted, and the differences recorded here. The regulator's field and rate terms draw on Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "GEP-Based Security: Behavioral Entropy Signatures for Cybersecurity and DevOps," 2025. The inert-until-reviewed rule for dreams draws on his "Dream State Architecture: GEP-Guided Memory Consolidation and Entropy Regulation in Artificial Consciousness Systems," 2025.</p>
   </div>
 </section>
 
@@ -247,7 +259,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <p>Every sealed claim, as measured. A claim that failed stays failed. Fixes are sealed as new steps, never as edits.</p>
   <div class="scroll"><table id="r-table"><thead><tr><th>Claim</th><th>Result</th><th>What was measured</th></tr></thead><tbody></tbody></table></div>
   <p>Each claim names the commit that sealed it, which fixes the code and data version it was measured against. The <a href="https://github.com/sjgant80-hub/watch-dream-remember/actions">continuous integration</a> re-derives the data from its pinned commits, re-measures every receipt and mutation-tests every kernel on every change.</p>
-  <details open><summary>Re-run any of it yourself (Node 22 or later and git; about half an hour)</summary><p class="mono">git clone https://github.com/sjgant80-hub/watch-dream-remember<br>cd watch-dream-remember<br>node tools/data.mjs --fetch<br>node tools/organ1-measure.mjs --verify<br>node tools/organ2-measure.mjs --verify<br>node tools/organ3-measure.mjs --verify</p></details>
+  <details open><summary>Re-run any of it yourself (Node 22 or later and git; about half an hour)</summary><p class="mono">git clone https://github.com/sjgant80-hub/watch-dream-remember<br>cd watch-dream-remember<br>node tools/data.mjs --fetch<br>node tools/organ1-measure.mjs --verify<br>node tools/organ2-measure.mjs --verify<br>node tools/organ3-measure.mjs --verify<br>node tools/organ1b-measure.mjs --verify<br>node tools/organ3b-measure.mjs --verify</p></details>
 </section>
 
 <section id="faq">

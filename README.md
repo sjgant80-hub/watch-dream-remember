@@ -18,21 +18,31 @@ Minds are models of thought-patterns. They are never the people, and never claim
 | 2 · the daydream tier | `9113675` | **5 of 5** | D1: 22 verified ideas with the daydream against 10 without, over the same 14 nights; 81.8% of them from daydream sources. D1b: 14.6% yield against 2.9% for the dream's own random ideas. D2: dispatch ≤ 17.4 ms, median added time to first token 0.004 s (0.085 s for jobs arriving mid-call). D3: 0 calls anywhere but the local model, ≤ 6 a day. D4: ≤ 48 records, ≤ 1,350 LIGHT bytes. The first run could not be re-derived: its record kept one reply per prompt, while the local model answered some identical prompts differently. It is kept, marked superseded (`data/organ2-run-first.json`). The re-run held the same 5 of 5 and replays byte for byte. |
 | 3 · per-mind memory | `d838607` → `4da8aa4` | **2 of 3** | M1: 8 of 10 parents better with their verified lessons (bar 8). **M2 FAILED**: 2 of 5 children better with the inherited slice (bar 4); shop sessions went sharply worse. M3: 0 planted notes and 0 raw rows in any child across 14,223 parent episodes; deletion left 0 traces, lessons equal a fresh life, one tombstone. The v2 seal superseded v1 before any real data was read: a synthetic dry run showed a parent's one-segment lesson being applied to both segments. This is disclosed in the seal. |
 
+### The fixes: each failure kept, each fix sealed as a new organ
+
+| Organ | Sealed | Held | Notes |
+|---|---|---|---|
+| 1b · the fix for R1f | `ee43f68` | **4 of 4** | Two changes to the budget rule, with no new constant. (1) The 24-hour count is read only at a visit where the agent attempted something, so a burst that has ended is not an overrun. (2) Two over-budget visits in a row pause only once the pressure has reached the throttle bar, so a mild overrun throttles and a large one pauses. B1, the repair check on organ 1's ten (designed knowing the burst): 0 pauses where organ 1 paused 12. B2, ten builds never seen: 0 pauses, 0 throttles. B3/B4: every injected fault still caught, damping unchanged. Said in the receipt: B2's builds never reached the rules the fix changes (largest budget ratio 0.54), so organ 1's rules give the same verdicts there, and B2 is no test of the fix itself. |
+| (1c · a stress test) | not sealed | — | A harder test for 1b was sought: builds whose own held-out history ran over their own budget, chosen by counting alone (`tools/nodes-burst.mjs`). **None exists.** Of the 1,565 other public estate repos, 1,528 have fewer than 20 commits, 5 have too few actions, and none of the other 32 ever overran. The scan is kept as a record (`data/nodes-burst.json`). So 1b is proven on the one real burst there is (the one it was designed on) and on every injected fault, but not on a real burst it has never seen. |
+| 3b · the fix for M2 | `348da53` | **2 of 4** | **M2 NOT fixed.** A child now proves each inherited lesson on its own early cases, by its parents' own rule, before using it; both arms learn their own lessons the same way. N3 held: no child is made worse by its inheritance any more (shop −0.131 blind → +0.0001). N4 held: no leak. **N1 FAILED** (2 of 5 on M2's rows) and **N2 FAILED** (1 of 5 on rows no lesson was ever scored on). Proving a lesson takes about 30 of the child's own cases, and by then the child has learnt the same ground itself, so a proven inheritance arrives no sooner than its own experience. |
+
 Re-run any of it:
 
 ```bash
 node tools/data.mjs --fetch
 node tools/organ1-measure.mjs --verify
+node tools/organ1b-measure.mjs --verify
 node tools/organ2-measure.mjs --verify
 node tools/organ3-measure.mjs --verify
+node tools/organ3b-measure.mjs --verify
 ```
 
 CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness, `--cap 1000`).
 
 ## Layout
 
-- `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` (watch) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` (remember) · `costcase`.
-- `tools/`: the measuring tools (`organN-measure.mjs`), the data fetchers, the pre-emption timer, and a local server (`node tools/serve.mjs`).
+- `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` (watch) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` `inherit` (remember) · `costcase`.
+- `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, and a local server (`node tools/serve.mjs`).
 - `data/`: the sealed preregistrations, the receipts, the node histories, and the recorded local-model replies.
 - `vendor/`: verbatim copies with pinned hashes. From fall-kit: identity, SHA-256 and the LIGHT codec. From dex-frontier: the dataset loaders. From sovereign-enterprise: the sourced cost basis.
 

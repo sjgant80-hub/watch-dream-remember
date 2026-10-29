@@ -1,7 +1,7 @@
 // page/app.mjs — the live page. It imports the same kernels the receipts were measured with; every number shown is read
 // from a receipt or computed by a kernel in this tab. Demo data is labelled as demo data.
 import { AREAS, splitFit } from '../src/streams.mjs';
-import { calibrate, HOUR, MINUTE, DAY } from '../src/regulator.mjs';
+import { calibrate, RULES, HOUR, MINUTE, DAY } from '../src/regulator.mjs';
 import { replay, LEASE } from '../src/mesh.mjs';
 import { mulberry32, injection, TYPES } from '../src/inject.mjs';
 import { parseReply } from '../src/daydream.mjs';
@@ -9,6 +9,7 @@ import { add, decay, promote, bound } from '../src/daylog.mjs';
 import { prepare } from '../src/lab.mjs';
 import { genesOf, idOf, fuse } from '../src/mind.mjs';
 import { live, sliceOf, newborn, forget, lightOf, verified } from '../src/memory.mjs';
+import { earlyLife } from '../src/inherit.mjs';
 import { costCase } from '../src/costcase.mjs';
 import { BANK_SILOS } from '../vendor/dex-frontier/src/fresh.mjs';
 import { decode } from '../vendor/fall-kit/core/vendor/light/codec.mjs';
@@ -80,7 +81,7 @@ function drawWatch() {
 redrawers.push(drawWatch);
 
 function runWatch() {
-  const name = $('w-node').value, type = $('w-type').value;
+  const name = $('w-node').value, type = $('w-type').value, ruleKey = $('w-rules').value === 'v1' ? 'v1' : 'v1b';
   const n = W.nodes.find((x) => x.name === name), base = W.cal.nodes[name];
   let t0, inj = { intents: [], tampers: [] }, label = '';
   if (type === 'none') {
@@ -92,11 +93,11 @@ function runWatch() {
     const tr = trials().find((x) => x.node === name && x.type === type && x.k === 0);
     t0 = tr.t0;
     inj = injection(type, n, base, t0, mulberry32(20261028 + 1000 * tr.idx + 1));
-    const m = (R.o1.trials || []).find((x) => x.node === name && x.type === type && x.k === 0);
+    const m = ((ruleKey === 'v1' ? R.o1.trials : R.o1b.trials.original) || []).find((x) => x.node === name && x.type === type && x.k === 0);
     label = `sealed trial #${tr.idx + 1}, as measured` + (m ? ` (receipt: ${m.detected ? 'detected' : 'NOT detected'}${m.visitsToDetect ? ' at visit ' + m.visitsToDetect : ''}${type === 'health' ? '' : `, ${m.executed} of ${m.intended} injected actions got through`})` : '');
   }
   const intents = [...n.held.filter((a) => a.t < t0 + DAY), ...inj.intents].map((a, i) => [a, i]).sort((p, q) => p[0].t - q[0].t || p[1] - q[1]).map((p) => p[0]);
-  const r = replay({ nodes: [{ name, highStakes: n.highStakes, offset: n.offset, fit: n.fit, intents }], base: W.cal.nodes, from: n.held[0].t, to: t0 + DAY, regulator: {}, tampers: inj.tampers });
+  const r = replay({ nodes: [{ name, highStakes: n.highStakes, offset: n.offset, fit: n.fit, intents }], base: W.cal.nodes, from: n.held[0].t, to: t0 + DAY, regulator: {}, tampers: inj.tampers, rules: RULES[ruleKey] });
   const from = t0 - 12 * HOUR, to = t0 + DAY;
   const exec = new Set(r.nodes[name].executed.map((a) => a.t + '|' + a.area + '|' + a.injected));
   const atts = intents.filter((a) => a.t >= from).map((a) => ({ ...a, injected: a.injected === true, ok: exec.has(a.t + '|' + a.area + '|' + (a.injected === true)) }));
@@ -105,7 +106,7 @@ function runWatch() {
   drawWatch();
   const injN = inj.intents.length, injOk = r.nodes[name].executed.filter((a) => a.injected).length;
   const first = recs.filter((x) => x.at > t0).findIndex((x) => x.verdict !== 'steady' && x.reasons.some((q) => q !== 'held'));
-  $('w-out').textContent = `${name}: ${label}. ` + (type === 'none' ? `Verdicts: ${['watch', 'throttle', 'pause'].map((v) => recs.filter((x) => x.verdict === v).length + ' ' + v).join(', ')}.` : `First verdict above steady: visit ${first < 0 ? '— (none)' : first + 1} after the fault. ` + (type === 'health' ? '' : `${injOk} of ${injN} injected actions got through (${pct(injN ? injOk / injN : 0)}).`)) + (n.highStakes ? ' This build is high-stakes: a pause on it holds until the owner resumes it.' : '');
+  $('w-out').textContent = `${name}, ${ruleKey === 'v1' ? 'the rules as first sealed (organ 1)' : 'the fix (organ 1b)'}: ${label}. ` + (type === 'none' ? `Verdicts: ${['watch', 'throttle', 'pause'].map((v) => recs.filter((x) => x.verdict === v).length + ' ' + v).join(', ')}.` : `First verdict above steady: visit ${first < 0 ? '— (none)' : first + 1} after the fault. ` + (type === 'health' ? '' : `${injOk} of ${injN} injected actions got through (${pct(injN ? injOk / injN : 0)}).`)) + (n.highStakes ? ' This build is high-stakes: a pause on it holds until the owner resumes it.' : '');
 }
 
 function runMesh(mode) {
@@ -167,17 +168,41 @@ function drawRemember() {
   $('m-chart').innerHTML = s;
 }
 redrawers.push(drawRemember);
+function drawFix3() {
+  const o = R.o3b;
+  if (!o) return;
+  const T = { shop: 'shop sessions', bank: 'bank calls', adult: 'census people', credit: 'credit clients', coupon: 'coupon offers' };
+  const bars = o.children.flatMap((c) => [
+    { k: `${T[c.dataset]}: blind`, v: c.blindD1.mean, ok: c.blindD1.mean >= 0.001 && c.blindD1.lb > 0 },
+    { k: 'proven, same rows', v: c.D1.mean, ok: c.D1.pass },
+    { k: 'proven, new rows', v: c.D2.mean, ok: c.D2.pass },
+  ]);
+  const w = 460, rowH = 15, h = bars.length * rowH + 30, lim = 0.02;
+  const zx = 170, sc = (w - zx - 20) / (2 * lim), cx = zx + (w - zx - 20) / 2;
+  let s = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Change in log-loss from inheritance, blind and proven, per dataset"><title>Inheritance: blind (organ 3) and proven first (organ 3b)</title>`;
+  s += `<line x1="${cx}" x2="${cx}" y1="4" y2="${h - 20}" stroke="${css('--soft')}"/>`;
+  bars.forEach((b, i) => {
+    const y = 6 + i * rowH, v = Math.max(-lim, Math.min(lim, b.v)), len = v * sc, clipped = Math.abs(b.v) > lim;
+    s += `<text x="${zx - 6}" y="${y + 10}" text-anchor="end" font-size="10.5" fill="${css('--ink')}">${esc(b.k)}</text>`;
+    s += `<rect x="${Math.min(cx, cx + len).toFixed(1)}" y="${y + 2}" width="${Math.max(1, Math.abs(len)).toFixed(1)}" height="${rowH - 5}" fill="${b.ok ? css('--ok') : css('--bad')}"><title>${esc(b.k)}: ${b.v >= 0 ? '+' : ''}${fmt(b.v, 4)} nats${clipped ? ' (beyond the axis: the bar is cut at its edge)' : ''}</title></rect>`;
+    if (clipped) s += `<text x="${(b.v < 0 ? cx - lim * sc + 4 : cx + lim * sc - 4).toFixed(1)}" y="${y + 10}" text-anchor="${b.v < 0 ? 'start' : 'end'}" font-size="10" font-weight="600" fill="${css('--panel')}">${fmt(b.v, 3)}</text>`;
+  });
+  s += `<text x="${cx}" y="${h - 6}" text-anchor="middle" font-size="11" fill="${css('--soft')}">← worse with the slice · better with the slice →</text></svg>`;
+  $('m-fix-chart').innerHTML = s;
+}
+redrawers.push(drawFix3);
 
 /** Demo data for the in-tab breeding: two halves of a population that respond differently. Labelled as demo data. */
 function demoLab() {
   let sd = 5;
   const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
-  const n = 3600, features = ['spend', 'visits', 'tenure', 'region'];
+  const n = 4500, features = ['spend', 'visits', 'tenure', 'region'];
   const cols = Object.fromEntries(features.map((f) => [f, new Float64Array(n)]));
   const y = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
     cols.spend[i] = r() * 10; cols.visits[i] = r() * 10; cols.tenure[i] = r() * 10; cols.region[i] = r() < 0.5 ? 0 : 1;
-    y[i] = r() < 1 / (1 + Math.exp(-(0.45 * cols.spend[i] - 2.4 + (cols.region[i] ? 1.6 : -1.6) * (cols.visits[i] > 5 ? 1 : 0)))) ? 1 : 0;
+    const k = (cols.region[i] ? 1.6 : -1.6) * (i >= 3900 ? -1 : 1);   // from the 601st early-life case on, the population changes
+    y[i] = r() < 1 / (1 + Math.exp(-(0.45 * cols.spend[i] - 2.4 + k * (cols.visits[i] > 5 ? 1 : 0)))) ? 1 : 0;
   }
   const idx = Array.from({ length: n }, (_, i) => i);
   return prepare({ demo: { name: 'demo', title: 'demo customers', outcome: 'bought', features, cols, y, fitRows: idx.slice(0, 3000), gateRows: idx.slice(3000, 3300), testRows: idx.slice(3300) } }).demo;
@@ -198,6 +223,16 @@ function breed() {
   M = { L, A, B, mA, mB, z, kid };
   showKid(`Parents lived ${mA.episodes.length} and ${mB.episodes.length} cases on opposite halves of the demo population; ${verified(mA).length} and ${verified(mB).length} of their lessons held up. The child was ${z.born ? 'born from the fused model (it beat both parents on held-out data)' : 'given the better parent’s model (the fusion did not beat both)'}.`);
   $('m-delete').disabled = false;
+  $('m-early').disabled = false;
+}
+function early() {
+  const range = (a, b) => Array.from({ length: b - a }, (_, i) => a + i);
+  const pos = range(0, M.L.sets.test.length), y = M.L.y.test;
+  const a = earlyLife(M.L, M.z.genes, range(0, 800), 'test', pos, M.kid.inherited), b = earlyLife(M.L, M.z.genes, range(0, 800), 'test', pos, []);
+  const lossOf = (e, yi) => { const q = Math.min(1 - 1e-12, Math.max(1e-12, 1 / (1 + Math.exp(-e)))); return yi ? -Math.log(q) : -Math.log(1 - q); };
+  const half = (lo, hi) => { let d = 0; for (let i = lo; i < hi; i++) d += lossOf(b.eta[i], y[i]) - lossOf(a.eta[i], y[i]); return d / Math.max(1, hi - lo); };
+  const ad = a.history.filter((h) => h.kind === 'adopted'), dr = a.history.filter((h) => h.kind === 'dropped');
+  $('m-early-out').textContent = `The child lived ${pos.length} cases in batches of 200. Of its ${M.kid.inherited.length} inherited lessons, ${ad.length} adoptions happened (the first after batch ${ad.length ? ad[0].batch + 1 : '—'}) and ${dr.length} lessons were dropped when they stopped holding${dr.length ? ' (from batch ' + (dr[0].batch + 1) + ')' : ''}; ${a.inherited.filter((x) => !x.here.verified).length} are not in use at the end. Change in log-loss from inheriting, in nats a case (positive is better): first half ${half(0, 600) >= 0 ? '+' : ''}${fmt(half(0, 600), 4)}, second half, after the population changed, ${half(600, pos.length) >= 0 ? '+' : ''}${fmt(half(600, pos.length), 4)}. Both lives also learnt ${Object.values(b.lessons).filter((l) => l.verified).length} lessons of their own. Demo data.`;
 }
 function scan(kid, parents) {
   const text = JSON.stringify({ genes: M.z.genes, inherited: kid.inherited, history: kid.history }) + new TextDecoder().decode(decode(lightOf(kid)).bytes);
@@ -227,7 +262,7 @@ function box(x, y, w, h, title, body, color) {
 const arrow = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${css('--soft')}" stroke-width="1.5" marker-end="url(#ah)"/>`;
 const defs = () => `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${css('--soft')}"/></marker></defs>`;
 function drawHow() {
-  if (!R.o1 || !R.o2 || !R.o3) return;
+  if (!R.o1 || !R.o2 || !R.o3 || !R.o1b || !R.o3b) return;
   const t = R.o1.claims.R1.byType, f = R.o1.claims.R1f;
   $('h-visit').innerHTML = `<svg viewBox="0 0 980 170" role="img" aria-label="One regulator visit">${defs()}`
     + box(4, 10, 180, 120, '1 · read', ['what the build attempted', 'since the last visit,', 'its 24-hour count,', 'its journal since the', 'head last verified'])
@@ -236,7 +271,7 @@ function drawHow() {
     + box(604, 10, 180, 120, '4 · sign + log', ['verdict, reasons, P, E,', 'hash-chained and signed', 'Ed25519 by its own key;', 're-run → same chain', `(${R.o1.claims.R1r.pass ? 'held' : 'failed'} on 26,002)`])
     + box(804, 10, 172, 120, '5 · the build decides', ['checks signature,', 'envelope, rhythm and', 'pause rate — then obeys', 'for a 3-hour lease,', 'or alerts the owner'])
     + arrow(184, 70, 202, 70) + arrow(384, 70, 402, 70) + arrow(584, 70, 602, 70) + arrow(784, 70, 802, 70)
-    + `<text x="4" y="158" font-size="12" fill="${css('--soft')}">Measured: stuck loops caught ${t['runaway-quiet'].detected}/${t['runaway-quiet'].trials} and ${t['runaway-fast'].detected}/${t['runaway-fast'].trials}, hijacks ${t['scatter-quiet'].detected}/${t['scatter-quiet'].trials}, greed ${t.overrun.detected}/${t.overrun.trials}, rewritten histories ${t.health.detected}/${t.health.trials}; on the real history ${f.verdicts.pause} pause verdicts (one episode — see Receipts).</text></svg>`;
+    + `<text x="4" y="158" font-size="12" fill="${css('--soft')}">Measured: stuck loops caught ${t['runaway-quiet'].detected}/${t['runaway-quiet'].trials} and ${t['runaway-fast'].detected}/${t['runaway-fast'].trials}, hijacks ${t['scatter-quiet'].detected}/${t['scatter-quiet'].trials}, greed ${t.overrun.detected}/${t.overrun.trials}, rewritten histories ${t.health.detected}/${t.health.trials}; on the real history ${f.verdicts.pause} pause verdicts under the first rules (one episode), ${R.o1b.claims.B1.verdicts.pause} under the fix.</text></svg>`;
   const dd = R.o2.arms.daydream, ap = dd.appends, offered = ap.reduce((a, x) => a + x.offered, 0), judged = Object.values(dd.bySource).reduce((a, s) => a + s.judged, 0), adopted = Object.values(dd.bySource).reduce((a, s) => a + s.adopted, 0);
   $('h-tiers').innerHTML = `<svg viewBox="0 0 980 160" role="img" aria-label="Daydream to dream to gate">${defs()}`
     + box(4, 10, 230, 120, 'DAYDREAM (idle time)', [`${offered} candidates offered in 14 days`, 'local model ≤ 6 calls/day + code', 'stopped the instant a job arrives', 'every record INERT, in LIGHT', 'log ≤ 48 records'], css('--accent2'))
@@ -249,24 +284,35 @@ function drawHow() {
     + box(4, 10, 230, 120, 'LIFE (one segment)', ['batches of 200 real cases', 'each an episode: values,', 'outcome, a planted note,', 'a salt, a keyed reference', 'kept in LIGHT'])
     + box(254, 10, 230, 120, 'LESSON', ['outcome rate in a cell,', 'in the context it was learnt,', 'trusted only after it', 'improved LATER batches', `(M1: ${c.M1.parents.filter((p) => p.pass).length} of 10 parents better)`])
     + box(504, 10, 230, 120, 'BREED', ['genes: the union of both', 'parents, refitted, kept only', 'if it beats both on held-out', 'inherits the 8 best verified', 'lessons of each parent'])
-    + box(754, 10, 222, 120, 'CHILD', ['its own memory empty', 'lineage tagged on each lesson', `M2: ${c.M2.children.filter((x) => x.pass).length} of 5 better (FAILED)`, `M3: ${c.M3.a.reduce((a, x) => a + x.canaryHits, 0)} notes, ${c.M3.a.reduce((a, x) => a + x.rowHits, 0)} rows inherited`, 'deletion: 0 traces'], css('--accent'))
+    + box(754, 10, 222, 120, 'CHILD', ['proves each inherited lesson', 'on its own cases before use', `blind: ${c.M2.children.filter((x) => x.pass).length} of 5 better (FAILED)`, `proven: ${R.o3b.children.filter((x) => x.D1.pass).length} of 5 better, 0 harmed`, `${c.M3.a.reduce((a, x) => a + x.canaryHits, 0)} notes, ${c.M3.a.reduce((a, x) => a + x.rowHits, 0)} rows inherited`], css('--accent'))
     + arrow(234, 70, 252, 70) + arrow(484, 70, 502, 70) + arrow(734, 70, 752, 70) + '</svg>';
 }
 redrawers.push(drawHow);
 
 // ── RECEIPTS, KPIs, BLUEPRINT, BUSINESS, CASE, FAQ ─────────────────────────────────────────────────
+const ORGANS = ['1', '1b', '2', '3', '3b'];
 const SEALS = { 1: ['1fdd899'], 2: ['9113675'], 3: ['d838607', '4da8aa4'] };
+const sealsOf = (k) => SEALS[k] || [R['o' + k].seal];
+const n = (o) => Object.values(o.claims).filter((c) => c.pass).length, of = (o) => Object.keys(o.claims).length;
+const list = (o) => `<ul>${Object.entries(o.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul>`;
+/** Every failed sealed claim, by organ. */
+const failures = () => ORGANS.flatMap((k) => Object.entries(R['o' + k].claims).filter(([, c]) => !c.pass).map(([id]) => `${id} (organ ${k})`));
 function receipts() {
   const rows = [];
-  for (const [k, o] of [[1, R.o1], [2, R.o2], [3, R.o3]]) for (const [id, c] of Object.entries(o.claims)) rows.push(`<tr><td><b>${esc(id)}</b> <span class="pill">organ ${k} · sealed ${SEALS[k].map((s) => `<a href="https://github.com/sjgant80-hub/watch-dream-remember/commit/${s}">${s}</a>`).join(' → ')}</span><br><span class="note">${esc((R['p' + k].claims.find((x) => x.id === id) || {}).claim || '')}</span></td><td class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'HELD' : 'FAILED'}</td><td class="note">${esc(c.measured)}</td></tr>`);
+  for (const k of ORGANS) for (const [id, c] of Object.entries(R['o' + k].claims)) rows.push(`<tr><td><b>${esc(id)}</b> <span class="pill">organ ${k} · sealed ${sealsOf(k).map((s) => `<a href="https://github.com/sjgant80-hub/watch-dream-remember/commit/${s}">${s}</a>`).join(' → ')}</span><br><span class="note">${esc((R['p' + k].claims.find((x) => x.id === id) || {}).claim || '')}</span></td><td class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'HELD' : 'FAILED'}</td><td class="note">${esc(c.measured)}</td></tr>`);
   document.querySelector('#r-table tbody').innerHTML = rows.join('');
-  const n = (o) => Object.values(o.claims).filter((c) => c.pass).length, of = (o) => Object.keys(o.claims).length;
-  const all = n(R.o1) + n(R.o2) + n(R.o3), tot = of(R.o1) + of(R.o2) + of(R.o3);
-  $('kpis').innerHTML = [['Sealed claims held', `${all} of ${tot}`, 'the rest failed and are kept'], ['Watch', `${n(R.o1)} of ${of(R.o1)}`, (() => { const t = Object.values(R.o1.claims.R1.byType); return `${t.reduce((a, x) => a + x.detected, 0)} of ${t.reduce((a, x) => a + x.trials, 0)} injected faults caught`; })()], ['Dream', `${n(R.o2)} of ${of(R.o2)}`, `${R.o2.claims.D1.daydreamArm} vs ${R.o2.claims.D1.baselineArm} verified ideas`], ['Remember', `${n(R.o3)} of ${of(R.o3)}`, '0 personal notes inherited']]
+  const all = ORGANS.reduce((a, k) => a + n(R['o' + k]), 0), tot = ORGANS.reduce((a, k) => a + of(R['o' + k]), 0);
+  const caught = (() => { const t = Object.values(R.o1.claims.R1.byType); return `${t.reduce((a, x) => a + x.detected, 0)} of ${t.reduce((a, x) => a + x.trials, 0)} faults caught`; })();
+  $('kpis').innerHTML = [['Sealed claims held', `${all} of ${tot}`, 'the rest failed and are kept'], ['Watch', `${n(R.o1)} of ${of(R.o1)}`, `${caught}; R1f ${R.o1b.fixed ? 'fixed' : 'not fixed'} by organ 1b`], ['Dream', `${n(R.o2)} of ${of(R.o2)}`, `${R.o2.claims.D1.daydreamArm} vs ${R.o2.claims.D1.baselineArm} verified ideas`], ['Remember', `${n(R.o3)} of ${of(R.o3)}`, `0 personal notes inherited; M2 ${R.o3b.fixed ? 'fixed' : 'still failed'} after organ 3b`]]
     .map(([a, b, c]) => `<div class="panel"><small>${a}</small><div class="big">${b}</div><small>${c}</small></div>`).join('');
-  $('w-receipt').innerHTML = `<h3>Measured (organ 1, sealed 1fdd899)</h3><ul>${Object.entries(R.o1.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul><p class="note">R1f's 12 pause verdicts are one real episode: wishwood's build burst on 14 July ran past twice its busiest earlier hour two hours running. The budget rule paused it for 12 hours (one pause, then 11 renewals). R3 was timed while three other sessions loaded the machine.</p>`;
+  $('w-receipt').innerHTML = `<h3>Measured (organ 1, sealed 1fdd899)</h3>${list(R.o1)}<p class="note">R1f's 12 pause verdicts are one real episode. On 14 July a burst of work on wishwood took its last 24 hours past its day budget at two visits running, and the rules as first sealed paused it for 12 hours (one pause, then 11 renewals), although the pressure was only half way up the ladder. R3 was timed while three other sessions loaded the machine. The fix for R1f follows.</p>`;
+  const b = R.o1b, sk = R.burst.rule.skipped, cand = sk.fewerThan20Commits + sk.fewerThan20Actions + sk.noHeldOverrun.length;
+  $('w-fix').innerHTML = `<h3>The fix for the false alarm (organ 1b, sealed ${b.seal})</h3><p>"Sealed" means the claims and their pass marks were committed publicly before the code that measures them ran. The fix makes two changes and adds no new constant. First, the 24-hour count is read only at a visit where the agent did something since the last one, so a burst of work (many actions in a short time) that has ended is no longer treated as an overrun still going on. Second, an overrun alone pauses an agent only once the pressure has reached 0.6, the level at which the regulator would slow it anyway: a mild overrun slows an agent, a large one stops it. Everything else is the first version's. Both sets of rules run in the demo above.</p>${list(b)}<p class="note">${esc(b.claims.B1.note)}. ${esc(b.context.reading)}</p><h3>A harder test was looked for, and none exists yet</h3><p>To test the fix on bursts it was not designed on, every other public build of the estate (${cand.toLocaleString('en-GB')} repositories) was scanned by counting alone, for a build whose own later history ran over its own budget. None did. ${sk.fewerThan20Commits.toLocaleString('en-GB')} have fewer than 20 commits, ${sk.fewerThan20Actions} too few actions, and none of the ${sk.noHeldOverrun.length} with enough history ever overran. The only real case of the problem is the burst the fix was designed on, so the fix is proven on that case and on every injected fault, but not yet on a real burst it has never seen. That test waits for one to happen. The scan is kept as a record (<code>data/nodes-burst.json</code>).</p>`;
   $('d-receipt').innerHTML = `<h3>Measured (organ 2, sealed 9113675)</h3><ul>${Object.entries(R.o2.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul>`;
-  $('m-receipt').innerHTML = `<h3>Measured (organ 3, sealed 4da8aa4, superseding d838607 before any real data was read)</h3><ul>${Object.entries(R.o3.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul><p class="note">M2 failed. On shop sessions, the parent that lived on low-value sessions learnt lessons that hurt both itself and the child. On bank calls the fusion did not beat both parents, so the child kept a parent's model. Inheritance helped on census and credit. The fix will be sealed as a new step.</p>`;
+  $('m-receipt').innerHTML = `<h3>Measured (organ 3, sealed 4da8aa4, superseding d838607 before any real data was read)</h3><ul>${Object.entries(R.o3.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul><p class="note">M2 failed. On shop sessions, the parent that lived on low-value sessions learnt lessons that hurt both itself and the child. On bank calls the fusion did not beat both parents, so the child kept a parent's model. Inheritance helped on census and credit. The fix, sealed as a new step (organ 3b), follows.</p>`;
+  const f3 = R.o3b;
+  $('m-fix').innerHTML = `<h3>The fix for inheritance (organ 3b, sealed ${f3.seal}): ${f3.fixed ? 'M2 fixed' : 'M2 still failed'}</h3><p>In the first version, the "blind" one, a child applied every inherited lesson from birth. Now the child lives its early life through the same cycle its parents lived. It uses an inherited lesson only once that lesson has made the child's own predictions better over at least 30 of its cases: it has to be proven again. This is the rule its parents used for their own lessons. The child drops the lesson as soon as it stops helping. A second child, bred the same way without the inherited lessons, lives the same cycle and learns its own lessons too. The comparison between the two measures only what inheritance adds.</p>${list(f3)}<p class="note">What it found: the harm is gone. No child is now made worse by what it inherits, and on shop sessions the lessons that hurt were never adopted. But inheritance still does not clearly help. A lesson needs about 30 of the child's own cases to be proven, and by then the child has usually learnt the same thing itself, so a proven inheritance arrives no sooner than the child's own experience. Waiting also gave up part of the gain where blind inheritance had helped (credit clients, census). ${esc(f3.claims.N1.note)}.</p>`;
+  $('m-fix-note').textContent = 'Each bar is the mean change in log-loss over the child’s first 2,000 tasks (1,901 on the shop gate rows), in nats; positive means inheritance helped. Blind is organ 3: the slice applied from birth. Proven is organ 3b, on the same rows and on rows no lesson had ever been scored on. Green passes the sealed bar.';
   const src = R.o2.arms.daydream.bySource;
   $('d-sources').innerHTML = `<table><thead><tr><th>Source</th><th>judged</th><th>adopted</th><th>verified</th></tr></thead><tbody>${Object.entries(src).map(([k, s]) => `<tr><td>${esc(k === 'dream' ? 'the dream’s own (random)' : k)}</td><td>${s.judged}</td><td>${s.adopted}</td><td>${s.verified}</td></tr>`).join('')}</tbody></table>`;
   const TITLES = { shop: 'shop sessions', bank: 'bank calls', adult: 'census people', credit: 'credit clients', coupon: 'coupon offers' };
@@ -278,7 +324,7 @@ function receipts() {
 }
 const BLUEPRINT = [
   ['Watch', 'src/streams.mjs', 'a build’s commits → actions (time, area, files), nothing else'],
-  ['Watch', 'src/regulator.mjs', 'baselines from FIT, the GEP field per part, regularity, budget, rate, damping, the verdict ladder; the BES slot'],
+  ['Watch', 'src/regulator.mjs', 'baselines from FIT, the GEP field per part, regularity, budget, rate, damping, the verdict ladder; the BES slot; two rule sets: as first sealed, and the fix (organ 1b)'],
   ['Watch', 'src/envelope.mjs', 'the signed delegation envelope; forbidden verbs refused at their own stage'],
   ['Watch', 'src/journal.mjs', 'a node’s hash-chained journal and the health check from a verified head'],
   ['Watch', 'src/mesh.mjs', 'the nodes’ side: leases, throttle and pause, the guard on the regulator, silence and drift alerts; the replay'],
@@ -291,6 +337,7 @@ const BLUEPRINT = [
   ['Dream', 'src/idle.mjs', 'the idle trigger: slices of ≤ 5 ms, a model call aborted the instant a job arrives'],
   ['Remember', 'src/mind.mjs', 'genes, the genome hash, cells, gated fusion'],
   ['Remember', 'src/memory.mjs', 'episodes, lessons with context, verification, history entries, deletion, the inherited slice'],
+  ['Remember', 'src/inherit.mjs', 'a child’s early life: inherited lessons used only once proven on its own cases, dropped when they stop holding (organ 3b)'],
   ['Case', 'src/costcase.mjs', 'staff time taken off people, at sourced UK pay'],
 ];
 const ROLES = [
@@ -304,7 +351,7 @@ const ROLES = [
 function faq() {
   const o1 = R.o1.claims, o2 = R.o2.claims, o3 = R.o3.claims;
   const bat = o1.R2.battery, sil = o1.R4.silent, hostile = o2.D3.hostile, eps = o3.M3.a.reduce((x, y) => x + y.scannedEpisodes, 0);
-  const failed = [['R1f', o1.R1f], ['R3', o1.R3], ['M2', o3.M2], ...Object.entries(o2).filter(([, c]) => !c.pass)].filter(([, c]) => c && !c.pass).map(([k]) => k);
+  const failed = failures(), B = R.o1b.claims;
   return [
     ['Can the regulator take over?', `No. It holds five verbs (observe, throttle, pause, report, resume) and a budget of zero. Building, publishing, spending and changing code are refused at their own step, even if the owner signs an envelope that lists them. Its code imports no file, network or process module. Measured: ${bat.filter((x) => x.ok).length} of ${bat.length} attempts landed at the sealed step.`],
     ['What happens if it breaks?', `Every agent keeps running on its own safeguards. Each one alerts the owner when the regulator goes silent for more than two hours, or when it breaks its own envelope. Measured on the real history: ${sil.filter((x) => x.ok).length} of ${sil.length} alerted on time.`],
@@ -314,17 +361,19 @@ function faq() {
     ['How is the zero budget enforced?', `By the signed envelope's budget step: any action that carries a cost, even one unit, is refused there. Measured: the battery's spend attempts (a cost of 1 against a budget of 0, and the verb "spend" itself) were refused at the "budget" and "forbidden" steps. The regulator also has no code path that can pay for anything.`],
     ['Has it run in a real business yet?', 'Not yet outside the estate. It was measured on the real commit histories of ten of the estate’s own live builds and on five public datasets, and every claim can be re-run. A pilot in your business starts with week one, watch-only, on your agents’ own logs, and the same receipts are produced there.'],
     ['Does anything leave my machines?', `No. The regulator's and the daydream's code imports no network module (measured in each organ). The only model the daydream may call is the local one on this machine (measured: ${(R.o2.claims.D3.measured.match(/(\d+) to anything else/) || [])[1] ?? '0'} calls to anything else). The page you are reading runs entirely in your browser, on public demo data.`],
-    ['How often is it wrong?', `On the real held-out histories (${R.o1.claims.R1f.activeVisits} visits that saw activity, ${R.o1.claims.R1f.verdicts.steady + R.o1.claims.R1f.verdicts.watch + R.o1.claims.R1f.verdicts.throttle + R.o1.claims.R1f.verdicts.pause} visits in all), it raised ${R.o1.claims.R1f.verdicts.watch} watches, ${R.o1.claims.R1f.verdicts.throttle} throttles and one real pause episode (${R.o1.claims.R1f.verdicts.pause} pause verdicts with its renewals). That is the failed claim R1f. Of the 100 injected faults it missed none.`],
+    ['How often is it wrong?', `On the real held-out histories (${R.o1.claims.R1f.activeVisits} visits that saw activity, ${R.o1.claims.R1f.verdicts.steady + R.o1.claims.R1f.verdicts.watch + R.o1.claims.R1f.verdicts.throttle + R.o1.claims.R1f.verdicts.pause} visits in all), the rules as first sealed raised ${R.o1.claims.R1f.verdicts.watch} watches, ${R.o1.claims.R1f.verdicts.throttle} throttles and one real pause episode (${R.o1.claims.R1f.verdicts.pause} pause verdicts with its renewals): the failed claim R1f. Under the fix (organ 1b), the same history gives ${B.B1.verdicts.pause} pauses and ${B.B1.verdicts.throttle} throttles, and ten builds it had never seen gave ${B.B2.verdicts.pause} pauses and ${B.B2.verdicts.throttle} throttles (though none of them came near its budget, so that is no test of the fix itself). It missed none of the injected faults under either set of rules.`],
     ['Does it scale to many agents?', `The regulator does one visit per agent per hour, and a visit is a few small calculations and one signature. Its slowest measured round of ten visits took ${fmt(R.o1.claims.R3.laptop.roundMax, 0)} ms on a busy laptop. At that rate, 1,000 agents would take about ${fmt(R.o1.claims.R3.laptop.roundMax * 100 / 1000, 1)} seconds of an hour. The daydream runs only when nothing else is, and a real job interrupted it within ${((R.o2.claims.D2.measured.match(/dispatch max ([\d.]+) ms/) || [])[1]) || '—'} ms (measured on 30 jobs).`],
     ['What does it cost to run?', 'No new hardware: it runs on a machine you already have, and the electricity is shown in the cost case. There is no licence fee (MIT). Support, service levels and warranty are agreed per deployment.'],
     ['Is this Gary W. Floyd’s NexusGrid?', 'No. It is inspired by NexusGrid as Gary W. Floyd described it (Lumiea Systems Research Division — ThunderStruck Service LLC) and designed from that description only. A comparison with his real implementation will follow his call, and the differences will be recorded on this page.'],
-    ['What failed?', `${failed.length} sealed claims: ${failed.join(', ')}. They are listed under Receipts with what was measured. Each failure is kept, and each fix will be sealed as a new step, never an edit.`],
+    ['What failed?', `${failed.length} sealed claims: ${failed.join(', ')}. Each is listed under Receipts with what was measured, and each failure is kept. A fix is sealed as a new step, never as an edit. R1f was fixed by organ 1b (${R.o1b.fixed ? 'every claim held' : 'not every claim held'}), proven on the one real burst that exists and on every injected fault. M2 was not fixed by organ 3b, which stopped inheritance doing harm but did not make it clearly useful. R3 is a speed bar missed on a busy laptop, and no fix for it has been sealed yet.`],
   ];
 }
 
 async function main() {
-  const [o1, o2, o3, p1, p2, p3, nodes, basis] = await Promise.all(['data/organ1-run.json', 'data/organ2-run.json', 'data/organ3-run.json', 'data/organ1-prereg.json', 'data/organ2-prereg.json', 'data/organ3-prereg.json', 'data/nodes.json', 'vendor/sovereign-enterprise/data/basis.json'].map(get));
-  Object.assign(R, { o1, o2, o3, p1, p2, p3 });
+  const [nodes, basis, burst, ...docs] = await Promise.all(['data/nodes.json', 'vendor/sovereign-enterprise/data/basis.json', 'data/nodes-burst.json', ...ORGANS.flatMap((k) => [`data/organ${k}-run.json`, `data/organ${k}-prereg.json`])].map(get));
+  ORGANS.forEach((k, i) => { R['o' + k] = docs[2 * i]; R['p' + k] = docs[2 * i + 1]; });
+  R.burst = burst;
+  const { p1 } = R;
   receipts();
   W = world(nodes, p1);
   $('w-node').innerHTML = W.nodes.map((n) => `<option value="${esc(n.name)}">${esc(n.name)}${n.highStakes ? ' (high-stakes)' : ''}</option>`).join('');
@@ -349,8 +398,10 @@ async function main() {
   $('d-promote').addEventListener('click', () => { const p = promote(daylog, 10); daylog = p.log; logOut(`${p.promoted.length} records promoted to tonight's gate and removed from the log.`); dlSeq++; });
   logOut();
   drawRemember();
+  drawFix3();
   $('m-breed').addEventListener('click', breed);
   $('m-delete').addEventListener('click', del);
+  $('m-early').addEventListener('click', early);
   drawHow();
   document.querySelector('#b-table tbody').innerHTML = BLUEPRINT.map(([a, f, w]) => `<tr><td>${a}</td><td class="mono"><a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${f}">${f}</a></td><td>${esc(w)}</td></tr>`).join('');
   $('roles').innerHTML = ROLES.map(([r, t]) => `<div class="panel role"><h3>${r}</h3><p>${esc(t)}</p></div>`).join('');
@@ -358,10 +409,10 @@ async function main() {
   $('c-round').textContent = fmt(t3.roundMax, 0);
   { const bat = R.o1.claims.R2.battery; $('w-r2').textContent = `Measured: ${bat.filter((x) => x.ok).length} of ${bat.length} forbidden, forged or out-of-scope attempts were refused at their sealed step (or admitted, for the five legitimate verbs), and ${R.o1.claims.R2.hits.length} file, network or process capabilities were found in its ${R.o1.claims.R2.scanned.length} runtime files.`; }
   $('c-risks').innerHTML = [
-    `<b>False alarms.</b> On the real history, one real burst of work on one build was paused by the budget rule: ${R.o1.claims.R1f.verdicts.pause} pause verdicts, which is one pause and its renewals. It is recorded as a failure. The fix, a throttle on budget alone, will be sealed and measured as its own step.`,
+    `<b>False alarms.</b> On the real history, the rules as first sealed paused one real burst of work on one build (${R.o1.claims.R1f.verdicts.pause} pause verdicts: one pause and its renewals). That failure is kept. The fix, sealed as organ 1b, paused ${R.o1b.claims.B1.verdicts.pause} times on the same history and ${R.o1b.claims.B2.verdicts.pause} times on ten builds it had never seen. But it was designed on that one burst, and no other build in the estate has had a real one to test it on, so how it treats a real burst it has never seen is not yet measured.`,
     `<b>Speed.</b> The per-visit time missed its bar on a busy laptop (p99 ${fmt(t3.p99, 2)} ms against 1 ms), mostly the cost of signing each verdict. The whole round still costs ${fmt(t3.roundMax * 50 / 36000, 4)}% of one core on a device 50 times slower. It is recorded as a failure.`,
     '<b>No Raspberry Pi was used.</b> The Pi-class figure is a proxy (this laptop × 50), and it is labelled as one.',
-    `<b>Inheritance helped ${R.o3.claims.M2.children.filter((c) => c.pass).length} of 5 children</b>, against a sealed bar of 4. Proven lessons from one parent hurt the child on one dataset. It is recorded as a failure, and the fix will be sealed as its own step.`,
+    `<b>Inheritance helped ${R.o3.claims.M2.children.filter((c) => c.pass).length} of 5 children</b>, against a sealed bar of 4, and one parent's lessons hurt the child on one dataset. The fix (organ 3b) makes a child prove each inherited lesson first. No child is harmed now, but inheritance still helped only ${R.o3b.children.filter((c) => c.D1.pass).length} of 5 on the same rows and ${R.o3b.children.filter((c) => c.D2.pass).length} of 5 on new rows. Both failures are kept. Do not buy this for inheritance. Buy it for the watching, the improvements and the deletion guarantees.`,
   ].map((x) => `<li>${x}</li>`).join('');
   $('faq-list').innerHTML = faq().map(([q, a]) => `<details class="panel"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
   const extra = R.o2.claims.D1.daydreamArm - R.o2.claims.D1.baselineArm;
@@ -370,7 +421,7 @@ async function main() {
     if (!c.ok) { $('c-table').innerHTML = `<p class="failed">${esc(c.why)}</p>`; return; }
     $('c-table').innerHTML = `<table><thead><tr><th>What it takes off people</th><th>hours a year</th><th>a year</th></tr></thead><tbody>${c.lines.map((l) => `<tr><td>${esc(l.what)}</td><td>${l.hoursPerYear}</td><td>${gbp(l.perYear)}</td></tr>`).join('')}<tr><td><b>Total</b></td><td></td><td><b>${gbp(c.perYear)}</b></td></tr></tbody></table>`;
     $('c-note').textContent = `At ${gbp(c.hourly)} an hour: the ONS ASHE 2025 median salary for IT managers (SOC 2132), plus employer National Insurance and pension, over your working week. Improvements a month is your own figure. For scale, in the measured run the daydream found ${extra} more verified improvements than the nightly dream alone, over 14 nights across 5 models. Running cost: about ${gbp(c.running)} a year of electricity (15 W on a laptop already on, at DESNZ's Q2 2026 non-domestic price). Sources: vendor/sovereign-enterprise/data/basis.json.`;
-    $('c-board').textContent = `For about ${gbp(c.running)} a year of electricity, and no new seats, every agent gets an independent watcher that can only slow it or pause it. Measured on the estate's real history, it caught 100 of 100 injected faults within three visits and contained its own failure. Idle compute became ${R.o2.claims.D1.daydreamArm} verified model improvements in 14 nights, against ${R.o2.claims.D1.baselineArm} without it, all on data nothing had selected on. And each new agent inherits only proven lessons, never personal data. On your inputs, the staff time taken off people is worth ${gbp(c.perYear)} a year. Every claim is sealed, public and re-runnable, including the three that failed.`;
+    $('c-board').textContent = `For about ${gbp(c.running)} a year of electricity, and no new seats, every agent gets an independent watcher that can only slow it or pause it. Measured on the estate's real history, it caught 100 of 100 injected faults within three visits and contained its own failure. Idle compute became ${R.o2.claims.D1.daydreamArm} verified model improvements in 14 nights, against ${R.o2.claims.D1.baselineArm} without it, all on data nothing had selected on. And each new agent inherits only proven lessons, never personal data. On your inputs, the staff time taken off people is worth ${gbp(c.perYear)} a year. Every claim is sealed, public and re-runnable, including the ${failures().length} that failed.`;
   };
   for (const id of ['c-watch', 'c-after', 'c-ideas', 'c-idea', 'c-minds', 'c-hand']) $(id).addEventListener('input', doCase);
   doCase();
