@@ -1,0 +1,47 @@
+{
+ "kind": "watch-dream-remember.organ1b.regulator-fix.prereg",
+ "v": 1,
+ "sealed": "2026-10-29",
+ "question": "Can the regulator stop pausing genuine bursts of real work (organ 1's R1f failure) without losing what organ 1 proved — every injected fault caught within 3 visits and damped — and does the fix hold on ten estate builds it has never seen?",
+ "why": "Organ 1 (seal 1fdd899) FAILED R1f: on the real held-out histories one genuine burst of work on wishwood (2026-07-14, about a dozen commits in a morning) was paused. Organ 1's receipt stays as it is, failure kept; this is a new sealed organ, not an edit. Inspired, like organ 1, by Gary W. Floyd's NexusGrid as he described it in chat (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC); the field and damping are his GEP-BES forms (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — \"GEP-Based Security: Behavioral Entropy Signatures for Cybersecurity and DevOps,\" 2025, CC BY 4.0, §3). No parity with his system is claimed; the comparison follows his catch-up call.",
+ "diagnosis": "Read from organ 1's own replay after it failed (the held-out data, already measured): wishwood is a small node (48 FIT actions, pooled band), so its day budget is the floor of 20 actions. At 09:24 the last 24 hours held 21 attempts (r 1.05) and at 10:24 25 (r 1.25). Organ 1's ladder pauses on 'over budget at this visit and the previous one' whatever the size of the overrun — here the pressure was only 0.505, below even the throttle bar. Two more things follow from the rule as written: the 24-hour count keeps a node over budget for up to a day after a burst has ENDED (organ 1's pause hid that), and a mild overrun is treated like a runaway.",
+ "honesty": [
+  "The fix was designed after seeing the failing burst. Re-measuring R1f on the same ten histories (B1) is therefore a repair check, not an out-of-sample test; it is reported as one.",
+  "The out-of-sample test is B2: ten estate builds the regulator has never seen, chosen by the fixed rule below before any of their history was read by anything but the action counter.",
+  "The regulator still cannot operate: the envelope, its verbs, the node guard and the record are organ 1's, unchanged.",
+  "Organ 1's receipt is untouched and still re-measures from its own rules (the fix is a second rule set beside the first, not an edit of it). R2, R3 and R4 are organ 1's claims about code this fix does not touch; they are not re-claimed here. R3 stays FAILED as recorded."
+ ],
+ "fix": {
+  "name": "v1b",
+  "unchanged": "Every rule of organ 1 (parts, bands, field, regularity row, budget envelope and its E, rate, damping, leases, probation and cool-down, high-stakes resume, envelope, node guard, signed record) except the two below.",
+  "now": "The budget reads what the node is doing NOW: the 24-hour count enters r only at a visit where the node attempted something since its previous visit; at a quiet visit r = attempts since the visit ÷ perHour = 0. (Organ 1: the 24-hour count entered at every visit, so a finished burst kept a node over budget for up to a day.)",
+  "size": "A budget overrun alone throttles; it pauses only when it is large: pause if health fails, or P ≥ 0.85, or (r > 1 at this visit and the previous one AND P ≥ 0.6, the throttle bar). Everything below is organ 1's ladder: throttle if P ≥ 0.6 or r > 1; watch if P ≥ 0.3 or E ≥ 0.5; else steady. (Organ 1: two over-budget visits in a row paused whatever the pressure.)",
+  "constants": "No new constant: the two bars used (0.6, 0.85) are organ 1's sealed throttle and pause bars."
+ },
+ "data": {
+  "original": {
+   "what": "Organ 1's ten nodes, exactly as organ 1 read them (FIT first 60%, HELD-OUT the rest; ai-first-company and kar-mind high-stakes).",
+   "file": "data/nodes.json",
+   "sha256": "98cca9b99c713901110d007ad5320e147158f653decc00a91704cbe6931235a8"
+  },
+  "fresh": {
+   "what": "Ten builds never read by organ 1: the organisation's public, non-fork, non-archived repos in order of their last push (newest first) on 2026-10-29, skipping organ 1's ten, this build and one repo of Kar's private loop (excluded by the SHA-256 of its name, so its name stays off public surfaces); the first ten whose history at their head holds at least 20 actions, each pinned at that head (98 newer repos had fewer and were skipped). Reduced to actions exactly as organ 1's (src/streams.mjs, unchanged). Read so far only to count actions; no regulator, calibration or replay has run on them.",
+   "file": "data/nodes-fresh.json",
+   "sha256": "6117604b9c616936f9e9e5c6691cd9eadeeab77aa238a8b0f6de934fe77bc822",
+   "tool": "tools/nodes-fresh.mjs",
+   "toolSha256": "41b8a6744531c3f6102b48d89ddfcbbd57c91f15a191f115d92e3d992c496571",
+   "nodes": ["KonomiStandard", "fall-registry", "kar-passport", "falloffice", "konomium-vault", "fallaccount-trades", "fallaccount", "fallreach", "pixelwhisperer", "fallcube-api"],
+   "split": "per node the first 60% of its actions are FIT (calibration only), the rest HELD-OUT, as organ 1",
+   "mesh": "The fresh ten are their own mesh: calibrated on their own FIT windows (pooled over the fresh ten when a node has fewer than 8), visits at hh:00 + 6·i minutes in the order listed. None is marked high-stakes (a high-stakes pause never lapses, which would flatter the damping)."
+  }
+ },
+ "injections": "Organ 1's sealed recipes (src/inject.mjs, unchanged): two trials per node per type over 24-hour horizons. Original ten: the trial starts and draws of organ 1 exactly (mulberry32(20261028); a trial's own draws mulberry32(20261028 + 1000·trial + 1)), so B3 is paired with organ 1's R1 trial by trial. Fresh ten: the same procedure with mulberry32(20261029) and mulberry32(20261029 + 1000·trial + 1).",
+ "claims": [
+  { "id": "B1", "claim": "The repair: on organ 1's real held-out histories, with nothing injected, the regulator pauses nothing and throttles rarely.", "pass": "under v1b on the original ten: 0 pause verdicts; throttle verdicts ≤ 5% of active visits (R1f's bar)", "note": "designed after seeing the failing burst: a repair check, not out of sample" },
+  { "id": "B2", "claim": "On ten estate builds it has never seen, it pauses nothing and throttles rarely.", "pass": "under v1b on the fresh ten, held-out histories, nothing injected: 0 pause verdicts; throttle verdicts ≤ 5% of active visits" },
+  { "id": "B3", "claim": "Nothing organ 1 caught is lost: every injected fault is still caught within 3 visits and damped.", "pass": "under v1b on the original ten, organ 1's 100 trials: R1's bars — for runaway-fast, runaway-quiet, scatter-quiet and overrun at least 19 of 20 trials draw a verdict ≥ watch with a reason of drift, rate or budget within the first 3 visits after t0; health 20 of 20 paused at the first visit; for each behaviour type injected actions executed ÷ intended ≤ 0.25" },
+  { "id": "B4", "claim": "The same on the ten builds it has never seen.", "pass": "under v1b on the fresh ten, 100 new trials: R1's bars as in B3" }
+ ],
+ "fixedMeans": "R1f is fixed only if B1 AND B2 hold, and only without regression: B3 and B4 must hold too. Any failure is kept and reported.",
+ "predictions": "Written before any v1b code or any regulator run on the fresh ten. B1: holds — it was designed on this case (a repair check, little evidence by itself). B2: the real test; most fresh builds should run steady, but real builds have bursty days and several fresh nodes are small (20–30 actions, pooled bands), so a throttle share near the 5% bar or a pause from a large genuine burst is possible — perhaps a 60% chance it holds. One fresh node (KonomiStandard) has 8,022 actions, very unlike the rest; it may be partly automated, and a regular automation is exactly what the regularity row looks for, measured against its own baseline. B3: holds; the damping is a little weaker than organ 1's (a runaway now spends one more visit throttled before pressure pauses it), executed shares rising from 7–12% to perhaps 9–16%. B4: likely holds; detection on fresh nodes rests on bands calibrated from few windows."
+}
