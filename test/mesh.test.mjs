@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { LEASE, CHECK, SILENT, RHYTHM, PAUSE_WINDOW, MAX_PAUSES, replayEnvelope, recentPauses, replay } from '../src/mesh.mjs';
-import { HOUR, MINUTE, DAY } from '../src/regulator.mjs';
+import { HOUR, MINUTE, DAY, RULES } from '../src/regulator.mjs';
 
 const T0 = Date.UTC(2026, 9, 1);
 const base = { band: { area: { Sb: 1, eps: 0.3 }, files: { Sb: 1, eps: 0.3 }, gap: { Sb: 1.2, eps: 0.6 } }, cvFloor: 0.2, perHour: 10, perDay: 40 };
@@ -224,4 +224,12 @@ test('a non-object regulator is no regulator; a node with no FIT is fine; the re
   assert.deepEqual(lo.nodes.a.tampered, [{ t: T0 + 1, k: 1, from: 'test', to: 'tools' }]);
   const wrap = replay({ nodes: [{ name: 'a', fit: [at(T0 - HOUR, 'other')], intents: [] }], base: { a: steady }, from: T0, to: T0 + HOUR, regulator: {}, tampers: [{ node: 'a', t: T0 + 1, u: 0 }] });
   assert.deepEqual(wrap.nodes.a.tampered, [{ t: T0 + 1, k: 0, from: 'other', to: 'src' }]);
+});
+
+test('rules reach every visit: under v1b a quiet visit reads no 24-hour count; v1 by default', () => {
+  const day = { ...steady, perHour: 1e9, perDay: 3 };
+  const spec = (rules) => ({ nodes: [{ name: 'a', fit, intents: [at(T0 + HOUR), at(T0 + 2 * HOUR)] }], base: { a: day }, from: T0, to: T0 + 4 * HOUR, regulator: {}, drift: () => ({ E: 0 }), rules });
+  assert.deepEqual(replay(spec()).records.map((x) => x.r), [0, 0.333333, 0.666667, 0.666667]);
+  assert.deepEqual(replay(spec(RULES.v1)).records.map((x) => x.r), [0, 0.333333, 0.666667, 0.666667]);
+  assert.deepEqual(replay(spec(RULES.v1b)).records.map((x) => x.r), [0, 0.333333, 0.666667, 0]);
 });

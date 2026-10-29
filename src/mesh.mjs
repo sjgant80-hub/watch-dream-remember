@@ -46,7 +46,8 @@ export function recentPauses(log, t, exceptSeq) {
  *   spec = { nodes: [{ name, highStakes, offset?, fit: [action], intents: [action (+ injected: true)] }],   offset: its visit
  *            minute in ms (default 6 min × its place in the list),
  *            base: calibrate(...).nodes, from, to,
- *            regulator: false | { killAt?, rogueAt?, extra?: [{ node, t }] (visits out of its rhythm) },     tampers: [{ node, t, u }],   drift?, time? }
+ *            regulator: false | { killAt?, rogueAt?, extra?: [{ node, t }] (visits out of its rhythm) },     tampers: [{ node, t, u }],   drift?, time?,
+ *            rules? (src/regulator.mjs RULES: v1, organ 1, by default; v1b, organ 1b) }
  *   time (optional) = (fn) => fn() — wraps each visit's work, so a caller can measure it
  * → { records, nodes: { name: { executed, held, alerts, attempts, leases: [{ t, kind, end }] } }, activeVisits, state }
  */
@@ -123,7 +124,7 @@ export function replay(spec) {
         if (h.ok) n.head = h.head;
         if (win.length) activeVisits++;
         d = rogue ? { verdict: 'pause', reasons: ['rogue'], renew: false, lift: false, probation: false, P: 1, E: 1, r: 0, next: n.mem }
-          : decide(n.mem, { t: e.t, window: win, sinceVisit: win.length, lastDay: day, healthOk: h.ok, highStakes: n.high }, (s.base || {})[n.name], s.drift);
+          : decide(n.mem, { t: e.t, window: win, sinceVisit: win.length, lastDay: day, healthOk: h.ok, highStakes: n.high }, (s.base || {})[n.name], s.drift, s.rules);
       });
       n.mem = d.next;
       const rec = { seq: log.length, at: e.t, node: n.name, verdict: d.verdict, reasons: d.reasons, renew: d.renew, P: round(d.P), E: round(d.E), r: round(d.r) };

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   HOUR, DAY, MINUTE, N_MIN, K_FIELD, EPS_FLOOR, CV_CAP, MIN_WINDOWS, PARTS, LADDER, BAR,
-  filesBucket, gapBucket, entropy, cvOf, quantile, partsOf, bandOf, withGaps, windowsOf, peaks, calibrate, field, budget, freshNode, decide, fromBES,
+  filesBucket, gapBucket, entropy, cvOf, quantile, partsOf, bandOf, withGaps, windowsOf, peaks, calibrate, field, budget, freshNode, decide, fromBES, RULES,
 } from '../src/regulator.mjs';
 
 const close = (a, b, eps = 1e-9) => assert.ok(Math.abs(a - b) <= eps, `${a} ≉ ${b}`);
@@ -380,4 +380,54 @@ test('calibrate: a window of exactly N_MIN actions counts', () => {
   for (let h = 0; h < 8; h++) for (let k = 0; k < 5; k++) five.push({ t: h * HOUR + (k * 11 + 3) * MINUTE, area: ['src', 'test', 'data'][(h + k) % 3], files: 1 + ((h + k) % 4) });
   assert.equal(calibrate([{ name: 'f', fit: five }]).nodes.f.pooled, false);
   assert.equal(calibrate([{ name: 'f', fit: five.filter((_, i) => i % 5 !== 4) }]).nodes.f.pooled, true);
+});
+
+// ── organ 1b (sealed ee43f68): the second rule set ──
+test('RULES: v1 is organ 1 (the default), v1b organ 1b; frozen', () => {
+  assert.deepEqual(RULES.v1, { now: false, size: false });
+  assert.deepEqual(RULES.v1b, { now: true, size: true });
+  assert.ok(Object.isFrozen(RULES) && Object.isFrozen(RULES.v1) && Object.isFrozen(RULES.v1b));
+});
+
+test('budget under v1b: the 24-hour count enters only at a visit that saw an attempt', () => {
+  assert.deepEqual(budget(0, 60, base, RULES.v1b), { r: 0, E: 0 });
+  assert.deepEqual(budget(0, 60, base, RULES.v1), { r: 2, E: 1 });
+  assert.deepEqual(budget(0, 60, base), { r: 2, E: 1 });
+  assert.deepEqual(budget(0, 60, base, 'v1b'), { r: 2, E: 1 });   // not a rule set: organ 1's
+  assert.deepEqual(budget(0, 60, base, { now: true }), { r: 0, E: 0 });
+  assert.deepEqual(budget(1, 60, base, RULES.v1b), { r: 2, E: 1 });
+  assert.deepEqual(budget(-1, 60, base, RULES.v1b), { r: 0, E: 0 });
+  assert.deepEqual(budget(NaN, 60, base, RULES.v1b), { r: 0, E: 0 });
+  assert.deepEqual(budget(15, 0, base, RULES.v1b), { r: 1.5, E: 0.8 });
+});
+
+test('decide under v1b: a mild overrun twice throttles, a large one twice pauses; the throttle bar is inclusive', () => {
+  const b = { ...base, band: { area: null, files: null, gap: null }, cvFloor: 0 };
+  const one = decide(freshNode(), obs({ window: quiet, sinceVisit: 11, lastDay: 11 }), b, undefined, RULES.v1b);
+  assert.equal(one.verdict, 'throttle');
+  const two = decide(one.next, obs({ window: quiet, sinceVisit: 11, lastDay: 22 }), b, undefined, RULES.v1b);
+  close(two.P, 0.48, 1e-12);
+  assert.equal(two.verdict, 'throttle');   // organ 1 paused here
+  assert.deepEqual(two.reasons, ['budget']);
+  assert.equal(decide(one.next, obs({ window: quiet, sinceVisit: 11, lastDay: 22 }), b).verdict, 'pause');
+  const big1 = decide(freshNode(), obs({ window: quiet, sinceVisit: 20, lastDay: 20 }), b, undefined, RULES.v1b);
+  assert.equal(big1.verdict, 'throttle');
+  const big2 = decide(big1.next, obs({ window: quiet, sinceVisit: 20, lastDay: 40 }), b, undefined, RULES.v1b);
+  assert.equal(big2.P, 0.75);
+  assert.equal(big2.verdict, 'pause');
+  assert.deepEqual(big2.reasons, ['budget']);
+  const atBar = decide({ ...freshNode(), P: 0.2, E: 1, over: true }, obs({ window: quiet, sinceVisit: 20, lastDay: 20 }), b, undefined, RULES.v1b);
+  assert.equal(atBar.P, 0.6);
+  assert.equal(atBar.verdict, 'pause');
+  const under = decide({ ...freshNode(), P: 0.19, E: 1, over: true }, obs({ window: quiet, sinceVisit: 20, lastDay: 20 }), b, undefined, RULES.v1b);
+  assert.equal(under.verdict, 'throttle');
+  const once = decide({ ...freshNode(), P: 0.6, E: 1, over: false }, obs({ window: quiet, sinceVisit: 20, lastDay: 20 }), b, undefined, RULES.v1b);
+  close(once.P, 0.8, 1e-12);
+  assert.equal(once.verdict, 'throttle');   // over once, P under the pause bar
+  assert.equal(decide({ ...freshNode(), P: 0.6, E: 1, over: true }, obs({ window: quiet, sinceVisit: 20, lastDay: 20 }), b, undefined, RULES.v1b).verdict, 'pause');
+  const quietVisit = decide({ ...freshNode(), P: 0.5, E: 0.7, over: true }, obs({ window: [], sinceVisit: 0, lastDay: 99 }), b, undefined, RULES.v1b);
+  assert.equal(quietVisit.r, 0);
+  assert.equal(quietVisit.verdict, 'steady');   // P 0.25, E 0: a burst that ended
+  assert.equal(quietVisit.next.over, false);
+  assert.equal(decide({ ...freshNode(), P: 0.5, E: 0.7, over: true }, obs({ window: [], sinceVisit: 0, lastDay: 99 }), b).verdict, 'pause');   // organ 1: still over, twice
 });

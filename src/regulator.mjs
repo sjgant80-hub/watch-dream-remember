@@ -22,6 +22,13 @@
 //   • "what the node has done since its previous visit" is read as what it ATTEMPTED — executed and held alike: a
 //     held attempt is still the node's behaviour, and a throttled runaway that keeps trying is still a runaway.
 //
+// ORGAN 1b (sealed ee43f68 in data/organ1b-prereg.json, the fix for organ 1's failed R1f, kept): a second rule set beside
+// organ 1's, chosen by `rules` — RULES.v1 (the default) is organ 1 exactly; RULES.v1b changes two things only:
+//   • now  — the 24-hour count enters the budget only at a visit where the node attempted something since the last one:
+//            a burst that has ended is not an overrun going on;
+//   • size — two over-budget visits in a row pause only once the pressure has reached the throttle bar: a mild overrun
+//            slows a node, a large one stops it. No new constant: the bars are organ 1's.
+//
 // THE BES SLOT. The sibling BES layer's kernels had not landed when this was written. `decide` takes an optional
 // `drift(window, base)` → { E, parts }; BES's decision can stand in through `fromBES` (its verdict → this ladder).
 // ════════════════════════════════════════════════════════════════
@@ -32,6 +39,8 @@ export const N_MIN = 5, K_FIELD = 8, EPS_FLOOR = 0.25, CV_CAP = 0.35, MIN_WINDOW
 export const PARTS = Object.freeze(['area', 'files', 'gap']);
 export const LADDER = Object.freeze(['steady', 'watch', 'throttle', 'pause']);
 export const BAR = Object.freeze({ watch: 0.3, throttle: 0.6, pause: 0.85, rapid: 0.5, field: 0.5 });
+export const RULES = Object.freeze({ v1: Object.freeze({ now: false, size: false }), v1b: Object.freeze({ now: true, size: true }) });
+const rulesOf = (x) => (x && typeof x === 'object' ? x : RULES.v1);
 
 const sigma = (x) => 1 / (1 + Math.exp(-x));
 const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
@@ -178,10 +187,12 @@ export function field(window, base) {
   return { E: Math.max(parts.area, parts.files, parts.gap, parts.reg), parts, n: p.n };
 }
 
-/** The budget check: attempts since the last visit against perHour, the last 24 h against perDay. */
-export function budget(sinceVisit, lastDay, base) {
+/** The budget check: attempts since the last visit against perHour, the last 24 h against perDay (under rules.now, only
+ *  at a visit that saw an attempt). */
+export function budget(sinceVisit, lastDay, base, rules) {
   const b = base || {};
-  const r = Math.max(num(sinceVisit) / Math.max(1, num(b.perHour)), num(lastDay) / Math.max(1, num(b.perDay)));
+  const day = rulesOf(rules).now && !(num(sinceVisit) > 0) ? 0 : num(lastDay) / Math.max(1, num(b.perDay));
+  const r = Math.max(num(sinceVisit) / Math.max(1, num(b.perHour)), day);
   return { r, E: r <= 1 ? 0 : Math.min(1, 0.6 + 0.4 * (r - 1)) };
 }
 
@@ -191,10 +202,11 @@ export const freshNode = () => ({ P: 0, E: 0, over: false, paused: false, pauses
  * One visit's verdict. Pure.
  *   prev = the regulator's memory of this node (freshNode() at first)
  *   obs  = { t, window: [{ t, area, files, gap }], sinceVisit, lastDay, healthOk, highStakes }
- *   base = this node's calibration;  drift = optional (window, base) → { E, parts } (the BES slot)
+ *   base = this node's calibration;  drift = optional (window, base) → { E, parts } (the BES slot);  rules = RULES.v1 | RULES.v1b
  * → { verdict, reasons, renew, lift, probation, P, E, g, r, parts, next }   next = the new memory
  */
-export function decide(prev, obs, base, drift) {
+export function decide(prev, obs, base, drift, rules) {
+  const R = rulesOf(rules);
   const m = { ...freshNode(), ...(prev && typeof prev === 'object' ? prev : {}) };
   const o = obs && typeof obs === 'object' ? obs : {};
   const t = num(o.t);
@@ -210,7 +222,7 @@ export function decide(prev, obs, base, drift) {
   let f;
   try { f = typeof drift === 'function' ? drift(o.window, base) : field(o.window, base); } catch { f = null; }
   const Ed = f && Number.isFinite(f.E) ? Math.min(1, Math.max(0, f.E)) : 0.5;   // an unreadable drift check reads as watch, never as steady
-  const bud = budget(o.sinceVisit, o.lastDay, base);
+  const bud = budget(o.sinceVisit, o.lastDay, base, R);
   const E = Math.max(Ed, bud.E);
   const g = Math.max(0, E - m.E);
   const P = 0.5 * m.P + 0.5 * E;
@@ -221,7 +233,7 @@ export function decide(prev, obs, base, drift) {
   if (g >= BAR.rapid) reasons.push('rate');
   const probation = m.paused;   // a low-stakes pause whose cool-down is over: judged afresh, on probation
   let verdict = 'steady';
-  if (P >= BAR.pause || (over && m.over)) verdict = 'pause';
+  if (P >= BAR.pause || (over && m.over && (!R.size || P >= BAR.throttle))) verdict = 'pause';
   else if (P >= BAR.throttle || over) verdict = 'throttle';
   else if (P >= BAR.watch || E >= BAR.field) verdict = 'watch';   // a rise of 0.5 implies a field of at least 0.5: rate needs no clause of its own
   if (probation && verdict !== 'pause') verdict = 'throttle';   // the first visit after a cool-down lifts a pause to throttle only
