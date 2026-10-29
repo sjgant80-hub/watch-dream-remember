@@ -1,0 +1,40 @@
+{
+ "kind": "watch-dream-remember.organ3b.inheritance-fix.prereg",
+ "v": 1,
+ "sealed": "2026-10-29",
+ "question": "If a child must VERIFY each inherited lesson on its own early life before it uses it — by the same rule its parents used to verify their own — does a child with an inherited slice beat the same child bred without one, where organ 3's child (which applied the slice blind) did not?",
+ "why": "Organ 3 (seal 4da8aa4) FAILED M2: 2 of 5 children did better with the inherited slice (shop much worse, −0.131 nats; bank's fusion not born; coupon −0.0003). Organ 3's receipt stays as it is, failure kept; this is a new sealed organ, not an edit. Inspired, like organ 3, by Gary W. Floyd's NexusGrid as he described it in chat (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC); designed from that description only — no parity is claimed; the comparison follows his catch-up call.",
+ "diagnosis": "From organ 3's receipt alone (no further reading of the data): shop's parent A had 18 of 18 lessons verified in its own life yet those lessons cost it 0.146 nats on its repeat-domain TEST cases (M1), while parent B's lessons gained 0.562 on its own. Lessons verified on the earlier rows did not all hold on the later rows, and organ 3's child applied all 16 from birth with nothing to tell the good from the bad. The rule the parents live by — use a lesson only once it has lowered later loss — was never applied to what a child inherits.",
+ "honesty": [
+  "Minds are MODELS of thought-patterns — small predictive models of an outcome — never the people in the data and never claimed conscious.",
+  "The fix was chosen after seeing M2 fail (which children, by how much). Re-measuring on M2's own rows (N1) is a repair check, not an out-of-sample test; it is reported as one. N2 measures on rows no lesson has ever been scored on.",
+  "The child's early life is scored as it is lived: every prediction is made before that case's outcome is read, and only earlier cases decide which lessons it uses.",
+  "Both arms learn their own lessons from their early life by the same cycle; the only difference between them is the inherited slice. So any gain is what inheritance adds on top of learning from experience, not learning itself.",
+  "The kernel (src/inherit.mjs) was drafted alongside this seal and has not run on any data, real or synthetic; it is committed after this seal."
+ ],
+ "data": {
+  "what": "Organ 3's five real public datasets, loaders, parents, lives, slices and children, unchanged (vendor/dex-frontier/SOURCES.json, pinned). The parents' lives, their verified lessons, the slices (top 8 by gain per parent) and the children's genes (the gated fusion) are organ 3's exactly.",
+  "sources": "vendor/dex-frontier/SOURCES.json",
+  "sha256": "cb63d077bc8ba7f8765c04119295fa7a1eb81e06aca2ac8321a44d0fe59c2eb5",
+  "lives": {
+   "D1": "TEST rows 0 to min(2,000, |TEST|) − 1 in order — organ 3's M2 rows (shop 2,000, the rest 2,000).",
+   "D2": "GATE rows 0 to min(2,000, |GATE|) − 1 in order (shop 1,901, the rest 2,000). GATE has decided which genes a child is born with (organ 3's fusion gate) but no lesson, parent's or child's, has ever been scored on it."
+  }
+ },
+ "design": {
+  "earlyLife": "The child lives each early life in batches of 200 cases in row order (organ 3's batch size). Before each batch it uses only its VERIFIED lessons: logit += the mean shift over the verified lessons that hold for the case (organ 3's apply rule, the child's founder rows 0–799). After the batch the daydream re-forms its own candidate lessons from every case it has seen — over its own 24 cells, in no context — and the dream adds each lesson's gain, alone, on the batch's cases.",
+  "verify": "Organ 3's rule, unchanged: a lesson is verified when, over the cases after it was formed, applying it alone lowered their log-loss in total, over at least 30 cases. Re-tested before every batch: a lesson whose running total stops passing stops being used.",
+  "inherited": "The arm WITH the slice takes the parents' slice as candidates: tracked from the first batch (formed before this life began, so every case of it is a later case for them), used only once verified on the child's own cases, dropped while not. Their rate and n stay the parent's. The arm WITHOUT is the same child, the same cycle, no slice.",
+  "history": "Per batch an 'outcome' entry; an 'adopted' or 'dropped' entry each time an inherited lesson crosses the rule { batch, cell, context, lineage, gain, later }; the child's verified own lessons at the end — never a case, a row or a note. Signed and chained by the child's key as in organ 3.",
+  "score": "Per case, the loss of the prediction each arm made for it; the paired improvement = loss without − loss with; its mean and 95% bootstrap bounds (1,000 resamples, mulberry32(20261029 + 4), organ 3's).",
+  "constants": "No new constant: batch 200, ≥ 30 later cases, n ≥ 20, ≥ 5 founder cases, w = n/(n + 50), the slice of 8 are organ 3's."
+ },
+ "claims": [
+  { "id": "N1", "claim": "The repair: on M2's own rows, a child that verifies its inheritance beats the same child bred without it.", "pass": "D1: for at least 4 of the 5 datasets, mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0 (M2's bar)", "note": "designed after seeing M2 fail on these rows: a repair check, not out of sample" },
+  { "id": "N2", "claim": "The same on rows no lesson has ever been scored on.", "pass": "D2: for at least 4 of the 5 datasets, mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0" },
+  { "id": "N3", "claim": "Inheritance no longer does harm: no child is made worse by what it inherits.", "pass": "in all 10 early lives (5 datasets × D1, D2) the 95% bootstrap upper bound of the improvement is ≥ 0 (no child significantly worse with its slice)" },
+  { "id": "N4", "claim": "The new cycle opens no leak: no raw content of a parent reaches a child.", "pass": "after both early lives, for every child: none of its parents' canaries anywhere in its state (genes, slice, history, its life memory as LIGHT, its lessons); no parent row's full list of values in its genes, slice or history (its own episodes are its own rows); every slice entry keeps exactly the fields cell, context, rate, n, gain, lineage; every 'adopted' / 'dropped' entry has exactly the fields kind, batch, cell, context, lineage, gain, later" }
+ ],
+ "fixedMeans": "M2 is fixed only if N1 AND N2 hold, with N3 (no harm) and N4 (no leak). Any failure is kept and reported.",
+ "predictions": "Written before the kernel ran on anything. N1: shop should flip — parent B's lessons pass the child's test early, parent A's never do — and credit should hold; adult (+0.0035 blind) may lose part of its gain to the first batch, which has no verified lessons, and to the child's own lessons covering the same ground; coupon (8 lessons from A, −0.0003 blind) probably stays near 0 and fails the bar; bank uncertain. Expect 3 or 4 of 5 — a coin flip on the bar of 4. N2: about the same as N1, perhaps a little worse (GATE also decided the genes, leaving less to correct). N3: likely holds — keeping harm out is what the rule does — but a lesson that passes early and turns later keeps counting until its running total fails. N4: by construction; the likeliest failure is an adopted/dropped entry carrying a field it should not."
+}
