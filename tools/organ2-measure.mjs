@@ -9,11 +9,8 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { loadBank, loadAdult } from '../vendor/dex-frontier/src/fresh.mjs';
-import { loadCredit } from '../vendor/dex-frontier/src/fresh2.mjs';
-import { loadCoupon } from '../vendor/dex-frontier/src/fresh3.mjs';
-import { loadShop } from '../vendor/dex-frontier/src/silos.mjs';
-import { prepare, fitOrgan, startSpecs } from '../src/lab.mjs';
+import { loadLab } from './datasets.mjs';
+import { fitOrgan, startSpecs } from '../src/lab.mjs';
 import { proposals, gate, mulberry32, ADOPT } from '../src/dream.mjs';
 import { day, parseReply, candidate, associations, gaps, SOURCES, BUDGET } from '../src/daydream.mjs';
 import { add, decay, promote, bound, PROMOTE } from '../src/daylog.mjs';
@@ -26,30 +23,6 @@ const PREREG = 'data/organ2-prereg.json', RUN = 'data/organ2-run.json', TIER2 = 
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const git = (...a) => execFileSync('git', a, { cwd: fileURLToPath(ROOT), encoding: 'utf8' }).trim();
 export const NIGHTS = 14, LOCAL = 'http://localhost:11434', MODEL = 'qwen2.5:7b';
-
-export function loadLab() {
-  if (process.env.WDR_SYNTH) return synthLab();   // a dry run: every input synthetic
-  const t = (p) => readFileSync(file('.data/' + p), 'utf8');
-  const ds = {
-    shop: loadShop(t('data/online_shoppers_intention.csv')), bank: loadBank(t('data/bank-additional-full.csv')),
-    adult: loadAdult(t('data/adult.data'), t('data/adult.test')), credit: loadCredit(t('data/credit-default.csv')), coupon: loadCoupon(t('data/in-vehicle-coupon-recommendation.csv')),
-  };
-  for (const [k, d] of Object.entries(ds)) if (!d.ok) throw new Error(k + ': ' + d.error);
-  return prepare(ds);
-}
-
-/** Synthetic datasets with the loaders' shape (a dry run of the tooling never reads the real data). */
-function synthLab() {
-  const rng = mulberry32(7), ds = {};
-  for (const name of ['shop', 'bank', 'adult', 'credit', 'coupon']) {
-    const features = Array.from({ length: 8 }, (_, j) => name + '_f' + j), n = 3000;
-    const cols = Object.fromEntries(features.map((f, j) => [f, Float64Array.from({ length: n }, () => (j % 3 === 0 ? Math.floor(rng() * 2) : j % 3 === 1 ? Math.exp(rng() * 4) : rng() * 10))]));
-    const y = Uint8Array.from({ length: n }, (_, i) => (rng() < 1 / (1 + Math.exp(-(Math.log(cols[features[1]][i]) - 2 + (cols[features[2]][i] > 7 ? 1 : 0)))) ? 1 : 0));
-    const idx = Array.from({ length: n }, (_, i) => i);
-    ds[name] = { ok: true, name, title: name + ' (synthetic)', outcome: 'y', features, cols, y, fitRows: idx.slice(0, 1500), gateRows: idx.slice(1500, 2200), testRows: idx.slice(2200) };
-  }
-  return prepare(ds);
-}
 
 /** The local model, live (recording every reply) or replayed. Every URL it is asked to reach is counted. */
 export function localModel(mode, recorded) {

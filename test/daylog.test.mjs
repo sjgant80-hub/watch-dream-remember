@@ -80,6 +80,8 @@ test('lightOf round-trips through LIGHT; bound checks records, bytes, uniqueness
   assert.equal(bound(Array.from({ length: 49 }, (_, i) => ({ ...log[0], key: 'k' + i }))).ok, false);
   assert.equal(bound(Array.from({ length: 48 }, (_, i) => ({ ...log[0], key: 'k' + i }))).ok, true);
   assert.deepEqual(bound(null), { ok: true, records: 0, bytes: lightOf([]).length, unique: true });
-  const huge = Array.from({ length: 40 }, (_, i) => ({ ...log[0], key: 'k' + i + '-' + 'x'.repeat(2000 + i * 37) }));
+  let s = 9;
+  const noise = (n) => Array.from({ length: n }, () => (s = (s * 16807) % 2147483647).toString(36)).join('');   // incompressible: LIGHT cannot shrink it under the bound
+  const huge = Array.from({ length: 40 }, (_, i) => ({ ...log[0], key: 'k' + i + '-' + noise(80) }));
   assert.equal(bound(huge).ok, false);
 });
