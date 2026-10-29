@@ -93,3 +93,18 @@ test('pausing aborts a tier-2 call; a failing job still releases the daydream', 
   const bare = createIdle(null);
   assert.equal(bare.busy(), false);
 });
+
+test('a slice holds exactly SLICE_STEPS steps on a stalled clock, and stops the moment SLICE_MS has passed', async () => {
+  const per = [];
+  let calls = 0;
+  const idle = createIdle({ clock: () => 0, yieldNow: tick, tier3: () => { per[idle.stats.slices] = (per[idle.stats.slices] || 0) + 1; return ++calls < 1500; } });
+  idle.start();
+  for (let i = 0; i < 4; i++) await tick();
+  assert.deepEqual(per, [1000, 500]);
+  let t = 0;
+  const each = [];
+  const timed = createIdle({ clock: () => t, yieldNow: tick, tier3: () => { each[timed.stats.slices] = (each[timed.stats.slices] || 0) + 1; t += 5; return each.length < 3; } });
+  timed.start();
+  for (let i = 0; i < 6; i++) await tick();
+  assert.deepEqual(each, [1, 1, 1]);   // 5 ms is the whole slice: the step that reaches it is the last
+});

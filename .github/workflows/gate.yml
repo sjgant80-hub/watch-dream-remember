@@ -64,6 +64,7 @@ jobs:
         run: |
           k=${{ matrix.kernel }}
           if [ ! -f "src/$k.mjs" ]; then echo "src/$k.mjs not built yet"; exit 0; fi
-          node ../witness/witness.mjs mutate "src/$k.mjs" --cap 1000 --timeout 120000 --test node --test "test/$k.test.mjs" | tee "$k.out"
+          t=120000; [ "$k" = idle ] && t=15000   # idle mutants that stop the loop hang until the bound: its suite runs in ~1 s
+          node ../witness/witness.mjs mutate "src/$k.mjs" --cap 1000 --timeout $t --test node --test "test/$k.test.mjs" | tee "$k.out"
           grep -q '"clean": true' "$k.out" || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
           grep -q '"capped": false' "$k.out" || { echo "::error::src/$k.mjs was capped: not every mutant judged"; exit 1; }
