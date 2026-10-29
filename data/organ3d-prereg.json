@@ -1,0 +1,45 @@
+{
+ "kind": "watch-dream-remember.organ3d.inheritance-fresh.prereg",
+ "v": 1,
+ "sealed": "2026-10-29",
+ "question": "On rows no organ has ever read, in five fresh families of minds, does a child with its inherited slice beat the same child bred without it — M2 exactly as organ 3 sealed it — when the child drops any inherited lesson its own cases contradict?",
+ "why": "M2 (organ 3, seal 4da8aa4) failed, and three sealed fixes are kept as measured: organ 3b (prove first, 348da53) and organ 3c (trust then check, 8d8e403) each held 2 of 4. Organ 3c was sealed as the last try on those rows. Two things are now clear from them. First, organs 3b and 3c asked a HARDER question than M2: both arms there also learnt their own lessons during the scored early life, so they measured what inheritance adds ON TOP of a child's own learning (little, on those rows). M2 itself asks what a child's inheritance is worth against the same child bred without it. Second, blind inheritance failed M2 through harm on one dataset (shop), and organs 3b and 3c showed that a check on the child's own cases removes that harm. Organ 3d tests M2's own question, with organ 3c's check, on data none of those tries has seen. Organs 3, 3b and 3c stay as measured. Inspired, like organ 3, by Gary W. Floyd's NexusGrid as he described it in chat (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC); designed from that description only — no parity is claimed; the comparison follows his catch-up call.",
+ "honesty": [
+  "Minds are MODELS of thought-patterns — small predictive models of an outcome — never the people in the data and never claimed conscious.",
+  "This is the fourth sealed try at M2, and the mechanism (organ 3c's check) was chosen knowing the first three. Its evidence is the data: every row here — founders, lives, the fusion gate and the children's early lives — is a row no organ of this build has ever read (prepare() keeps only the first 6,000 FIT, 4,000 GATE and 6,000 TEST rows; these are beyond them).",
+  "Only bank, census (adult) and credit have unread rows; shop sessions and coupon offers have none (their loaders' rows are all inside the sealed sets), so they are not in this test. The five fresh families are two from bank, two from census and one from credit.",
+  "The check uses the child's own outcomes, but it can only switch an inherited lesson OFF: it adds no knowledge of its own. So any difference between the two arms comes from the inherited lessons.",
+  "The harder question (inheritance on top of the child's own learning) is measured again here as F4, and reported whatever it shows; it is not part of the fix.",
+  "The kernel change and the measuring tool are written after this seal is committed."
+ ],
+ "data": {
+  "what": "The same five public datasets and dex-frontier loaders (pinned), read beyond the rows prepare() has ever kept. A family's row sets are slices of its dataset loader's own fitRows / gateRows / testRows (positions in those lists), handed to prepare() as that family's lab, so every statistic, median and column standardisation is fitted on the family's own FIT rows.",
+  "sources": "vendor/dex-frontier/SOURCES.json",
+  "sha256": "cb63d077bc8ba7f8765c04119295fa7a1eb81e06aca2ac8321a44d0fe59c2eb5",
+  "families": [
+   { "id": "bank-1", "dataset": "bank", "fit": [6000, 12000], "gate": [4000, 5604], "test": [6000, 8000] },
+   { "id": "bank-2", "dataset": "bank", "fit": [12000, 18000], "gate": [5604, 7208], "test": [8000, 10000] },
+   { "id": "adult-1", "dataset": "adult", "fit": [6000, 12000], "gate": [4000, 6070], "test": [6000, 8000] },
+   { "id": "adult-2", "dataset": "adult", "fit": [12000, 18000], "gate": [6070, 8140], "test": [8000, 10000] },
+   { "id": "credit-1", "dataset": "credit", "fit": [6000, 12000], "gate": [4000, 5249], "test": [6000, 8000] }
+  ],
+  "ranges": "[from, to) positions in the loader's own fitRows / gateRows / testRows lists. Loader sizes: bank fit 21,624, gate 7,208, test 12,356; adult fit 24,421, gate 8,140, test 16,281; credit fit 15,752, gate 5,249, test 8,999. Within a family, FIT positions 0–799 are founders and 800 onward its parents' lives, as organ 3."
+ },
+ "design": {
+  "minds": "Per family, organ 3's steps exactly, on the family's own lab: the segment feature from a fit of all raw features on founders 0–799; parent A = the even-position features fitted on founders 0–399, living on its segment's side 0; parent B = the odd-position features on 400–799, on side 1; lives in batches of 200, at most 10; lessons, verification and the slice (top 8 verified lessons by gain, per parent) as organ 3; the child = the gated fusion (born only if it beats both parents on the family's GATE rows, otherwise the better parent's genes). Canaries mulberry32(20261030 + 3) and salts mulberry32(20261030 + 5), keyed by family.",
+  "earlyLife": "The child's early life is its family's TEST positions 0–1,999, in order, scored as lived: every prediction made before that case's outcome is read.",
+  "F1 arms": "M2's own comparison. WITH: the child's genes plus its inherited slice, each lesson in use from birth on its parent's record and checked case by case (organ 3c's rule, unchanged: used while 30 × gain/n + its gain on the child's cases so far > 0). WITHOUT: the same genes, no slice. NEITHER arm forms lessons of its own during the scored life, as in organ 3's M2.",
+  "F4 arms": "The harder question, organ 3c's arms exactly: both arms also form and verify their own lessons by organ 3's batch cycle.",
+  "context": "Also reported, not a claim: the slice applied blind from birth (organ 3's M2 mechanism) on the same fresh children, so the effect of the check is visible.",
+  "score": "Per case, each arm's loss; paired improvement = loss without − loss with; mean and 95% bootstrap bounds, 1,000 resamples, mulberry32(20261029 + 4) (organ 3's).",
+  "constants": "No new constant. Every rule, bound and seed above is organ 3's or organ 3c's except the families' row windows and their canary/salt seeds, fixed here."
+ },
+ "claims": [
+  { "id": "F1", "claim": "M2, on fresh data: a child with its inherited slice, checked against its own cases, beats the same child bred without it.", "pass": "for at least 4 of the 5 fresh families, mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0 (M2's bar)" },
+  { "id": "F2", "claim": "No child is made worse by its inheritance.", "pass": "for all 5 fresh families the 95% bootstrap upper bound of F1's improvement is ≥ 0" },
+  { "id": "F3", "claim": "No raw personal content reaches a child.", "pass": "organ 3b's N4 test, unchanged, on every fresh child after its early life" },
+  { "id": "F4", "claim": "The harder question, reported: inheritance on top of the child's own learning.", "pass": "for at least 4 of the 5 fresh families, with both arms forming their own lessons (organ 3c's arms), mean improvement ≥ 0.001 nats with the 95% bootstrap lower bound above 0" }
+ ],
+ "fixedMeans": "M2 is fixed if F1, F2 and F3 hold. F4 is reported whatever it shows and is not part of the fix. Any failure is kept.",
+ "predictions": "Written before the kernel change. F1: on the earlier rows, blind inheritance helped census (+0.0035) and credit (+0.011) and was near zero for bank (+0.0026, lower bound below 0); the check should keep those gains and trim harmful lessons. Bank families are the risk: blind inheritance there was small and uncertain. Expect 3 to 5 of 5, perhaps a 55% chance of 4 or more. F2: likely holds. F3: by construction. F4: likely fails, as on the earlier rows (2 of 5)."
+}
