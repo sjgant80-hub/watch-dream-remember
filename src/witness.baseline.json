@@ -8,5 +8,15 @@
   "mutation": "<= → <",
   "snippet": "rec.verified = t1 <= t0 - VERIFY;",
   "reason": "Verification compares two continuous TEST log-losses: an improvement of exactly 0.0002 nats has probability zero and cannot be constructed through a fit, so the inclusive and strict forms never differ in a run."
+ },
+ {
+  "mutation": "< → <=",
+  "snippet": "if (big < TOL) { steps++; break; }",
+  "reason": "Convergence compares the largest Newton step, a continuous quantity, with 1e-9: a step of exactly 1e-9 has probability zero and cannot be steered, so the strict and inclusive forms never differ in a fit."
+ },
+ {
+  "mutation": "return false → return true",
+  "snippet": "if (!ideaOk(L, spec)) return false;",
+  "reason": "push() refuses an invalid idea before anything else, and the only callers that read its answer, the association and gap loops, only ever offer valid ideas (crosses and steps of the dataset’s own features), so what the refusal reports never changes a count."
  }
 ]

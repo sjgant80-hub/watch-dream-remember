@@ -93,7 +93,7 @@ export function associations(L) {
   const out = [];
   bins.forEach((A, a) => bins.slice(a + 1).forEach((B) => {
     const t = tally(A.on.map((v, i) => v & B.on[i]));
-    if (t.k < LIMITS.minSupport * n || !(A.r > 0 && B.r > 0)) return;   // a rate of 0 alone means no lift to read
+    if (t.k < LIMITS.minSupport * n) return;   // (a rate of 0 alone makes the lift 0/0, which the next line refuses)
     const lift = (t.s / t.k) * base / (A.r * B.r);
     if (lift > 0) out.push({ spec: { op: 'cross', f: A.f, g: B.f }, score: Math.abs(Math.log(lift)) });
   }));

@@ -237,3 +237,10 @@ test('day: transfers go only to other datasets, within the last 3 nights; taken 
   const tie = await day({ lab: same, organs: so, history: [], night: 0, known: new Set() });
   assert.ok(tie.candidates.filter((c) => c.source === 'gap').every((c) => c.dataset === 'p'));
 });
+
+test('associations: a joint group with no positives has lift 0 and is not offered', () => {
+  const K = crafted();
+  const v = Float64Array.from({ length: 100 }, (_, i) => ((i >= 10 && i < 20) || (i >= 70 && i < 80) ? 1 : 0));   // with a: rows 10–19, none positive
+  const L2 = prepare({ v: { ...K.ds, name: 'v', features: ['a', 'v'], cols: { a: K.ds.cols.a, v } } }).v;
+  assert.deepEqual(associations(L2), []);
+});

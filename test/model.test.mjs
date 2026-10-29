@@ -117,3 +117,22 @@ test('shapeOf and shapeGap', () => {
   assert.equal(shapeGap({ skew: 2, zeros: 0.5, kind: 1 }, { skew: 2, zeros: 0.5, kind: 1 }), 0);
   close(shapeGap({ skew: 1, zeros: 0.2, kind: 1 }, { skew: 3, zeros: 0.5, kind: 2 }), 2 / 2 + 0.3 + 1);
 });
+
+test('model edges: the step cap, a 1×1 zero, a constant second column, near-constant floats, the kind boundaries', () => {
+  let s = 5;
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const a = Float64Array.from({ length: 200 }, () => r() * 4 - 2), y = Uint8Array.from(a, (v) => (r() < 1 / (1 + Math.exp(-v)) ? 1 : 0));
+  assert.equal(fit([a], y, undefined, 2).steps, 2);
+  assert.ok(fit([a], y).steps > 2);
+  assert.equal(solve(Float64Array.from([0]), Float64Array.from([1])), null);
+  assert.deepEqual(Array.from(solve(Float64Array.from([4]), Float64Array.from([2]))), [0.5]);
+  assert.equal(absCorr([1, 2, 3], [5, 5, 5]), 0);
+  const tenth = Float64Array.from([0.1, 0.1, 0.1]);
+  assert.equal(statsOf(tenth, [0, 1, 2]).sd, 0);
+  const col = columnOf({ op: 'raw', f: 't' }, { cols: { t: tenth } }, { t: statsOf(tenth, [0, 1, 2]) }, { fit: [0, 1, 2] });
+  assert.equal(col.sd, 0);
+  assert.deepEqual(Array.from(col.fit), [0, 0, 0]);
+  const kindOf = (k) => shapeOf(Float64Array.from({ length: k }, (_, i) => i), Array.from({ length: k }, (_, i) => i)).kind;
+  assert.deepEqual([kindOf(2), kindOf(3), kindOf(10), kindOf(11), kindOf(100), kindOf(101)], [0, 1, 1, 2, 2, 3]);
+  assert.equal(keyOf({ op: 'cross', f: 'b', g: 'a' }), keyOf({ op: 'cross', f: 'a', g: 'b' }));
+});

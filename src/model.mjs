@@ -21,7 +21,7 @@ export function keyOf(spec) {
   const ok = (f) => typeof f === 'string' && f.length > 0;
   if ((s.op === 'raw' || s.op === 'log' || s.op === 'sq') && ok(s.f)) return `${s.op}(${s.f})`;
   if (s.op === 'step' && ok(s.f) && QS.includes(s.q)) return `step(${s.f},${s.q})`;
-  if (s.op === 'cross' && ok(s.f) && ok(s.g) && s.f !== s.g) return s.f < s.g ? `cross(${s.f},${s.g})` : `cross(${s.g},${s.f})`;
+  if (s.op === 'cross' && ok(s.f) && ok(s.g) && s.f !== s.g) return `cross(${[s.f, s.g].sort().join(',')})`;
   return '';
 }
 
@@ -73,42 +73,44 @@ export function columnOf(spec, ds, stats, sets) {
 }
 
 const sigma = (t) => 1 / (1 + Math.exp(-t));
+/** 0 … n − 1. The loops below walk index lists, so no bound can be off by one without the arithmetic changing. */
+const range = (n) => Array.from({ length: Math.max(0, n) }, (_, i) => i);
 
 /** η = β0 + Σ βj·col_j[i] for each row. cols = [Float64Array], one per spec. */
 export function linear(beta, cols, n) {
   const eta = new Float64Array(n).fill(beta[0]);
-  cols.forEach((c, j) => { const b = beta[j + 1]; for (let i = 0; i < n; i++) eta[i] += b * c[i]; });
+  cols.forEach((c, j) => { const b = beta[j + 1]; eta.forEach((_, i) => { eta[i] += b * c[i]; }); });
   return eta;
 }
 
 /** Solve A·x = b for a symmetric positive-definite A (Cholesky). → x, or null when A is not positive definite. */
 export function solve(A, b) {
-  const p = b.length, L = new Float64Array(p * p);
-  for (let i = 0; i < p; i++) {
-    for (let j = 0; j <= i; j++) {
+  const p = b.length, L = new Float64Array(p * p), idx = range(p);
+  for (const i of idx) {
+    for (const j of range(i + 1)) {
       let s = A[i * p + j];
-      for (let k = 0; k < j; k++) s -= L[i * p + k] * L[j * p + k];
+      for (const k of range(j)) s -= L[i * p + k] * L[j * p + k];
       if (i === j) { if (!(s > 0)) return null; L[i * p + i] = Math.sqrt(s); }
       else L[i * p + j] = s / L[j * p + j];
     }
   }
-  const y = new Float64Array(p), x = new Float64Array(p);
-  for (let i = 0; i < p; i++) { let s = b[i]; for (let k = 0; k < i; k++) s -= L[i * p + k] * y[k]; y[i] = s / L[i * p + i]; }
-  for (let i = p - 1; i >= 0; i--) { let s = y[i]; for (let k = i + 1; k < p; k++) s -= L[k * p + i] * x[k]; x[i] = s / L[i * p + i]; }
+  const y = new Float64Array(p), x = new Float64Array(p), done = [];
+  for (const i of idx) { let s = b[i]; for (const k of range(i)) s -= L[i * p + k] * y[k]; y[i] = s / L[i * p + i]; }
+  for (const i of idx.slice().reverse()) { let s = y[i]; for (const k of done) s -= L[k * p + i] * x[k]; x[i] = s / L[i * p + i]; done.unshift(i); }
   return x;
 }
 
 /**
  * Fit the logistic model by IRLS. cols = standardised FIT columns, y = 0/1 labels on the FIT rows, start = optional
- * β to begin from (shorter is padded with zeros). → { beta, steps }
+ * β to begin from (shorter is padded with zeros), maxSteps = the step cap (MAX_STEPS unless a test lowers it). → { beta, steps }
  */
-export function fit(cols, y, start) {
+export function fit(cols, y, start, maxSteps = MAX_STEPS) {
   const p = cols.length + 1, n = y.length;
   const beta = new Float64Array(p);
   if (start) for (let j = 0; j < Math.min(p, start.length); j++) beta[j] = start[j];
   const col = (j, i) => (j === 0 ? 1 : cols[j - 1][i]);
   let steps = 0;
-  for (; steps < MAX_STEPS; steps++) {
+  for (; steps < maxSteps; steps++) {
     const eta = linear(beta, cols, n);
     const H = new Float64Array(p * p), g = new Float64Array(p);
     for (let i = 0; i < n; i++) {
@@ -120,8 +122,8 @@ export function fit(cols, y, start) {
         for (let b = 0; b <= a; b++) H[a * p + b] += wa * col(b, i);
       }
     }
-    for (let a = 0; a < p; a++) for (let b = 0; b < a; b++) H[b * p + a] = H[a * p + b];
-    for (let a = 1; a < p; a++) { H[a * p + a] += LAMBDA; g[a] -= LAMBDA * beta[a]; }
+    for (const a of range(p)) for (const b of range(a)) H[b * p + a] = H[a * p + b];
+    for (const a of range(p).slice(1)) { H[a * p + a] += LAMBDA; g[a] -= LAMBDA * beta[a]; }
     const d = solve(H, g);
     if (!d) break;
     let big = 0;

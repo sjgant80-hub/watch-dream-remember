@@ -344,6 +344,7 @@ async function main() {
   document.querySelector('#b-table tbody').innerHTML = BLUEPRINT.map(([a, f, w]) => `<tr><td>${a}</td><td class="mono"><a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${f}">${f}</a></td><td>${esc(w)}</td></tr>`).join('');
   $('roles').innerHTML = ROLES.map(([r, t]) => `<div class="panel role"><h3>${r}</h3><p>${esc(t)}</p></div>`).join('');
   const t3 = R.o1.claims.R3.laptop;
+  $('c-round').textContent = fmt(t3.roundMax, 0);
   $('c-risks').innerHTML = [
     `<b>False alarms.</b> On the real history, one real burst of work on one build was paused by the budget rule: ${R.o1.claims.R1f.verdicts.pause} pause verdicts, which is one pause and its renewals. It is recorded as a failure. The fix, a throttle on budget alone, will be sealed and measured as its own step.`,
     `<b>Speed.</b> The per-visit time missed its bar on a busy laptop (p99 ${fmt(t3.p99, 2)} ms against 1 ms), mostly the cost of signing each verdict. The whole round still costs ${fmt(t3.roundMax * 50 / 36000, 4)}% of one core on a device 50 times slower. It is recorded as a failure.`,
