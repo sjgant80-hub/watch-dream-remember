@@ -78,40 +78,45 @@ export function parseReply(reply, columns) {
   return lower.length === 1 ? lower[0] : null;
 }
 
+/** Order by score, highest first; equal scores by key (keys are unique in a list). */
+const byScore = (x, z) => z.score - x.score || ([keyOf(x.spec), keyOf(z.spec)].sort()[0] === keyOf(x.spec) ? -1 : 1);
+
 /** Lead/market association: crosses whose joint FIT outcome rate departs most from what each alone predicts. */
 export function associations(L) {
   const rows = L.sets.fit, y = L.y.fit, n = rows.length;
   const base = y.reduce((a, b) => a + b, 0) / n;
-  const bins = L.features.map((f) => { const m = L.stats[f].q[0.5]; return { f, on: Uint8Array.from(rows, (i) => (L.ds.cols[f][i] > m ? 1 : 0)) }; })
-    .filter((b) => { let k = 0; for (const v of b.on) k += v; return k > 0 && k < n; });
-  const rate = (on) => { let k = 0, s = 0; for (let i = 0; i < n; i++) if (on[i]) { k++; s += y[i]; } return { k, r: k ? s / k : 0 }; };
-  const single = bins.map((b) => rate(b.on));
+  const tally = (on) => { let k = 0, s = 0; on.forEach((v, i) => { if (v) { k++; s += y[i]; } }); return { k, s }; };
+  const bins = L.features.map((f) => {
+    const m = L.stats[f].q[0.5], on = Uint8Array.from(rows, (i) => (L.ds.cols[f][i] > m ? 1 : 0)), t = tally(on);
+    return { f, on, r: t.k ? t.s / t.k : 0 };
+  });
   const out = [];
-  for (let a = 0; a < bins.length; a++) for (let b = a + 1; b < bins.length; b++) {
-    let k = 0, s = 0;
-    for (let i = 0; i < n; i++) if (bins[a].on[i] && bins[b].on[i]) { k++; s += y[i]; }
-    if (k < LIMITS.minSupport * n || !(single[a].r > 0 && single[b].r > 0 && base > 0)) continue;
-    const lift = (s / k) * base / (single[a].r * single[b].r);
-    if (lift > 0) out.push({ spec: { op: 'cross', f: bins[a].f, g: bins[b].f }, score: Math.abs(Math.log(lift)) });
-  }
-  return out.sort((x, z) => z.score - x.score || (keyOf(x.spec) < keyOf(z.spec) ? -1 : 1));
+  bins.forEach((A, a) => bins.slice(a + 1).forEach((B) => {
+    const t = tally(A.on.map((v, i) => v & B.on[i]));
+    if (t.k < LIMITS.minSupport * n || !(A.r > 0 && B.r > 0)) return;   // a rate of 0 alone means no lift to read
+    const lift = (t.s / t.k) * base / (A.r * B.r);
+    if (lift > 0) out.push({ spec: { op: 'cross', f: A.f, g: B.f }, score: Math.abs(Math.log(lift)) });
+  }));
+  return out.sort(byScore);
 }
+
+/** Is a prediction one the model is least sure of (in [0.35, 0.65])? */
+export const uncertain = (v) => v >= LIMITS.uncertain[0] && v <= LIMITS.uncertain[1];
 
 /** Gap-noticing: the steps that best split the cases the weakest dataset's model is least sure of. */
 export function gaps(L, organ) {
   const { p } = fitResiduals(L, organ);
-  const [lo, hi] = LIMITS.uncertain;
   const idx = [];
-  p.forEach((v, i) => { if (v >= lo && v <= hi) idx.push(i); });
+  p.forEach((v, i) => { if (uncertain(v)) idx.push(i); });
   const out = [];
   for (const f of L.features) for (const q of QS) {
     const cut = L.stats[f].q[q];
     let na = 0, sa = 0, nb = 0, sb = 0;
     for (const i of idx) { const yi = L.y.fit[i]; if (L.ds.cols[f][L.sets.fit[i]] > cut) { na++; sa += yi; } else { nb++; sb += yi; } }
-    if (na < LIMITS.minSide || nb < LIMITS.minSide) continue;
+    if (Math.min(na, nb) < LIMITS.minSide) continue;
     out.push({ spec: { op: 'step', f, q }, score: Math.abs(sa / na - sb / nb) * Math.sqrt(Math.min(na, nb) / idx.length) });
   }
-  return out.sort((x, z) => z.score - x.score || (keyOf(x.spec) < keyOf(z.spec) ? -1 : 1));
+  return out.sort(byScore);
 }
 
 /** The raw feature with the largest |β| in an organ (other than `not`). */
@@ -145,13 +150,14 @@ export async function day(ctx) {
   const out = [], calls = [];
   const resid = {};
   const residOf = (name) => (resid[name] ??= fitResiduals(lab[name], organs[name]).r);
-  const push = (name, spec, source) => {
+  const push = (name, spec, source) => {   // → whether it was added
     const L = lab[name];
-    if (!ideaOk(L, spec)) return;
+    if (!ideaOk(L, spec)) return false;
     const key = `${name}|${keyOf(spec)}`;
-    if (known.has(key) || organs[name].specs.some((s) => keyOf(s) === keyOf(spec))) return;
+    if (known.has(key) || organs[name].specs.some((s) => keyOf(s) === keyOf(spec))) return false;
     known.add(key);
     out.push(candidate(L, spec, source, residOf(name)));
+    return true;
   };
   const recent = history.filter((h) => h.night > night - LIMITS.transferNights);
   // transfer (tier 3)
@@ -178,20 +184,17 @@ export async function day(ctx) {
     let taken = 0;
     for (const a of (ctx.assoc ??= {})[name] ??= associations(lab[name])) {
       if (taken >= LIMITS.association) break;
-      const before = out.length;
-      push(name, a.spec, 'association');
-      if (out.length > before) taken++;
+      if (push(name, a.spec, 'association')) taken++;
     }
   }
   // gap-noticing (tier 3): the weakest dataset on FIT
   if (names.length) {
-    const weakest = names.slice().sort((a, b) => weakness(lab[b], organs[b]) - weakness(lab[a], organs[a]) || (a < b ? -1 : 1))[0];
+    let weakest = names[0];
+    for (const n of names) if (weakness(lab[n], organs[n]) > weakness(lab[weakest], organs[weakest])) weakest = n;   // the first on a tie
     let taken = 0;
     for (const g of gaps(lab[weakest], organs[weakest])) {
       if (taken >= LIMITS.gap) break;
-      const before = out.length;
-      push(weakest, g.spec, 'gap');
-      if (out.length > before) taken++;
+      if (push(weakest, g.spec, 'gap')) taken++;
     }
   }
   // rehearsal (tier 3): last night's adoptions with a variation

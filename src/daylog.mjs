@@ -11,7 +11,7 @@ import { encode } from '../vendor/fall-kit/core/vendor/light/codec.mjs';
 
 export const CAP = 48, MAX_AGE = 3, FLOOR = 0.001, PROMOTE = 10, MAX_BYTES = 12288;
 
-const rank = (a, b) => b.priority - a.priority || a.born - b.born || (a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
+const rank = (a, b) => b.priority - a.priority || a.born - b.born || ([a.key, b.key].sort()[0] === a.key ? -1 : 1);   // keys are unique in a log
 
 /** A clean, inert copy of a candidate, or null when it is not one. */
 export function recordOf(c, day) {
@@ -49,7 +49,7 @@ export function decay(log, day) {
 /** Promote the k highest priorities. → { promoted, log } */
 export function promote(log, k) {
   const list = (Array.isArray(log) ? log : []).slice().sort(rank);
-  const n = Number.isInteger(k) && k > 0 ? k : 0;
+  const n = Number.isInteger(k) ? Math.max(0, k) : 0;
   return { promoted: list.slice(0, n), log: list.slice(n) };
 }
 

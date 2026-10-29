@@ -37,6 +37,12 @@ test('costCase: three lines of hours taken off people, priced; running cost from
   assert.equal(costCase({ ...b, hoursPerYear: undefined }, {}).running, null);
 });
 
+test('costCase: a function carrying inputs is not inputs (the defaults stand)', () => {
+  const f = Object.assign(() => {}, { watchHoursNow: 50 });
+  assert.deepEqual(costCase(b, f), costCase(b, {}));
+  assert.notDeepEqual(costCase(b, { watchHoursNow: 50 }), costCase(b, {}));
+});
+
 test('costCase refuses what it cannot price', () => {
   assert.deepEqual(costCase(b, { watchHoursNow: -1 }), { ok: false, why: 'watchHoursNow: a number, zero or more' });
   assert.deepEqual(costCase(b, { ideasPerMonth: 'x' }), { ok: false, why: 'ideasPerMonth: a number, zero or more' });

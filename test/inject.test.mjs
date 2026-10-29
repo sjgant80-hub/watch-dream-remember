@@ -52,6 +52,12 @@ test('overrun: the node’s own actions, about 3 × its peak an hour', () => {
   assert.ok(slow.intents.length > 24 * 20 * 0.8 && slow.intents.length < 24 * 20 * 1.2);
 });
 
+test('the 24-hour horizon is half-open: an action exactly at its end is not in it', () => {
+  assert.equal(injection('scatter-quiet', node, base, 0, () => 0.5).intents.length, 144);   // every 10 minutes exactly
+  assert.equal(injection('overrun', node, base, 0, () => 0).intents.length, 86399);         // a zero draw steps a second
+  assert.equal(injection('runaway-quiet', node, base, 0, () => 0.5).intents.at(-1).t, DAY - 10 * MINUTE);
+});
+
 test('health: a rewrite at t0, no actions; unknown types do nothing', () => {
   const r = injection('health', node, base, 77, mulberry32(9));
   assert.deepEqual(r.intents, []);

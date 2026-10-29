@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MIN_N, MIN_FOUNDER, SHRINK, MIN_LATER, SLICE, hmac, episodeOf, inContext, founderIn, shiftOf, etaWith, lessonsFrom, relive, live, verified, forget, sliceOf, newborn, lightOf } from '../src/memory.mjs';
+import { createHmac } from 'node:crypto';
+import { MIN_N, MIN_FOUNDER, SHRINK, MIN_LATER, SLICE, hmac, isVerified, loss, episodeOf, inContext, founderIn, shiftOf, etaWith, lessonsFrom, relive, live, verified, forget, sliceOf, newborn, lightOf } from '../src/memory.mjs';
 import { genesOf, etaOf, cellsOf } from '../src/mind.mjs';
 import { prepare } from '../src/lab.mjs';
 import { decode } from '../vendor/fall-kit/core/vendor/light/codec.mjs';
@@ -143,4 +144,44 @@ test('sliceOf, newborn and lightOf', () => {
   assert.equal(new TextDecoder().decode(empty.bytes), '');
   assert.ok(lightOf(mind).length < JSON.stringify(mind.episodes).length);
   assert.ok(lightOf({}).length > 0);
+});
+
+test('isVerified: a gain above zero over at least 30 later cases', () => {
+  assert.equal(isVerified({ gain: 0.1, later: 30 }), true);
+  assert.equal(isVerified({ gain: 0.1, later: 29 }), false);
+  assert.equal(isVerified({ gain: 0, later: 30 }), false);
+  assert.equal(isVerified({ gain: -1, later: 99 }), false);
+  assert.equal(isVerified(undefined), false);
+  assert.equal(isVerified(null), false);
+});
+
+test('hmac agrees with node:crypto for keys of 63, 64 and 65 bytes', () => {
+  for (const n of [63, 64, 65, 100]) { const k = 'k'.repeat(n); assert.equal(hmac(k, 'msg'), createHmac('sha256', k).update('msg').digest('hex'), String(n)); }
+});
+
+test('loss is clamped at both ends', () => {
+  assert.ok(Math.abs(loss(100, 0) + Math.log(1e-12)) < 1e-3);
+  assert.ok(Math.abs(loss(-100, 1) + Math.log(1e-12)) < 1e-3);
+  assert.ok(Math.abs(loss(0, 1) - Math.log(2)) < 1e-12);
+  assert.ok(Number.isFinite(loss(1e6, 0)));
+});
+
+test('inContext puts a value AT the median below it; each batch is its own outcome; rates are (k + 1)/(n + 2)', () => {
+  const p = segPos[0], row = L.sets.fit[p];
+  const L2 = { ...L, stats: { ...L.stats, seg: { ...L.stats.seg, q: { ...L.stats.seg.q, 0.5: L.ds.cols.seg[row] } } } };
+  assert.equal(inContext(L2, { f: 'seg', side: 0 }, 'fit', p), true);
+  const r = relive(L, genes, founder, mind.episodes, ctx);
+  assert.deepEqual(r.outcomes.map((o) => o.n), batches.map((b) => b.length));
+  assert.deepEqual(r.outcomes.map((o) => o.batch), [0, 1, 2, 3, 4]);
+  for (const l of Object.values(r.lessons)) {
+    const inIt = mind.episodes.filter((e) => (L.ds.cols[l.cell.f][L.sets.fit[e.pos]] > L.stats[l.cell.f].q[0.5] ? 1 : 0) === l.cell.a && (L.ds.cols[l.cell.g][L.sets.fit[e.pos]] > L.stats[l.cell.g].q[0.5] ? 1 : 0) === l.cell.b);
+    const k = inIt.reduce((a, e) => a + e.outcome, 0);
+    assert.equal(l.rate, (k + 1) / (inIt.length + 2));
+  }
+});
+
+test('the slice breaks ties in gain by cell key', () => {
+  const cell = (a) => ({ f: 'x', a, g: 'y', b: 0 });
+  const m = { mind: 'q', lessons: { p: { cell: cell(1), context: null, rate: 0.5, n: 30, gain: 2, verified: true }, r: { cell: cell(0), context: null, rate: 0.5, n: 30, gain: 2, verified: true } } };
+  assert.deepEqual(sliceOf(m).map((l) => l.cell.a), [0, 1]);
 });

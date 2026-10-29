@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STRONG, genesOf, idOf, etaOf, cellsOf, cellKey, inCell, fuse } from '../src/mind.mjs';
+import { STRONG, genesOf, idOf, etaOf, cellsOf, cellKey, inCell, fuse, bornOf, better } from '../src/mind.mjs';
 import { prepare } from '../src/lab.mjs';
 
 function synth(seed, n = 1400) {
@@ -80,4 +80,29 @@ test('fuse: the union refitted on both founder sets, born only if it beats both 
   if (!nb.born) assert.equal(nb.genes, nb.gate.a <= nb.gate.b ? A : weak);
   const tie = fuse(L, weak, A);
   assert.ok(tie.genes === A || tie.born);
+});
+
+test('bornOf: strictly better than BOTH parents; better: the lower GATE, A on a tie', () => {
+  assert.equal(bornOf({ child: 1, a: 2, b: 3 }), true);
+  assert.equal(bornOf({ child: 2, a: 2, b: 3 }), false);
+  assert.equal(bornOf({ child: 3, a: 4, b: 3 }), false);
+  assert.equal(bornOf({ child: 2, a: 1, b: 3 }), false);
+  assert.equal(bornOf({ child: 2, a: 3, b: 1 }), false);
+  const A = { n: 'A' }, B = { n: 'B' };
+  assert.equal(better({ a: 1, b: 2 }, A, B), A);
+  assert.equal(better({ a: 2, b: 1 }, A, B), B);
+  assert.equal(better({ a: 2, b: 2 }, A, B), A);
+});
+
+test('cellsOf ranks by weight, not by position; inCell puts a value AT the median below it', () => {
+  const g = { specs: raw(['a', 'b', 'c', 'd', 'e']), beta: [0, 1, 2, 3, 4, 5] };
+  assert.deepEqual([...new Set(cellsOf(g).flatMap((c) => [c.f, c.g]))].sort(), ['b', 'c', 'd', 'e']);
+  assert.deepEqual(cellsOf(g)[0], { f: 'e', a: 0, g: 'd', b: 0 });
+  const tie = { specs: raw(['a', 'b', 'c', 'd', 'e']), beta: [0, 1, 1, 1, 1, 1] };
+  assert.deepEqual(cellsOf(tie)[0], { f: 'a', a: 0, g: 'b', b: 0 });
+  const pos = L.sets.test.findIndex(() => true);
+  const row = L.sets.test[pos];
+  const L2 = { ...L, stats: { ...L.stats, a: { ...L.stats.a, q: { ...L.stats.a.q, 0.5: L.ds.cols.a[row] } }, b: { ...L.stats.b, q: { ...L.stats.b.q, 0.5: L.ds.cols.b[row] } } } };
+  assert.equal(inCell(L2, { f: 'a', a: 0, g: 'b', b: 0 }, 'test', pos), true);
+  assert.equal(inCell(L2, { f: 'a', a: 1, g: 'b', b: 1 }, 'test', pos), false);
 });

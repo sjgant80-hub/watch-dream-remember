@@ -44,6 +44,8 @@ test('verifyFrom: from genesis, from a head, and the new head', () => {
   assert.deepEqual(verifyFrom(j, { i: 1, h: j[1].h }), { ok: true, head: { i: 2, h: j[2].h }, why: 'linked' });
   assert.deepEqual(verifyFrom(j, { i: 2, h: j[2].h }), { ok: true, head: { i: 2, h: j[2].h }, why: 'linked' });
   assert.deepEqual(verifyFrom([], { i: -1, h: GENESIS }), { ok: true, head: { i: -1, h: GENESIS }, why: 'linked' });
+  const one = build(acts.slice(0, 1));
+  assert.deepEqual(verifyFrom(one, { i: -1, h: GENESIS }), { ok: true, head: { i: 0, h: one[0].h }, why: 'linked' });
   assert.deepEqual(verifyFrom(null, null), { ok: true, head: { i: -1, h: GENESIS }, why: 'linked' });
   assert.deepEqual(verifyFrom(j, { i: 'x', h: 'y' }), { ok: true, head: { i: 2, h: j[2].h }, why: 'linked' });
 });

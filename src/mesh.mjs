@@ -66,7 +66,7 @@ export function replay(spec) {
       name: nd.name, i, high: nd.highStakes === true, offset: Number.isFinite(nd.offset) ? nd.offset : i * 6 * MINUTE, journal,
       head: journal.length ? { i: journal.length - 1, h: journal[journal.length - 1].h } : { i: -1, h: '0'.repeat(64) },
       prevT: last ? last.t : null, attempts: [], executed: [], held: 0, alerts: [],
-      lease: null, leases: [], parity: 0, distrust: false, lastVisit: from, silent: false, mem: freshNode(), seen: 0, prevVisit: null,
+      lease: null, leases: [], tampered: [], parity: 0, distrust: false, lastVisit: from, silent: false, mem: freshNode(), seen: 0, prevVisit: null,
     };
   });
   const events = [];
@@ -75,13 +75,17 @@ export function replay(spec) {
   if (reg) st.forEach((n, i) => { for (let v = Math.ceil((from - n.offset) / HOUR) * HOUR + n.offset; v < to; v += HOUR) events.push({ t: v, k: 'visit', i }); });
   if (reg) for (const x of Array.isArray(reg.extra) ? reg.extra : []) { const i = st.findIndex((n) => n.name === x.node); if (i >= 0) events.push({ t: x.t, k: 'visit', i }); }
   if (reg) for (let c = Math.ceil(from / CHECK) * CHECK; c < to; c += CHECK) events.push({ t: c, k: 'check', i: N });
-  events.sort((x, y) => x.t - y.t || ORDER[x.k] - ORDER[y.k] || x.i - y.i);
+  events.sort((x, y) => x.t - y.t || ORDER[x.k] - ORDER[y.k]);   // a stable sort: equal times and kinds keep node order
 
   const log = [];
   let activeVisits = 0;
   const alert = (n, t, kind) => n.alerts.push({ t, kind });
-  const endLease = (n, t) => { if (n.lease) { const l = n.leases[n.leases.length - 1]; if (l && l.end === null) l.end = t; n.lease = null; } };
-  const setLease = (n, t, kind) => { const l = n.leases[n.leases.length - 1]; if (!(l && l.end === null && l.kind === kind)) { if (l && l.end === null) l.end = t; n.leases.push({ t, kind, end: null }); } n.lease = { kind, until: t + LEASE, hold: kind === 'pause' && n.high }; };
+  // the last entry of n.leases is open exactly while n.lease is set
+  const endLease = (n, t) => { if (n.lease) { n.leases[n.leases.length - 1].end = t; n.lease = null; } };
+  const setLease = (n, t, kind) => {
+    if (!(n.lease && n.lease.kind === kind)) { endLease(n, t); n.leases.push({ t, kind, end: null }); }
+    n.lease = { kind, until: t + LEASE, hold: kind === 'pause' && n.high };
+  };
   const lapse = (n, t) => { if (n.lease && !n.lease.hold && t >= n.lease.until) endLease(n, n.lease.until); };
   const distrust = (n, t) => { if (!n.distrust) { n.distrust = true; endLease(n, t); alert(n, t, 'regulator-drift'); } };
 
@@ -101,7 +105,7 @@ export function replay(spec) {
       const n = st[e.i];
       const k = Math.floor(Math.min(0.999999, Math.max(0, Number(e.u) || 0)) * Math.max(1, n.head.i + 1));
       const old = n.journal[k];
-      if (old) n.journal = rewrite(n.journal, k, AREAS[(AREAS.indexOf(old.area) + 1) % AREAS.length]);
+      if (old) { const area = AREAS[(AREAS.indexOf(old.area) + 1) % AREAS.length]; n.journal = rewrite(n.journal, k, area); n.tampered.push({ t: e.t, k, from: old.area, to: area }); }
     } else if (e.k === 'visit') {
       if (reg.killAt !== undefined && e.t >= reg.killAt) continue;
       const n = st[e.i];
@@ -134,7 +138,6 @@ export function replay(spec) {
         const verb = d.verdict;
         const ok = admits(env, { verb, t: e.t, cost: 0 }, { simon, holder, sigOk: true, spent: 0, revoked: [], recentPauses: d.renew ? 0 : recentPauses(log, e.t, rec.seq) });
         if (!ok.ok) { distrust(n, e.t); continue; }
-        if (n.lease && n.lease.hold && verb === 'throttle') continue;   // a high-stakes pause ends only by Simon
         if (!n.lease || n.lease.kind !== verb) n.parity = 0;
         setLease(n, e.t, verb);
       } else if (n.lease && n.lease.kind === 'throttle') endLease(n, e.t);   // a weaker verdict ends a throttle
@@ -146,7 +149,7 @@ export function replay(spec) {
       }
     }
   }
-  const nodes = Object.fromEntries(st.map((n) => [n.name, { executed: n.executed, held: n.held, alerts: n.alerts, attempts: n.attempts.length, leases: n.leases }]));
+  const nodes = Object.fromEntries(st.map((n) => [n.name, { executed: n.executed, held: n.held, alerts: n.alerts, attempts: n.attempts.length, leases: n.leases, tampered: n.tampered }]));
   const state = Object.fromEntries(st.map((n) => [n.name, { mem: n.mem, head: n.head, lastVisit: n.lastVisit }]));
   return { records: log, nodes, activeVisits, state };
 }

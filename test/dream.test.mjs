@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { PROPOSE, ADOPT, VERIFY, MAX_ADOPT, mulberry32, proposals, gate } from '../src/dream.mjs';
 import { prepare, fitOrgan, startSpecs } from '../src/lab.mjs';
-import { keyOf } from '../src/model.mjs';
+import { keyOf, QS } from '../src/model.mjs';
 
 function synth(seed, n = 1500) {
   let s = seed;
@@ -70,4 +70,46 @@ test('gate: adopts only a real gain, verifies on TEST, caps adoptions, skips pas
   const skipped = capped.records.filter((r) => r.skipped);
   for (const s of skipped) { assert.equal(t2.has(s.key), false); assert.equal(s.gate, null); }
   if (adopted === MAX_ADOPT) assert.ok(skipped.length >= 1);
+});
+
+function rich(seed, n = 2400) {
+  let s = seed;
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const cols = { money: new Float64Array(n), score: new Float64Array(n), flag: new Float64Array(n), noise: new Float64Array(n) };
+  const y = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    cols.money[i] = r() < 0.3 ? 0 : Math.exp(r() * 7); cols.score[i] = r() * 10; cols.flag[i] = r() < 0.5 ? 1 : 0; cols.noise[i] = r();
+    const t = -3 + 0.8 * Math.log1p(cols.money[i]) + (cols.score[i] > 7.5 ? 1.5 : 0) + (cols.flag[i] && cols.score[i] > 5 ? 1.2 : 0) - 0.15 * (cols.score[i] - 5) ** 2 / 4;
+    y[i] = r() < 1 / (1 + Math.exp(-t)) ? 1 : 0;
+  }
+  const idx = Array.from({ length: n }, (_, i) => i);
+  return { name: 'r', title: 'rich', outcome: 'won', features: ['money', 'score', 'flag', 'noise'], cols, y, fitRows: idx.slice(0, 1400), gateRows: idx.slice(1400, 1900), testRows: idx.slice(1900) };
+}
+
+test('gate: at most 2 adoptions a night even when more would pass; the rest are skipped, untested', () => {
+  const rl = prepare({ r: rich(21) });
+  const o = { r: fitOrgan(rl.r, startSpecs(rl.r)) };
+  const c = (spec, source = 'gap') => ({ key: 'r|' + keyOf(spec), dataset: 'r', spec, source });
+  const cands = [c({ op: 'log', f: 'money' }), c({ op: 'step', f: 'score', q: 0.75 }), c({ op: 'step', f: 'money', q: 0.5 }), c({ op: 'cross', f: 'flag', g: 'score' })];
+  // each alone would be adopted
+  for (const k of cands) assert.equal(gate(rl, o, [k], new Set()).records[0].adopted, true, k.key);
+  const tested = new Set();
+  const g = gate(rl, o, cands, tested);
+  assert.equal(g.records.filter((x) => x.adopted).length, 2);
+  assert.deepEqual(g.records.slice(2).map((x) => x.skipped), [true, true]);
+  assert.equal(tested.size, 2);
+  assert.equal(g.organs.r.specs.length, 6);
+});
+
+test('proposals: crosses and steps are proposed with their fields; never an empty key; the 41st try is not taken', () => {
+  const rl = prepare({ r: rich(22) });
+  const o = { r: fitOrgan(rl.r, startSpecs(rl.r)) };
+  const seen = new Set();
+  for (let n = 0; n < 40; n++) for (const p of proposals(rl, o, new Set(), mulberry32(n))) { seen.add(p.spec.op); assert.notEqual(keyOf(p.spec), ''); if (p.spec.op === 'cross') assert.ok(p.spec.g); if (p.spec.op === 'step') assert.ok(QS.includes(p.spec.q)); }
+  assert.deepEqual([...seen].sort(), ['cross', 'log', 'sq', 'step']);
+  const one = prepare({ f: { ...rich(23), name: 'f', features: ['flag'] } });
+  const of = { f: fitOrgan(one.f, startSpecs(one.f)) };
+  const taken = new Set(['f|log(flag)', 'f|sq(flag)', 'f|step(flag,0.25)', 'f|step(flag,0.5)', 'f|step(flag,0.75)']);
+  assert.deepEqual(proposals(one, of, taken, mulberry32(230)), []);   // with this seed the one free key would come on try 41
+  assert.equal(proposals(one, of, new Set(taken), mulberry32(1)).length <= 1, true);
 });

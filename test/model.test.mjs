@@ -29,7 +29,7 @@ test('quantileOf and statsOf (constant columns exactly)', () => {
   const s = statsOf(col, [0, 1, 2, 3, 4, 5, 6, 7]);
   assert.equal(s.mean, 5);
   assert.equal(s.sd, 2);
-  assert.deepEqual(s.q, { 0.25: 4, 0.5: 5, 0.75: 5, 0.9: 9 });
+  assert.deepEqual(s.q, { 0.25: 4, 0.5: 5, 0.75: 5, 0.9: 7 });   // nearest rank on 7·q: 1.75→2, 3.5→4, 5.25→5, 6.3→6
   const c = statsOf(Float64Array.from([3, 3, 3]), [0, 1, 2]);
   assert.equal(c.sd, 0);
   assert.equal(c.mean, 3);
@@ -71,7 +71,7 @@ test('linear, solve, logLoss, baseEntropy, absCorr', () => {
   assert.equal(solve(Float64Array.from([0, 0, 0, 0]), Float64Array.from([1, 1])), null);
   assert.equal(solve(Float64Array.from([1, 2, 2, 1]), Float64Array.from([1, 1])), null);
   close(logLoss(Float64Array.from([0, 0]), Uint8Array.from([1, 0])), Math.log(2));
-  close(logLoss(Float64Array.from([1000]), Uint8Array.from([0])), -Math.log(1e-12), 1e-6);
+  close(logLoss(Float64Array.from([1000]), Uint8Array.from([0])), -Math.log(1e-12), 1e-4);   // 1 − (1 − 1e-12) is not exactly 1e-12 in doubles
   close(logLoss(Float64Array.from([-1000]), Uint8Array.from([0])), 0, 1e-11);
   assert.equal(logLoss(new Float64Array(0), new Uint8Array(0)), 0);
   close(baseEntropy(Uint8Array.from([1, 0, 0, 0])), -(0.25 * Math.log(0.25) + 0.75 * Math.log(0.75)));

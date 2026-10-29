@@ -1,10 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SLICE_MS, createIdle } from '../src/idle.mjs';
+import { SLICE_MS, SLICE_STEPS, createIdle } from '../src/idle.mjs';
 
 const tick = () => new Promise((r) => setImmediate(r));
 
-test('SLICE_MS', () => assert.equal(SLICE_MS, 5));
+test('SLICE_MS and SLICE_STEPS', () => { assert.equal(SLICE_MS, 5); assert.equal(SLICE_STEPS, 1000); });
+
+test('a stalled clock cannot hold the loop: a slice ends at SLICE_STEPS', async () => {
+  let steps = 0;
+  const idle = createIdle({ clock: () => 0, yieldNow: tick, tier3: () => { steps++; return steps < 2500; } });
+  idle.start();
+  for (let i = 0; i < 6; i++) await tick();
+  assert.equal(steps, 2500);
+  assert.equal(idle.stats.slices, 3);
+});
 
 test('tier-3 runs in slices until there is nothing left; a slice never outlasts SLICE_MS of clock', async () => {
   let t = 0, steps = 0;
@@ -20,7 +29,7 @@ test('tier-3 runs in slices until there is nothing left; a slice never outlasts 
 test('a job aborts the tier-2 call in flight, runs, and the daydream resumes', async () => {
   let t = 0, calls = 0, sawAbort = false;
   const idle = createIdle({
-    clock: () => t, yieldNow: tick, tier3: () => true, plan: (i) => (i === 0 ? 'tier2' : 'tier3'),
+    clock: () => (t += 1), yieldNow: tick, tier3: () => true, plan: (i) => (i === 0 ? 'tier2' : 'tier3'),
     tier2: (signal) => new Promise((resolve, reject) => { calls++; signal.addEventListener('abort', () => { sawAbort = true; reject(new Error('aborted')); }); }),
   });
   idle.start();

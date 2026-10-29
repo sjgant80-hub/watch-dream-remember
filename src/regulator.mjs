@@ -39,7 +39,7 @@ const num = (x) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
 /** files touched → bucket 0..5: 1, 2, 3–4, 5–8, 9–16, 17+ */
 export function filesBucket(files) {
   const f = num(files);
-  if (f <= 1) return 0;
+  if (f < 2) return 0;
   return Math.min(5, Math.ceil(Math.log2(f)));
 }
 /** minutes since the node's previous action → floor(log2(1 + minutes)), 0..9 */
@@ -91,7 +91,7 @@ export function partsOf(window) {
 /** A band from window entropies: { Sb, eps } — the middle and half-width of q05–q95, half-width at least EPS_FLOOR. */
 export function bandOf(values) {
   const lo = quantile(values, 0.05), hi = quantile(values, 0.95);
-  if (lo === null || hi === null) return null;
+  if (lo === null) return null;   // both come from the same list: one is null exactly when the other is
   return { Sb: (lo + hi) / 2, eps: Math.max(EPS_FLOOR, (hi - lo) / 2) };
 }
 
@@ -135,8 +135,8 @@ export function calibrate(fits) {
   const all = { area: [], files: [], gap: [], cv: [] };
   for (const f of Array.isArray(fits) ? fits : []) {
     const acts = withGaps(f.fit || []);
-    const span = acts.length ? [acts[0].t, acts[acts.length - 1].t + 1] : [0, 0];
-    const ws = windowsOf(acts, span[0], span[1] + HOUR, num(f.offset)).filter((w) => w.length >= N_MIN).map(partsOf);
+    const span = acts.length ? [acts[0].t, acts[acts.length - 1].t + HOUR] : [0, 0];   // through the visit that sees the last action
+    const ws = windowsOf(acts, span[0], span[1], num(f.offset)).filter((w) => w.length >= N_MIN).map(partsOf);
     const mine = { area: [], files: [], gap: [], cv: [] };
     for (const p of ws) {
       for (const k of PARTS) if (p.H[k] !== null) { mine[k].push(p.H[k]); all[k].push(p.H[k]); }
@@ -223,20 +223,21 @@ export function decide(prev, obs, base, drift) {
   let verdict = 'steady';
   if (P >= BAR.pause || (over && m.over)) verdict = 'pause';
   else if (P >= BAR.throttle || over) verdict = 'throttle';
-  else if (P >= BAR.watch || E >= BAR.field || g >= BAR.rapid) verdict = 'watch';
+  else if (P >= BAR.watch || E >= BAR.field) verdict = 'watch';   // a rise of 0.5 implies a field of at least 0.5: rate needs no clause of its own
   if (probation && verdict !== 'pause') verdict = 'throttle';   // the first visit after a cool-down lifts a pause to throttle only
   const pausing = verdict === 'pause';
-  const freshPause = pausing && !m.paused;
+  // here a node still marked paused is on probation (the held branch above returned otherwise), so every pause on this path
+  // is a NEW one — counted, with a fresh cool-down — and nothing here is a renewal
   const reasonsOut = reasons.length ? reasons : pausing ? ['pressure'] : [];
   const lift = (m.throttled || m.paused) && (verdict === 'steady' || verdict === 'watch');
   const next = {
     ...m, P, E, over,
     paused: pausing,
-    pauses: m.pauses + (pausing && (freshPause || probation) ? 1 : 0),
-    coolUntil: pausing && (freshPause || probation) ? t + 12 * HOUR * 2 ** m.pauses : m.coolUntil,
+    pauses: m.pauses + (pausing ? 1 : 0),
+    coolUntil: pausing ? t + 12 * HOUR * 2 ** m.pauses : m.coolUntil,
     throttled: verdict === 'throttle',
   };
-  return out(verdict, reasonsOut, { renew: pausing && !freshPause && !probation, lift, probation: probation && verdict === 'throttle', P, E, g, r: bud.r, parts: f && f.parts ? f.parts : null }, next);
+  return out(verdict, reasonsOut, { lift, probation: probation && verdict === 'throttle', P, E, g, r: bud.r, parts: f && f.parts ? f.parts : null }, next);
 }
 
 /** The BES layer's verdicts on this ladder: ALLOW → steady, THROTTLE → throttle, STEP_UP → watch (a person is asked),

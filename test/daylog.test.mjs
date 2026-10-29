@@ -67,6 +67,17 @@ test('promote: the k highest leave the log', () => {
   assert.deepEqual(promote(null, 3), { promoted: [], log: [] });
 });
 
+test('the byte bound is inclusive: exactly 12,288 LIGHT bytes is within it, 12,290 is not', () => {
+  const rec = { key: 'k', dataset: 'bank', spec: { op: 'log', f: 'age' }, source: 'gap', priority: 0.5, born: 0, at: 0, inert: true };
+  const noise = (seed, n) => { let s = seed; return Array.from({ length: n }, () => (s = (s * 16807) % 2147483647).toString(36)).join(''); };
+  const tail = noise(777, 40);
+  const logOf = (m) => Array.from({ length: 40 }, (_, i) => ({ ...rec, key: 'k' + i + '-' + noise(9 + i, 76) + (i === 39 ? tail.slice(0, m) : '') }));
+  assert.equal(bound(logOf(30)).bytes, 12288);
+  assert.equal(bound(logOf(30)).ok, true);
+  assert.equal(bound(logOf(32)).bytes, 12290);
+  assert.equal(bound(logOf(32)).ok, false);
+});
+
 test('lightOf round-trips through LIGHT; bound checks records, bytes, uniqueness and inertness', () => {
   const log = add([], [c('a', 0.1), c('b', 0.9)], 0).log;
   const bytes = lightOf(log);

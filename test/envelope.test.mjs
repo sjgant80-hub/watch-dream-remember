@@ -90,6 +90,13 @@ test('every stage refuses for its own reason, first failing stage named', () => 
   assert.equal(admits(env({ budget: 4 }), at('report', { cost: 5 }), ctx()).why, 'it may spend 4 units');
 });
 
+test('a function dressed as an envelope or an action is unreadable', () => {
+  const fe = Object.assign(() => {}, env());
+  assert.equal(stage(fe, at('pause'), ctx()), 'shape');
+  const fa = Object.assign(() => {}, at('pause'));
+  assert.equal(stage(env(), fa, ctx()), 'shape');
+});
+
 test('a getter that throws reads as an unreadable shape, never a throw', () => {
   const evil = env();
   Object.defineProperty(evil, 'nonce', { get() { throw new Error('boom'); } });

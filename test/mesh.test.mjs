@@ -169,3 +169,59 @@ test('a node without a base still gets visited; offsets order visits within the 
   assert.deepEqual(r.records.map((x) => [x.node, x.at - T0]), [['a', 0], ['b', 6 * MINUTE]]);
   assert.equal(r.nodes.a.executed[0].gap, null);
 });
+
+const steady = { band: { area: null, files: null, gap: null }, cvFloor: 0, perHour: 1e9, perDay: 1e9 };
+const at = (t, area = 'src') => ({ t, area, files: 1 });
+
+test('a throttle renewed visit after visit keeps alternating across renewals (parity carries over)', () => {
+  // drift 0.7 every visit: P climbs 0.35, 0.525, 0.6125 (throttle), 0.656… — throttled from the visit at +2 h on
+  const intents = [];
+  for (let h = 0; h < 6; h++) for (let k = 0; k < 5; k++) intents.push(at(T0 + h * HOUR + (k * 11 + 2) * MINUTE));
+  const r = replay({ nodes: [{ name: 'a', fit, intents }], base: { a: steady }, from: T0, to: T0 + 6 * HOUR, regulator: {}, drift: () => ({ E: 0.7 }) });
+  assert.deepEqual(r.records.slice(0, 6).map((x) => x.verdict), ['watch', 'watch', 'throttle', 'throttle', 'throttle', 'throttle']);
+  const ex = (h) => r.nodes.a.executed.filter((a) => a.t > T0 + h * HOUR && a.t < T0 + (h + 1) * HOUR).length;
+  assert.deepEqual([ex(2), ex(3), ex(4)], [2, 3, 2]);   // H E H E H · E H E H E · H E H E H
+  assert.equal(r.nodes.a.leases.length, 1);
+});
+
+test('a lapsed lease ends exactly at its end: an attempt AT that moment is free', () => {
+  const r = replay({ nodes: [{ name: 'a', fit, intents: [at(T0 + 6 * HOUR)] }], base: { a: steady }, from: T0, to: T0 + 8 * HOUR, regulator: { killAt: T0 + 4 * HOUR }, drift: (w) => ({ E: w.length ? 0 : 0.7 }) });
+  // throttle from +2 h, renewed at +3 h (lease to +6 h), then the regulator is gone; the attempt lands exactly as the lease ends
+  assert.equal(r.records.find((x) => x.at === T0 + 3 * HOUR).verdict, 'throttle');
+  assert.equal(r.nodes.a.executed.length, 1);
+  assert.deepEqual(r.nodes.a.leases, [{ t: T0 + 2 * HOUR, kind: 'throttle', end: T0 + 6 * HOUR }]);
+});
+
+test('windows: an attempt at a visit belongs to that visit; one at the start of the run belongs to none; the day is (t − 24 h, t]', () => {
+  const day = { ...steady, perHour: 1e9, perDay: 3 };
+  const r = replay({ nodes: [{ name: 'a', fit, intents: [at(T0), at(T0 + HOUR)] }], base: { a: { ...steady, perHour: 1 } }, from: T0, to: T0 + 2 * HOUR + 1, regulator: {}, drift: () => ({ E: 0 }) });
+  assert.deepEqual(r.records.map((x) => x.r), [0, 1, 0]);   // the attempt at the very start is consumed, never counted; the one at +1 h counts at +1 h
+  const d = replay({ nodes: [{ name: 'a', fit, intents: [at(T0 + HOUR), at(T0 + 2 * HOUR)] }], base: { a: day }, from: T0, to: T0 + 26 * HOUR, regulator: {}, drift: () => ({ E: 0 }) });
+  const rOf = (h) => d.records.find((x) => x.at === T0 + h * HOUR).r;
+  assert.deepEqual([rOf(1), rOf(2), rOf(24), rOf(25), rOf(3)], [0.333333, 0.666667, 0.666667, 0.333333, 0.666667]);   // at +25 h the first is exactly 24 h old: out
+});
+
+test('two honest pauses in six hours are within the envelope; checks stop before the end of the run', () => {
+  const two = ['a', 'b'].map((name) => ({ name, fit, intents: [] }));
+  const r = replay({ nodes: two, base: { a: steady, b: steady }, from: T0, to: T0 + 5 * HOUR, regulator: {}, drift: () => ({ E: 1 }) });
+  assert.equal(r.records.filter((x) => x.verdict === 'pause' && !x.renew).length, 2);
+  for (const n of ['a', 'b']) assert.deepEqual(r.nodes[n].alerts, []);
+  const edge = replay({ nodes: [{ name: 'a', fit, intents: [] }], base: { a: steady }, from: T0, to: T0 + 3 * HOUR + CHECK, regulator: { killAt: T0 + HOUR }, drift: () => ({ E: 0 }) });
+  assert.deepEqual(edge.nodes.a.alerts, [{ t: T0 + 2 * HOUR + CHECK, kind: 'regulator-silent' }]);
+  const exact = replay({ nodes: [{ name: 'a', fit, intents: [] }], base: { a: steady }, from: T0, to: T0 + 2 * HOUR + CHECK, regulator: { killAt: T0 + HOUR }, drift: () => ({ E: 0 }) });
+  assert.deepEqual(exact.nodes.a.alerts, []);   // the check that would raise it is at the end of the run: not in it
+});
+
+test('a non-object regulator is no regulator; a node with no FIT is fine; the rewrite is recorded', () => {
+  assert.equal(replay({ nodes: [{ name: 'a', fit, intents: [] }], base: { a: steady }, from: T0, to: T0 + 3 * HOUR, regulator: true }).records.length, 0);
+  const bare = replay({ nodes: [{ name: 'z', intents: [at(T0 + 1)] }], base: { z: steady }, from: T0, to: T0 + 2 * HOUR, regulator: {} });
+  assert.equal(bare.nodes.z.executed.length, 1);
+  assert.equal(bare.nodes.z.executed[0].gap, null);
+  const fit3 = [at(T0 - 3 * HOUR, 'src'), at(T0 - 2 * HOUR, 'test'), at(T0 - HOUR, 'page')];
+  const hi = replay({ nodes: [{ name: 'a', fit: fit3, intents: [] }], base: { a: steady }, from: T0, to: T0 + 2 * HOUR, regulator: {}, tampers: [{ node: 'a', t: T0 + 1, u: 0.99999999 }] });
+  assert.deepEqual(hi.nodes.a.tampered, [{ t: T0 + 1, k: 2, from: 'page', to: 'docs' }]);
+  const lo = replay({ nodes: [{ name: 'a', fit: fit3, intents: [] }], base: { a: steady }, from: T0, to: T0 + 2 * HOUR, regulator: {}, tampers: [{ node: 'a', t: T0 + 1, u: 0.5 }] });
+  assert.deepEqual(lo.nodes.a.tampered, [{ t: T0 + 1, k: 1, from: 'test', to: 'tools' }]);
+  const wrap = replay({ nodes: [{ name: 'a', fit: [at(T0 - HOUR, 'other')], intents: [] }], base: { a: steady }, from: T0, to: T0 + HOUR, regulator: {}, tampers: [{ node: 'a', t: T0 + 1, u: 0 }] });
+  assert.deepEqual(wrap.nodes.a.tampered, [{ t: T0 + 1, k: 0, from: 'other', to: 'src' }]);
+});

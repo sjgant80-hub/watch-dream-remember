@@ -25,7 +25,7 @@ export const MIN_N = 20, MIN_FOUNDER = 5, SHRINK = 50, MIN_LATER = 30, SLICE = 8
 const enc = new TextEncoder();
 const logit = (p) => Math.log(p / (1 - p));
 const sigma = (t) => 1 / (1 + Math.exp(-t));
-const loss = (eta, y) => { const p = Math.min(1 - 1e-12, Math.max(1e-12, sigma(eta))); return y ? -Math.log(p) : -Math.log(1 - p); };
+export const loss = (eta, y) => { const p = Math.min(1 - 1e-12, Math.max(1e-12, sigma(eta))); return y ? -Math.log(p) : -Math.log(1 - p); };
 
 /** HMAC-SHA-256 (RFC 2104) over strings → hex. */
 export function hmac(key, message) {
@@ -60,6 +60,9 @@ export function founderIn(L, genes, founder, cell, context) {
   for (const e of eta) s += sigma(e);
   return { n: pos.length, mean: s / pos.length };
 }
+
+/** Has a lesson held up? It lowered later loss in total, over at least MIN_LATER later cases. */
+export const isVerified = (t) => !!t && t.gain > 0 && t.later >= MIN_LATER;
 
 /** A lesson's shift of the logit, or null when it cannot be applied. */
 export function shiftOf(lesson, fin) {
@@ -104,7 +107,7 @@ export function relive(L, genes, founder, episodes, context) {
     const pos = eps.map((e) => e.pos);
     const eta = etaOf(L, genes, 'fit', pos);
     const now = lessonsFrom(L, cells, seen, context);
-    const usable = Object.entries(now).filter(([k]) => track[k] && track[k].gain > 0 && track[k].later >= MIN_LATER).map(([, l]) => l);
+    const usable = Object.entries(now).filter(([k]) => isVerified(track[k])).map(([, l]) => l);
     const withAll = etaWith(L, genes, founder, 'fit', pos, usable);
     let w0 = 0, w1 = 0;
     eps.forEach((e, i) => { w0 += loss(eta[i], e.outcome); w1 += loss(withAll[i], e.outcome); });
@@ -122,7 +125,7 @@ export function relive(L, genes, founder, episodes, context) {
   const lessons = {};
   for (const [k, l] of Object.entries(final)) {
     const t = track[k] || { gain: 0, later: 0 };
-    lessons[k] = { ...l, gain: t.gain, later: t.later, verified: t.gain > 0 && t.later >= MIN_LATER };
+    lessons[k] = { ...l, gain: t.gain, later: t.later, verified: isVerified(t) };
   }
   return { lessons, outcomes };
 }
@@ -152,7 +155,7 @@ export function forget(L, genes, founder, m, ids) {
 
 /** The inheritance from one parent: its top SLICE verified lessons by gain (ties by cell key), lineage-tagged. */
 export function sliceOf(m) {
-  return verified(m).sort((a, b) => b.gain - a.gain || (cellKey(a.cell) < cellKey(b.cell) ? -1 : 1)).slice(0, SLICE)
+  return verified(m).sort((a, b) => b.gain - a.gain || ([cellKey(a.cell), cellKey(b.cell)].sort()[0] === cellKey(a.cell) ? -1 : 1)).slice(0, SLICE)
     .map((l) => ({ cell: { ...l.cell }, context: l.context ? { ...l.context } : null, rate: l.rate, n: l.n, gain: l.gain, lineage: [m.mind] }));
 }
 

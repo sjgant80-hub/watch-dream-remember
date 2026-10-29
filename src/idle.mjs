@@ -8,11 +8,11 @@
 //     tier2(signal)  one local-model call; must stop when the AbortSignal fires
 //     plan(i)        'tier2' | 'tier3' for the i-th unit of daydream work
 //   → { start(), stop(), job(fn), pause(on), stats }
-// Tier-3 work runs in slices of at most SLICE_MS between which the loop yields, so a job's arrival is seen within one
-// slice; a tier-2 call in flight is aborted the instant a job arrives.
+// Tier-3 work runs in slices of at most SLICE_MS (or SLICE_STEPS steps, so a stalled clock cannot hold the loop) between
+// which the loop yields, so a job's arrival is seen within one slice; a tier-2 call in flight is aborted the instant a job arrives.
 // ════════════════════════════════════════════════════════════════
 
-export const SLICE_MS = 5;
+export const SLICE_MS = 5, SLICE_STEPS = 1000;   // a slice ends at 5 ms of clock or 1,000 steps, whichever comes first
 
 export function createIdle(opts) {
   const o = opts && typeof opts === 'object' ? opts : {};
@@ -36,8 +36,8 @@ export function createIdle(opts) {
         inflight = null;
       } else {
         const t0 = clock();
-        let more = true;
-        while (more && clock() - t0 < SLICE_MS && idle()) more = tier3() !== false;
+        let more = true, steps = 0;
+        while (more && steps < SLICE_STEPS && clock() - t0 < SLICE_MS && idle()) { more = tier3() !== false; steps++; }
         stats.slices++;
         if (!more) running = false;
       }

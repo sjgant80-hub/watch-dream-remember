@@ -345,3 +345,39 @@ test('decide: rate alone raises watch; a field at 0.5 is watch', () => {
   assert.deepEqual([p.verdict, p.reasons], ['watch', []]);
   close(p.P, 0.305);
 });
+
+test('decide: every bar is inclusive — P 0.3 watches, 0.6 throttles, 0.85 pauses; a field of 0.5 and a rise of 0.5 count', () => {
+  const at = (P, E, Enew) => decide({ ...freshNode(), P, E }, obs(), base, () => ({ E: Enew }));
+  assert.deepEqual([at(0.6, 0, 0).verdict, at(0.6, 0, 0).P], ['watch', 0.3]);
+  assert.equal(at(0.58, 0, 0).verdict, 'steady');
+  assert.deepEqual([at(0.2, 1, 1).verdict, at(0.2, 1, 1).P], ['throttle', 0.6]);
+  assert.equal(at(0.18, 1, 1).verdict, 'watch');
+  assert.deepEqual([at(0.7, 1, 1).verdict, at(0.7, 1, 1).P], ['pause', 0.85]);
+  assert.equal(at(0.68, 1, 1).verdict, 'throttle');
+  assert.deepEqual(at(0, 0, 0.5).reasons, ['drift', 'rate']);
+  assert.deepEqual(at(0, 0.01, 0.5).reasons, ['drift']);
+  assert.equal(at(0, 0.01, 0.5).verdict, 'watch');   // P 0.25: the field alone raises watch
+  assert.equal(at(0, 0.01, 0.49).verdict, 'steady');
+  assert.equal(at(0, 0, 0.5).g, 0.5);
+  const still = decide({ ...freshNode(), P: 0.7, E: 1, throttled: true }, obs(), base, () => ({ E: 1 }));
+  assert.deepEqual([still.verdict, still.lift], ['pause', false]);
+  const kept = decide({ ...freshNode(), P: 0.5, E: 1, throttled: true }, obs(), base, () => ({ E: 1 }));
+  assert.deepEqual([kept.verdict, kept.lift, kept.renew], ['throttle', false, false]);
+  const fresh = decide(freshNode(), obs(), base, () => ({ E: 0 }));
+  assert.equal(fresh.next.pauses, 0);
+  assert.equal(fresh.next.coolUntil, 0);
+});
+
+test('decide: a function carrying memory or an observation is neither', () => {
+  const f = Object.assign(() => {}, { P: 0.9, E: 1, paused: true, coolUntil: Infinity });
+  assert.equal(decide(f, obs(), base).verdict, 'steady');
+  const o = Object.assign(() => {}, obs({ healthOk: true }));
+  assert.equal(decide(freshNode(), o, base).verdict, 'pause');   // a function is not an observation: its health is unread
+});
+
+test('calibrate: a window of exactly N_MIN actions counts', () => {
+  const five = [];
+  for (let h = 0; h < 8; h++) for (let k = 0; k < 5; k++) five.push({ t: h * HOUR + (k * 11 + 3) * MINUTE, area: ['src', 'test', 'data'][(h + k) % 3], files: 1 + ((h + k) % 4) });
+  assert.equal(calibrate([{ name: 'f', fit: five }]).nodes.f.pooled, false);
+  assert.equal(calibrate([{ name: 'f', fit: five.filter((_, i) => i % 5 !== 4) }]).nodes.f.pooled, true);
+});

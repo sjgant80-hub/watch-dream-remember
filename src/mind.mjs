@@ -43,7 +43,7 @@ export function cellsOf(genes) {
   const raw = genes.specs.map((s, j) => ({ f: s.f, w: Math.abs(genes.beta[j + 1]), op: s.op, j })).filter((x) => x.op === 'raw')
     .sort((x, y) => y.w - x.w || x.j - y.j).slice(0, STRONG).map((x) => x.f);
   const out = [];
-  for (let i = 0; i < raw.length; i++) for (let k = i + 1; k < raw.length; k++) for (const a of [0, 1]) for (const b of [0, 1]) out.push({ f: raw[i], a, g: raw[k], b });
+  raw.forEach((f, i) => raw.slice(i + 1).forEach((g) => { for (const a of [0, 1]) for (const b of [0, 1]) out.push({ f, a, g, b }); }));
   return out;
 }
 
@@ -56,6 +56,11 @@ export function inCell(L, c, set, pos) {
   return above(c.f) === c.a && above(c.g) === c.b;
 }
 
+/** Born only when the child beats BOTH parents on GATE. */
+export const bornOf = (gate) => gate.child < gate.a && gate.child < gate.b;
+/** Not born: the parent with the lower GATE log-loss gives its genes (A on a tie). */
+export const better = (gate, A, B) => (gate.a <= gate.b ? A : B);
+
 /** Breed: the gated fusion of two parents. → { genes, born, gate: { child, a, b } } */
 export function fuse(L, A, B) {
   const seen = new Set(), specs = [];
@@ -64,6 +69,6 @@ export function fuse(L, A, B) {
   const all = range(0, L.sets.gate.length);
   const g = (genes) => logLoss(etaOf(L, genes, 'gate', all), L.y.gate);
   const gate = { child: g(child), a: g(A), b: g(B) };
-  const born = gate.child < gate.a && gate.child < gate.b;
-  return { genes: born ? child : gate.a <= gate.b ? A : B, born, gate };
+  const born = bornOf(gate);
+  return { genes: born ? child : better(gate, A, B), born, gate };
 }

@@ -22,7 +22,8 @@ export function injection(type, node, base, t0, rng) {
     for (let t = t0; t < end; t += (5 + 10 * rng()) * MINUTE) out.push({ t: Math.round(t), area: AREAS[Math.floor(rng() * AREAS.length)], files: 1 + Math.floor(rng() * 20), injected: true });
   } else if (type === 'overrun') {
     const perHour = Math.max(20, 3 * base.fitHourMax);
-    for (let t = t0 - (Math.log(1 - rng()) / perHour) * HOUR; t < end; t -= (Math.log(1 - rng()) / perHour) * HOUR) {
+    const gap = () => -(Math.log(1 - rng()) / perHour) * HOUR || 1000;   // a draw of exactly 0 would stand still: step a second
+    for (let t = t0 + gap(); t < end; t += gap()) {
       const a = node.fit[Math.floor(rng() * node.fit.length)];
       out.push({ t: Math.round(t), area: a.area, files: a.files, injected: true });
     }

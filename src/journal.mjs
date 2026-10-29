@@ -49,7 +49,7 @@ export function verifyFrom(journal, head) {
 /** The same journal with record k rewritten (area changed) and every later record re-hashed — a forged history. */
 export function rewrite(journal, k, area) {
   const list = Array.isArray(journal) ? journal : [];
-  if (!Number.isInteger(k) || k < 0 || k >= list.length) return list.slice();
+  if (!Number.isInteger(k) || k < 0) return list.slice();   // k past the end rewrites nothing: the copy below is whole
   let out = list.slice(0, k);
   for (let i = k; i < list.length; i++) out = append(out, i === k ? { ...list[i], area } : list[i]);
   return out;
