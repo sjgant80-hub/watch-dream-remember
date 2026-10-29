@@ -1,0 +1,379 @@
+{
+ "kind": "watch-dream-remember.organ3d.inheritance-fresh.run",
+ "seal": "b0dea93",
+ "notes": [
+  "Every family is built from rows prepare() never kept: no organ of this build had read them.",
+  "blind is organ 3’s M2 mechanism (the slice from birth, never dropped) on the same fresh children: context, not a claim.",
+  "F4 is reported whatever it shows; it is not part of the fix."
+ ],
+ "fixed": false,
+ "context": {
+  "blind": "1 of 5 fresh children better with blind inheritance: bank-1 +0.0008 (lb -0.0039); bank-2 +0.0009 (lb 0.0002); adult-1 +0.0006 (lb -0.0006); adult-2 +0.0006 (lb -0.0006); credit-1 +0.0066 (lb 0.0020)"
+ },
+ "claims": {
+  "F1": {
+   "pass": false,
+   "measured": "1 of 5 fresh children better with their inheritance, checked against their own cases (bar 4): bank-1 +0.0009 (lb -0.0039); bank-2 +0.0009 (lb 0.0002); adult-1 +0.0003 (lb -0.0007); adult-2 +0.0017 (lb -0.0003); credit-1 +0.0065 (lb 0.0015)"
+  },
+  "F2": {
+   "pass": true,
+   "measured": "0 of 5 fresh children significantly worse (every 95% upper bound ≥ 0): bank-1 ub 0.0058, bank-2 ub 0.0018, adult-1 ub 0.0012, adult-2 ub 0.0038, credit-1 ub 0.0116"
+  },
+  "F3": {
+   "pass": true,
+   "measured": "0 canaries and 0 raw rows of 15013 parent episodes in the children; slice fields exact in 5/5, adopted/dropped fields exact in 5/5",
+   "children": [
+    {
+     "family": "bank-1",
+     "scannedEpisodes": 2165,
+     "childBytes": 652730,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "family": "bank-2",
+     "scannedEpisodes": 4000,
+     "childBytes": 636354,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "family": "adult-1",
+     "scannedEpisodes": 2425,
+     "childBytes": 675403,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "family": "adult-2",
+     "scannedEpisodes": 2423,
+     "childBytes": 647768,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "family": "credit-1",
+     "scannedEpisodes": 4000,
+     "childBytes": 719331,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    }
+   ]
+  },
+  "F4": {
+   "pass": false,
+   "measured": "0 of 5 better when both arms also learn their own lessons (bar 4): bank-1 +0.0035 (lb -0.0004); bank-2 +0.0009 (lb 0.0002); adult-1 -0.0009 (lb -0.0017); adult-2 +0.0008 (lb -0.0002); credit-1 +0.0034 (lb -0.0006)"
+  }
+ },
+ "held": 2,
+ "of": 4,
+ "families": [
+  {
+   "family": "bank-1",
+   "dataset": "bank",
+   "segment": "job_self-employed",
+   "born": false,
+   "gate": {
+    "child": 2.806125,
+    "a": 2.789551,
+    "b": 0.402543
+   },
+   "parents": {
+    "A": {
+     "mind": "d72d42aa80192db8",
+     "episodes": 2000,
+     "verified": 10
+    },
+    "B": {
+     "mind": "9b43789ffe811f7d",
+     "episodes": 165,
+     "verified": 0
+    }
+   },
+   "inherited": 8,
+   "fromA": 8,
+   "fromB": 0,
+   "tasks": 2000,
+   "F1": {
+    "mean": 0.000862,
+    "lb": -0.003927,
+    "ub": 0.005778,
+    "pass": false,
+    "noHarm": true,
+    "trustedAtBirth": 8,
+    "dropped": 21,
+    "inUseAtEnd": 8
+   },
+   "F4": {
+    "mean": 0.00349,
+    "lb": -0.000448,
+    "ub": 0.007441,
+    "pass": false
+   },
+   "blind": {
+    "mean": 0.000831,
+    "lb": -0.003906,
+    "ub": 0.005705,
+    "pass": false
+   }
+  },
+  {
+   "family": "bank-2",
+   "dataset": "bank",
+   "segment": "euribor3m",
+   "born": false,
+   "gate": {
+    "child": 1.851472,
+    "a": 1.070394,
+    "b": 5.297461
+   },
+   "parents": {
+    "A": {
+     "mind": "17a0153d92e458fa",
+     "episodes": 2000,
+     "verified": 0
+    },
+    "B": {
+     "mind": "0f920f7fef3298b7",
+     "episodes": 2000,
+     "verified": 9
+    }
+   },
+   "inherited": 8,
+   "fromA": 0,
+   "fromB": 8,
+   "tasks": 2000,
+   "F1": {
+    "mean": 0.000932,
+    "lb": 0.000204,
+    "ub": 0.001774,
+    "pass": false,
+    "noHarm": true,
+    "trustedAtBirth": 8,
+    "dropped": 0,
+    "inUseAtEnd": 8
+   },
+   "F4": {
+    "mean": 0.000932,
+    "lb": 0.000204,
+    "ub": 0.001774,
+    "pass": false
+   },
+   "blind": {
+    "mean": 0.000932,
+    "lb": 0.000204,
+    "ub": 0.001774,
+    "pass": false
+   }
+  },
+  {
+   "family": "adult-1",
+   "dataset": "adult",
+   "segment": "capitalGain",
+   "born": true,
+   "gate": {
+    "child": 0.340452,
+    "a": 0.440464,
+    "b": 0.420896
+   },
+   "parents": {
+    "A": {
+     "mind": "82f57e0a5a397d18",
+     "episodes": 2000,
+     "verified": 9
+    },
+    "B": {
+     "mind": "635c7428f941cda2",
+     "episodes": 425,
+     "verified": 13
+    }
+   },
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "tasks": 2000,
+   "F1": {
+    "mean": 0.00025,
+    "lb": -0.000651,
+    "ub": 0.001156,
+    "pass": false,
+    "noHarm": true,
+    "trustedAtBirth": 16,
+    "dropped": 31,
+    "inUseAtEnd": 13
+   },
+   "F4": {
+    "mean": -0.000859,
+    "lb": -0.001711,
+    "ub": -0.000015,
+    "pass": false
+   },
+   "blind": {
+    "mean": 0.000602,
+    "lb": -0.000607,
+    "ub": 0.001756,
+    "pass": false
+   }
+  },
+  {
+   "family": "adult-2",
+   "dataset": "adult",
+   "segment": "capitalGain",
+   "born": true,
+   "gate": {
+    "child": 0.337382,
+    "a": 0.370423,
+    "b": 0.408982
+   },
+   "parents": {
+    "A": {
+     "mind": "9d2c3d33d98a7ba4",
+     "episodes": 2000,
+     "verified": 6
+    },
+    "B": {
+     "mind": "81634be72eab14df",
+     "episodes": 423,
+     "verified": 9
+    }
+   },
+   "inherited": 14,
+   "fromA": 6,
+   "fromB": 8,
+   "tasks": 2000,
+   "F1": {
+    "mean": 0.001748,
+    "lb": -0.000276,
+    "ub": 0.003831,
+    "pass": false,
+    "noHarm": true,
+    "trustedAtBirth": 14,
+    "dropped": 8,
+    "inUseAtEnd": 9
+   },
+   "F4": {
+    "mean": 0.000824,
+    "lb": -0.000163,
+    "ub": 0.001934,
+    "pass": false
+   },
+   "blind": {
+    "mean": 0.000581,
+    "lb": -0.000605,
+    "ub": 0.00175,
+    "pass": false
+   }
+  },
+  {
+   "family": "credit-1",
+   "dataset": "credit",
+   "segment": "BILL_AMT5",
+   "born": true,
+   "gate": {
+    "child": 0.455153,
+    "a": 0.46252,
+    "b": 0.50018
+   },
+   "parents": {
+    "A": {
+     "mind": "196d64630f64d302",
+     "episodes": 2000,
+     "verified": 12
+    },
+    "B": {
+     "mind": "821866b95c6ff532",
+     "episodes": 2000,
+     "verified": 14
+    }
+   },
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "tasks": 2000,
+   "F1": {
+    "mean": 0.00646,
+    "lb": 0.00151,
+    "ub": 0.011608,
+    "pass": true,
+    "noHarm": true,
+    "trustedAtBirth": 16,
+    "dropped": 46,
+    "inUseAtEnd": 15
+   },
+   "F4": {
+    "mean": 0.003367,
+    "lb": -0.000607,
+    "ub": 0.007624,
+    "pass": false
+   },
+   "blind": {
+    "mean": 0.006648,
+    "lb": 0.001957,
+    "ub": 0.011445,
+    "pass": true
+   }
+  }
+ ],
+ "histories": [
+  {
+   "family": "bank-1",
+   "child": {
+    "key": "699072c193a30d68123cd03167715dfeb3456bb4073b7458f4a78556b353390e",
+    "head": "23bb8d726bdc97ac1fc816370e40074edaf78ba3146cea9415d271b6536dacab",
+    "entries": 128,
+    "ok": true
+   }
+  },
+  {
+   "family": "bank-2",
+   "child": {
+    "key": "966d9a02ae1f11aaaa3f5b5bdb75f6a4daf0b1e0a35bfe0078c33b6e23b3b03a",
+    "head": "1db0c6872bd8ec24e6bdc064dc36ce6dec71c55890960ce95d4a4e32423818a5",
+    "entries": 58,
+    "ok": true
+   }
+  },
+  {
+   "family": "adult-1",
+   "child": {
+    "key": "a4d8e35909e8ac8e73a70df2f8f18fb970160dd78b6403b5a4fcf2a7fcdc5659",
+    "head": "a11ed59705e7af5da4d9414c6e99cddafe89a17778ab44c6849ffc82b7643c64",
+    "entries": 180,
+    "ok": true
+   }
+  },
+  {
+   "family": "adult-2",
+   "child": {
+    "key": "95eaaadab4d7454dc1fe1a7267735a28d9019f1f91c2dccbe34c8636fd832278",
+    "head": "a2455b54ca83973752811688818153242320d94ca79c3ce188fa440563c7ee5c",
+    "entries": 76,
+    "ok": true
+   }
+  },
+  {
+   "family": "credit-1",
+   "child": {
+    "key": "fdc35bbe01aee81d5c00e433a697877c9598c8298ce32643955a559c9ee039f2",
+    "head": "d968589ccddc76d4a3ecde3549f0a245740544ed77ecaafd48796c17ba52263d",
+    "entries": 246,
+    "ok": true
+   }
+  }
+ ]
+}
