@@ -1,0 +1,621 @@
+{
+ "kind": "watch-dream-remember.organ3.memory.run",
+ "seal": "4da8aa4",
+ "notes": [
+  "Salts here are drawn from a seeded PRNG (mulberry32(20261029 + 5)) so a re-measurement is byte-identical; a deployment draws them from the platform’s cryptographic random source.",
+  "The history keeps outcome and lesson entries formed before a deletion (aggregates over ≥ 20 cases); the deleted episodes’ content, salts and refs are gone."
+ ],
+ "claims": {
+  "M1": {
+   "pass": true,
+   "measured": "8 of 10 parents better with their verified lessons on 2,000 repeat-domain tasks (bar 8): shop A -0.1465 (lb -0.1737); shop B +0.5623 (lb 0.5136); bank A +0.0058 (lb 0.0012); bank B +0.1079 (lb 0.0636); adult A +0.0033 (lb 0.0007); adult B +0.2057 (lb 0.1566); credit A +0.0095 (lb 0.0051); credit B +0.0538 (lb 0.0382); coupon A +0.0186 (lb 0.0126); coupon B +0.0000 (lb 0.0000)",
+   "parents": [
+    {
+     "dataset": "shop",
+     "parent": "A",
+     "mind": "73a78de107eaaa87",
+     "episodes": 2000,
+     "lessons": 18,
+     "verified": 18,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": -0.146459,
+     "lb": -0.173687,
+     "pass": false
+    },
+    {
+     "dataset": "shop",
+     "parent": "B",
+     "mind": "d3d505d111965ace",
+     "episodes": 1096,
+     "lessons": 24,
+     "verified": 21,
+     "tasks": 1120,
+     "n": 1120,
+     "mean": 0.562331,
+     "lb": 0.513619,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "parent": "A",
+     "mind": "a50abe0d326c9dca",
+     "episodes": 2000,
+     "lessons": 23,
+     "verified": 11,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.005831,
+     "lb": 0.001226,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "parent": "B",
+     "mind": "e3523070835911f6",
+     "episodes": 350,
+     "lessons": 9,
+     "verified": 9,
+     "tasks": 361,
+     "n": 361,
+     "mean": 0.107909,
+     "lb": 0.063574,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "parent": "A",
+     "mind": "1649768c0143840d",
+     "episodes": 2000,
+     "lessons": 18,
+     "verified": 8,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.003257,
+     "lb": 0.000719,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "parent": "B",
+     "mind": "2b1f4e2f83aa928f",
+     "episodes": 417,
+     "lessons": 16,
+     "verified": 11,
+     "tasks": 502,
+     "n": 502,
+     "mean": 0.205656,
+     "lb": 0.156605,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "parent": "A",
+     "mind": "c55ab4873d176874",
+     "episodes": 2000,
+     "lessons": 18,
+     "verified": 13,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.009508,
+     "lb": 0.005117,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "parent": "B",
+     "mind": "4128c4bc04fe9603",
+     "episodes": 1210,
+     "lessons": 24,
+     "verified": 21,
+     "tasks": 1419,
+     "n": 1419,
+     "mean": 0.053779,
+     "lb": 0.038174,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "parent": "A",
+     "mind": "ffe9e2fa983acfba",
+     "episodes": 2000,
+     "lessons": 23,
+     "verified": 9,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.018598,
+     "lb": 0.012565,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "parent": "B",
+     "mind": "fa21e389851c35a5",
+     "episodes": 1150,
+     "lessons": 13,
+     "verified": 0,
+     "tasks": 835,
+     "n": 835,
+     "mean": 0,
+     "lb": 0,
+     "pass": false
+    }
+   ]
+  },
+  "M2": {
+   "pass": false,
+   "measured": "2 of 5 children better with the inherited slice on their first 2,000 tasks (bar 4): shop -0.1308 (lb -0.1629; born); bank +0.0026 (lb -0.0022; not born — the better parent’s genes); adult +0.0035 (lb 0.0004; born); credit +0.0112 (lb 0.0064; born); coupon -0.0003 (lb -0.0021; born)",
+   "children": [
+    {
+     "dataset": "shop",
+     "born": true,
+     "gate": {
+      "child": 0.27417,
+      "a": 0.286884,
+      "b": 0.366909
+     },
+     "inherited": 16,
+     "fromA": 8,
+     "fromB": 8,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": -0.130754,
+     "lb": -0.162937,
+     "pass": false
+    },
+    {
+     "dataset": "bank",
+     "born": false,
+     "gate": {
+      "child": 0.223435,
+      "a": 0.220443,
+      "b": 0.221156
+     },
+     "inherited": 16,
+     "fromA": 8,
+     "fromB": 8,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.002575,
+     "lb": -0.00225,
+     "pass": false
+    },
+    {
+     "dataset": "adult",
+     "born": true,
+     "gate": {
+      "child": 0.356743,
+      "a": 0.400618,
+      "b": 0.418663
+     },
+     "inherited": 16,
+     "fromA": 8,
+     "fromB": 8,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.003499,
+     "lb": 0.000428,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "born": true,
+     "gate": {
+      "child": 0.477919,
+      "a": 0.478636,
+      "b": 0.507615
+     },
+     "inherited": 16,
+     "fromA": 8,
+     "fromB": 8,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": 0.011213,
+     "lb": 0.006403,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "born": true,
+     "gate": {
+      "child": 0.668213,
+      "a": 0.715466,
+      "b": 0.680574
+     },
+     "inherited": 8,
+     "fromA": 8,
+     "fromB": 0,
+     "tasks": 2000,
+     "n": 2000,
+     "mean": -0.000287,
+     "lb": -0.002056,
+     "pass": false
+    }
+   ]
+  },
+  "M3": {
+   "pass": true,
+   "measured": "children: 0 canaries and 0 raw rows found across 14223 parent episodes, inherited fields exact in 5/5 · deletion: 250 episodes deleted, 0 traces left, lessons equal a fresh life without them in 10/10, one tombstone in 10/10, children bred after it inherit the recomputed slice in 5/5",
+   "a": [
+    {
+     "dataset": "shop",
+     "scannedEpisodes": 3096,
+     "childBytes": 4879,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "fieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "scannedEpisodes": 2350,
+     "childBytes": 4796,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "fieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "scannedEpisodes": 2417,
+     "childBytes": 6388,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "fieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "scannedEpisodes": 3210,
+     "childBytes": 5011,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "fieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "scannedEpisodes": 3150,
+     "childBytes": 3634,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "fieldsOk": true,
+     "pass": true
+    }
+   ],
+   "b": [
+    {
+     "dataset": "shop",
+     "parent": "A",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "shop",
+     "parent": "B",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "shop",
+     "parent": "child bred after the deletion",
+     "inheritsExactlyTheRecomputedSlice": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "parent": "A",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "parent": "B",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "parent": "child bred after the deletion",
+     "inheritsExactlyTheRecomputedSlice": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "parent": "A",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "parent": "B",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "parent": "child bred after the deletion",
+     "inheritsExactlyTheRecomputedSlice": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "parent": "A",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "parent": "B",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "parent": "child bred after the deletion",
+     "inheritsExactlyTheRecomputedSlice": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "parent": "A",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "parent": "B",
+     "deleted": 25,
+     "remaining": 0,
+     "lessonsEqualFresh": true,
+     "oneTombstone": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "parent": "child bred after the deletion",
+     "inheritsExactlyTheRecomputedSlice": true,
+     "pass": true
+    }
+   ]
+  }
+ },
+ "held": 2,
+ "of": 3,
+ "minds": {
+  "shop": {
+   "segment": "PageValues",
+   "parents": {
+    "A": {
+     "mind": "73a78de107eaaa8747b8c293630b0081e6828e97e161376bb1fc768986021e1e",
+     "features": 8,
+     "founder": "0–399"
+    },
+    "B": {
+     "mind": "d3d505d111965ace28e2fe44056b83c99e55c1696260b98ea1aa20a2b1fe125c",
+     "features": 8,
+     "founder": "400–799"
+    }
+   },
+   "child": {
+    "mind": "55470223fe3326d285000766a44157f104597b394914267c54c357e03560e48a",
+    "born": true,
+    "features": 16
+   }
+  },
+  "bank": {
+   "segment": "job_management",
+   "parents": {
+    "A": {
+     "mind": "a50abe0d326c9dcad2782267e5136f3a3e1b47a4def3af024874a4cda9d8a5ab",
+     "features": 15,
+     "founder": "0–399"
+    },
+    "B": {
+     "mind": "e3523070835911f65d27514a71e1376cbb3071a2094891cfafc4ba6d405ff57c",
+     "features": 15,
+     "founder": "400–799"
+    }
+   },
+   "child": {
+    "mind": "a50abe0d326c9dcad2782267e5136f3a3e1b47a4def3af024874a4cda9d8a5ab",
+    "born": false,
+    "features": 15
+   }
+  },
+  "adult": {
+   "segment": "capitalGain",
+   "parents": {
+    "A": {
+     "mind": "1649768c0143840d55b2afbc9ce518fbf48341e00d7f3b1c806df2f646ccdd50",
+     "features": 20,
+     "founder": "0–399"
+    },
+    "B": {
+     "mind": "2b1f4e2f83aa928f1214f50c642720655ca46041910c22f91bbabda76031c9b3",
+     "features": 20,
+     "founder": "400–799"
+    }
+   },
+   "child": {
+    "mind": "f029a6fe5347b5f6c19c51ac0541407ea273008dd8bbe5cc719a2ef35b85ae19",
+    "born": true,
+    "features": 40
+   }
+  },
+  "credit": {
+   "segment": "PAY_0",
+   "parents": {
+    "A": {
+     "mind": "c55ab4873d176874d9c77dd34ebf8045455af60e731e58996e8e852b851b60dc",
+     "features": 12,
+     "founder": "0–399"
+    },
+    "B": {
+     "mind": "4128c4bc04fe960381b6654dc70dabd9ad8948ac06230d12dc4b90e6248d3e6b",
+     "features": 12,
+     "founder": "400–799"
+    }
+   },
+   "child": {
+    "mind": "eb538a5b64f3b8667bcb8875d44530ab8c3c0631db2345c66af435f18f4f1c64",
+    "born": true,
+    "features": 24
+   }
+  },
+  "coupon": {
+   "segment": "cheap_meal",
+   "parents": {
+    "A": {
+     "mind": "ffe9e2fa983acfba03f44b2bcedcf81ebc98e3620588293ffbda52f9278356ea",
+     "features": 17,
+     "founder": "0–399"
+    },
+    "B": {
+     "mind": "fa21e389851c35a501c903af7599544025fa9cd9dd7cbb619fdeef73d2156a91",
+     "features": 16,
+     "founder": "400–799"
+    }
+   },
+   "child": {
+    "mind": "2ccaebdffe4aab5776e38bfdd7dd0173013f8ad5120ee532a72833f829b2bd8b",
+    "born": true,
+    "features": 33
+   }
+  }
+ },
+ "histories": [
+  {
+   "dataset": "shop",
+   "A": {
+    "key": "d6acf9c472afe4ddc9cda15726f264b5603b576b6b7b7db65d58956011465f48",
+    "head": "037abb69b5d823f75e6da2ef4cd462cc1a80ca6aac7fbb29a0c3fbd5bf5c60a4",
+    "entries": 28,
+    "ok": true
+   },
+   "B": {
+    "key": "9db15acb956e9f495c67c8c3b004407cffc6086dc87118cb682c33a193ee5a41",
+    "head": "7e1cf5604aaa70b1032a3f906083dacab1ee8483199ea1c91ad61612cfb6ad83",
+    "entries": 27,
+    "ok": true
+   },
+   "child": {
+    "key": "9650e616388d9d8acb6dba722fa8c6c4b4577d85acf130603d4b8ad5413c82b7",
+    "head": "1288ed47afcc366ab96588f6197f2df64b790e9109ca2dcb3a91b15a3442f1d7",
+    "entries": 1,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "bank",
+   "A": {
+    "key": "0e8c1a09705d3ee44825471266ed712157854d5dcb533c96bac424d7b6fc85aa",
+    "head": "9028e80cbdc981fba6bb4acc740e24d680fb2533f2e95785c8d5b76b04be625a",
+    "entries": 21,
+    "ok": true
+   },
+   "B": {
+    "key": "a48007322399fbbc6fc5eefe39cce08a0a3e4ae60fa7c86e840bbcecc0eab7c9",
+    "head": "0511b5d4ccb62eba72ee10be95d8bd5298caa98a2a6795e694bbd095eea99268",
+    "entries": 11,
+    "ok": true
+   },
+   "child": {
+    "key": "0e8c1a09705d3ee44825471266ed712157854d5dcb533c96bac424d7b6fc85aa",
+    "head": "c69d540516e88e2935d932bfa022a53062dd68379da958791a0aba99ef54744d",
+    "entries": 1,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "adult",
+   "A": {
+    "key": "a9673248cc05910272b6f79a8353ea1929dfda20057f2fff18a4b7fc3446a9a8",
+    "head": "4c4a040ddf0bf6c8e8f97dcde94f018c895e03b1444f2324e7397451260c3d57",
+    "entries": 18,
+    "ok": true
+   },
+   "B": {
+    "key": "7da4ba0894977c2855c0cf2d15911d3bdf60e7c9ebb344f907f32f4f3f9257de",
+    "head": "92e1661d81518830ff8517695faa6fccf975fe86c75b44949429847246f03154",
+    "entries": 14,
+    "ok": true
+   },
+   "child": {
+    "key": "79546f398c2e0e250990837aa39f6cd26a7048f158452d1a884be21fbef33a99",
+    "head": "a46be8725dfe3e5998a382412e1a2ccda4aa615cc879a800f77cd23231c4ad9d",
+    "entries": 1,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "credit",
+   "A": {
+    "key": "5e4b8d7c83d00a1d455437140cd629e85ff062eda6664c29b3c5357d78a62093",
+    "head": "7149ffb4ffed26c6eb1fe1bd392a81db4545a0351ba421ec531f5c2656f51eb2",
+    "entries": 23,
+    "ok": true
+   },
+   "B": {
+    "key": "10128b780063ac4bbf8468048efb62e5585eedaca9d742aa354539c0b12e2c4f",
+    "head": "95e17532667bb25fabf5cff6f874731213bff2d143ef59b66ac68df50598e4ee",
+    "entries": 28,
+    "ok": true
+   },
+   "child": {
+    "key": "ba9f62915be1acc96b5c0db570ead8212b91842b8e0731b4a512cafb193e4b23",
+    "head": "2d96e46c200f7834ec0ad0d7f88e6c665558a4abbde6277b272640af588c1db1",
+    "entries": 1,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "coupon",
+   "A": {
+    "key": "4d4b156adc8537069dc60dc15c3507fbeaf25473bf07b5507a98687351a4e817",
+    "head": "79ecd41f0874be0655953e25f3f54761585b50cd0f81c77d334612a25051ff49",
+    "entries": 19,
+    "ok": true
+   },
+   "B": {
+    "key": "f8504331f04b8df82424a8db42994585e3f7e0583e5fe70cb4ce731e4ec7f11d",
+    "head": "4f7ff82a31ec613ad26c9e73aeb70f623f2c0966e0336ef19f5e15f5aa622a3d",
+    "entries": 6,
+    "ok": true
+   },
+   "child": {
+    "key": "86452ded3fcf8f9a2c7dec8befa7049a823252c6bdb545cfbbdb32cfc4d13423",
+    "head": "33272395617e5a99f29b963763e731275c025a988c3a44b637f69a3929a1284b",
+    "entries": 1,
+    "ok": true
+   }
+  }
+ ]
+}
