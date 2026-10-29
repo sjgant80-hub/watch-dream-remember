@@ -1,0 +1,39 @@
+WATCH · DREAM · REMEMBER — credits and provenance
+
+The three upgrades here — an independent regulator, an idle-time daydream tier, and per-mind memory with inherited
+history — are inspired by Gary W. Floyd's NexusGrid, as he described it in conversation:
+  Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC.
+They are designed from that description only. No parity with his system is claimed. A comparison with his real
+implementation is to follow his catch-up call; what it finds will be recorded here and on the page, differences included.
+
+Where a build draws on one of his papers, the paper is credited at the point of use:
+  Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "GEP-Based Security: Behavioral Entropy
+    Signatures for Cybersecurity and DevOps," 2025 (CC BY 4.0) — the regulator's field E(t) = σ(k(|S − S_baseline| − ε)),
+    the β|∇S| rate term, and the finding that scripted automation fails by being overly regular.
+  Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "Dream State Architecture: GEP-Guided
+    Memory Consolidation and Entropy Regulation in Artificial Consciousness Systems," 2025 — dream output kept INERT until
+    a review gate validates it (the daydream log and the nightly gate).
+His papers are published as Open Defensive Prior Art under Creative Commons.
+
+Powered by the Konomi architecture, created by Thomas Frumkin, used with his permission. The daydream log and the minds'
+life memory are kept in LIGHT, the estate's codec from that body of work (vendored from fall-kit, which vendors it from
+konomi-tongue).
+
+Data — the regulator is measured on the public commit histories of ten estate builds (tools/nodes.mjs: time, the part
+of the build touched, and the number of files; no message, author or content). The daydream tier and the minds work on
+five public datasets, read through dex-frontier's loaders at a pinned commit (tools/data.mjs), each CC BY 4.0:
+  - Online Shoppers Purchasing Intention Dataset, C. Sakar and Y. Kastro, UCI Machine Learning Repository (2018),
+    DOI 10.24432/C5F88Q.
+  - Bank Marketing, UCI Machine Learning Repository, DOI 10.24432/C5K306. S. Moro, P. Cortez and P. Rita, A Data-Driven
+    Approach to Predict the Success of Bank Telemarketing, Decision Support Systems 62 (2014).
+  - Adult, UCI Machine Learning Repository, DOI 10.24432/C5XW20. B. Becker and R. Kohavi (1996).
+  - Default of Credit Card Clients, UCI Machine Learning Repository, DOI 10.24432/C55S3H. I.-C. Yeh and C.-H. Lien,
+    Expert Systems with Applications 36(2) (2009).
+  - In-Vehicle Coupon Recommendation, UCI Machine Learning Repository, DOI 10.24432/C5GS4P. T. Wang, C. Rudin,
+    F. Doshi-Velez, Y. Liu, E. Klampfl and P. MacNeille, Journal of Machine Learning Research 18(70) (2017).
+
+Minds here are models of thought-patterns: never the people they are trained on, and never claimed to be conscious.
+
+Supplied by AI Native Solutions (https://www.ai-nativesolutions.com).
+
+Everything else in this repository is original to this build and released under the MIT License (see LICENSE).

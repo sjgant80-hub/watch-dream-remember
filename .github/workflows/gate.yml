@@ -1,0 +1,69 @@
+name: gate
+
+# Every seal unchanged, every receipt re-measured from the real data on a clean machine, every kernel mutation-tested.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  claims:
+    name: unit suites + every seal + every receipt re-measured
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # each seal is checked against its sealing commit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: the real data, fetched at the pinned commits and checked byte for byte
+        run: |
+          node tools/data.mjs --fetch
+          node tools/data.mjs --check
+          node tools/nodes.mjs --check
+      - name: unit suites
+        run: node --test test/*.test.mjs
+      - name: organ 1 (the regulator) seal unchanged, receipt re-measured
+        run: |
+          node tools/organ1-measure.mjs --check
+          node tools/organ1-measure.mjs --verify
+      - name: organ 2 (the daydream tier) seal unchanged, receipt re-measured from the recorded local-model replies
+        run: |
+          node tools/organ2-measure.mjs --check
+          if [ -f data/organ2-run.json ]; then node tools/organ2-measure.mjs --verify; fi
+      - name: organ 3 (per-mind memory) seal unchanged, receipt re-measured
+        run: |
+          if [ -f tools/organ3-measure.mjs ]; then node tools/organ3-measure.mjs --check; fi
+          if [ -f data/organ3-run.json ]; then node tools/organ3-measure.mjs --verify; fi
+
+  witness:
+    name: mutation gate (witness) — ${{ matrix.kernel }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        kernel: [streams, journal, envelope, regulator, mesh, inject, model, lab, daylog, daydream, dream, idle, memory, mind, costcase]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: wdr
+      - name: clone the witness gate
+        run: git clone --depth 1 https://github.com/sjgant80-hub/witness.git witness
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: witness the kernel (refuse anything short of clean)
+        working-directory: wdr
+        run: |
+          k=${{ matrix.kernel }}
+          if [ ! -f "src/$k.mjs" ]; then echo "src/$k.mjs not built yet"; exit 0; fi
+          node ../witness/witness.mjs mutate "src/$k.mjs" --cap 1000 --timeout 120000 --test node --test "test/$k.test.mjs" | tee "$k.out"
+          grep -q '"clean": true' "$k.out" || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
+          grep -q '"capped": false' "$k.out" || { echo "::error::src/$k.mjs was capped: not every mutant judged"; exit 1; }

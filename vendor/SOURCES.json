@@ -1,24 +1,38 @@
 {
  "kind": "watch-dream-remember.vendor",
  "v": 1,
- "note": "Copied verbatim from fall-kit (the estate's shared foundation) at the commit named. Never edit a vendored file; re-vendor.",
+ "note": "Copied verbatim from the repo and commit named on each file (fall-kit, the estate's shared foundation, unless a file says otherwise). Never edit a vendored file; re-vendor.",
  "repo": "sjgant80-hub/fall-kit",
  "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97",
  "files": [
   {
    "path": "vendor/fall-kit/core/identity.mjs",
    "src": "core/identity.mjs",
-   "sha256": "429caa25bf0e104f6a664224d81fd8215d2f6c79aad3323a8acb476f85a3856e"
+   "sha256": "429caa25bf0e104f6a664224d81fd8215d2f6c79aad3323a8acb476f85a3856e",
+   "repo": "sjgant80-hub/fall-kit",
+   "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97"
   },
   {
    "path": "vendor/fall-kit/core/vendor/light/sha256.mjs",
    "src": "core/vendor/light/sha256.mjs",
-   "sha256": "cf60afffd36df071b277da214ed61a7b3f4923e443bfadb06656bb7da4756bc1"
+   "sha256": "cf60afffd36df071b277da214ed61a7b3f4923e443bfadb06656bb7da4756bc1",
+   "repo": "sjgant80-hub/fall-kit",
+   "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97"
   },
   {
    "path": "vendor/fall-kit/core/vendor/light/codec.mjs",
    "src": "core/vendor/light/codec.mjs",
-   "sha256": "4f018272a05989fe8fbd0f675e0460b35365710a174a88dbf628165ef21f431d"
+   "sha256": "4f018272a05989fe8fbd0f675e0460b35365710a174a88dbf628165ef21f431d",
+   "repo": "sjgant80-hub/fall-kit",
+   "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97"
+  },
+  {
+   "path": "vendor/sovereign-enterprise/data/basis.json",
+   "repo": "sjgant80-hub/sovereign-enterprise",
+   "commit": "21f838be5e03b2ec7da58cdd8eb68664380ddd7f",
+   "src": "data/basis.json",
+   "sha256": "83e9c2effa2f81596dcfa7110f030940032c1910cdf928d27d628ae59d73bb42",
+   "what": "the sourced cost basis (ONS wages, employer costs, electricity, CPI) the cost case reads"
   }
  ]
 }
