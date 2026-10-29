@@ -395,6 +395,7 @@ test('budget under v1b: the 24-hour count enters only at a visit that saw an att
   assert.deepEqual(budget(0, 60, base), { r: 2, E: 1 });
   assert.deepEqual(budget(0, 60, base, 'v1b'), { r: 2, E: 1 });   // not a rule set: organ 1's
   assert.deepEqual(budget(0, 60, base, { now: true }), { r: 0, E: 0 });
+  assert.deepEqual(budget(0, 60, base, Object.assign(() => {}, { now: true })), { r: 2, E: 1 });   // only an object is a rule set: a function carrying one is not
   assert.deepEqual(budget(1, 60, base, RULES.v1b), { r: 2, E: 1 });
   assert.deepEqual(budget(-1, 60, base, RULES.v1b), { r: 0, E: 0 });
   assert.deepEqual(budget(NaN, 60, base, RULES.v1b), { r: 0, E: 0 });

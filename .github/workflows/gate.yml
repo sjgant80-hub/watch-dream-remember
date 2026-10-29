@@ -27,12 +27,17 @@ jobs:
           node tools/data.mjs --fetch
           node tools/data.mjs --check
           node tools/nodes.mjs --check
+          node tools/nodes-fresh.mjs --check
       - name: unit suites
         run: node --test test/*.test.mjs
       - name: organ 1 (the regulator) seal unchanged, receipt re-measured
         run: |
           node tools/organ1-measure.mjs --check
           node tools/organ1-measure.mjs --verify
+      - name: organ 1b (the fix for R1f) seal unchanged, receipt re-measured
+        run: |
+          node tools/organ1b-measure.mjs --check
+          node tools/organ1b-measure.mjs --verify
       - name: organ 2 (the daydream tier) seal unchanged, receipt re-measured from the recorded local-model replies
         run: |
           node tools/organ2-measure.mjs --check
@@ -41,6 +46,10 @@ jobs:
         run: |
           if [ -f tools/organ3-measure.mjs ]; then node tools/organ3-measure.mjs --check; fi
           if [ -f data/organ3-run.json ]; then node tools/organ3-measure.mjs --verify; fi
+      - name: organ 3b (the fix for M2) seal unchanged, receipt re-measured
+        run: |
+          node tools/organ3b-measure.mjs --check
+          node tools/organ3b-measure.mjs --verify
 
   witness:
     name: mutation gate (witness) — ${{ matrix.kernel }}
@@ -49,7 +58,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        kernel: [streams, journal, envelope, regulator, mesh, inject, model, lab, daylog, daydream, dream, idle, memory, mind, costcase]
+        kernel: [streams, journal, envelope, regulator, mesh, inject, model, lab, daylog, daydream, dream, idle, memory, mind, inherit, costcase]
     steps:
       - uses: actions/checkout@v4
         with:
