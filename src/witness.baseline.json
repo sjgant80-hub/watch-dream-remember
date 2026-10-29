@@ -1,7 +1,7 @@
 [
  {
   "mutation": "<= → <",
-  "snippet": "const rec = { key: c.key, dataset: c.dataset, source: c.source, gate: [gateNow[c.dataset], g1], adopted: g1 <= gateNow[c.dataset] - ADOPT, verified: false };",
+  "snippet": "const rec = { key: c.key, dataset: c.dataset, source: c.source, gate: [gateNow[c.dataset],",
   "reason": "Adoption compares two continuous log-losses: a GATE improvement of exactly 0.0005 nats has probability zero on real data, and no fit can be steered to land on it exactly, so the inclusive and strict forms never differ in a run."
  },
  {
