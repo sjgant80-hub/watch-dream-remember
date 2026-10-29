@@ -54,6 +54,10 @@ jobs:
         run: |
           node tools/organ3c-measure.mjs --check
           node tools/organ3c-measure.mjs --verify
+      - name: organ 3d (M2 on fresh data) seal unchanged, receipt re-measured
+        run: |
+          node tools/organ3d-measure.mjs --check
+          node tools/organ3d-measure.mjs --verify
 
   witness:
     name: mutation gate (witness) — ${{ matrix.kernel }}

@@ -26,6 +26,7 @@ Minds are models of thought-patterns. They are never the people, and never claim
 | (1c · a stress test) | not sealed | — | A harder test for 1b was sought: builds whose own held-out history ran over their own budget, chosen by counting alone (`tools/nodes-burst.mjs`). **None exists.** Of the 1,565 other public estate repos, 1,528 have fewer than 20 commits, 5 have too few actions, and none of the other 32 ever overran. The scan is kept as a record (`data/nodes-burst.json`). So 1b is proven on the one real burst there is (the one it was designed on) and on every injected fault, but not on a real burst it has never seen. |
 | 3b · the fix for M2 | `348da53` | **2 of 4** | **M2 NOT fixed.** A child now proves each inherited lesson on its own early cases, by its parents' own rule, before using it; both arms learn their own lessons the same way. N3 held: no child is made worse by its inheritance any more (shop −0.131 blind → +0.0001). N4 held: no leak. **N1 FAILED** (2 of 5 on M2's rows) and **N2 FAILED** (1 of 5 on rows no lesson was ever scored on). Proving a lesson takes about 30 of the child's own cases, and by then the child has learnt the same ground itself, so a proven inheritance arrives no sooner than its own experience. |
 | 3c · the third try at M2 | `8d8e403` | **2 of 4** | **M2 NOT fixed; the last try on these rows (as sealed).** The child trusts each inherited lesson from birth, counting the parent's record as worth 30 of its own cases (organ 3's minimum), checks it case by case, and drops it the moment its own evidence outweighs that record. T3 held (no child significantly worse) and T4 held (no leak). **T1 FAILED** 2 of 5: census +0.0034 and credit +0.0077 kept most of the blind gain, while shop −0.0045 and coupon −0.0005 did not gain. **T2 FAILED** 1 of 5. Three sealed tries agree: on these datasets a parent's lessons do not reliably beat a child learning from its own first 2,000 cases. |
+| 3d · M2 on fresh data | `b0dea93` | **2 of 4** | **M2 NOT fixed: the fourth try, on clean data.** M2's own question (a child with its inheritance against the same child without it, neither learning lessons of its own while scored), with 3c's check, on five NEW families (two bank, two census, one credit) bred entirely from rows no organ had read. F2 held (no child significantly worse) and F3 held (no leak). **F1 FAILED** 1 of 5: every fresh child gained a little (+0.0003 to +0.0065) but only credit cleared the bar. Blind inheritance also scored 1 of 5. **F4 FAILED** 0 of 5 (the harder question). A child's genes already fuse both parents, so their outcome-rate lessons add little. **M2 stands as a measured negative.** |
 
 Re-run any of it:
 
@@ -37,6 +38,7 @@ node tools/organ2-measure.mjs --verify
 node tools/organ3-measure.mjs --verify
 node tools/organ3b-measure.mjs --verify
 node tools/organ3c-measure.mjs --verify
+node tools/organ3d-measure.mjs --verify
 ```
 
 CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness, `--cap 1000`).
