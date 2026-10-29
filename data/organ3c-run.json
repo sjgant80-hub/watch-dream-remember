@@ -1,0 +1,407 @@
+{
+ "kind": "watch-dream-remember.organ3c.inheritance-trust.run",
+ "seal": "8d8e403",
+ "notes": [
+  "Organ 3’s minds rebuilt and checked against data/organ3-run.json (every parent and child id, born or not, slice size) before anything was measured.",
+  "blindD1 is organ 3’s M2 result on the same rows (the slice applied from birth); provenD1 and provenD2 are organ 3b’s (proven first), for comparison.",
+  "Both arms live the same cycle; the arm without the slice still learns its own lessons. The improvement is what inheritance adds on top of that."
+ ],
+ "fixed": false,
+ "claims": {
+  "T1": {
+   "pass": false,
+   "measured": "2 of 5 children better trusting and checking their inheritance on M2's rows (bar 4): shop -0.0045 (lb -0.0112; 16 trusted at birth, 9 dropped); bank +0.0008 (lb -0.0013; 16 trusted at birth, 16 dropped); adult +0.0034 (lb 0.0006; 16 trusted at birth, 12 dropped); credit +0.0077 (lb 0.0039; 16 trusted at birth, 25 dropped); coupon -0.0005 (lb -0.0022; 8 trusted at birth, 31 dropped)",
+   "note": "the third look at these rows, chosen knowing organs 3 and 3b"
+  },
+  "T2": {
+   "pass": false,
+   "measured": "1 of 5 children better on the gate rows (bar 4): shop +0.0035 (lb -0.0014; 16 trusted at birth, 9 dropped); bank -0.0003 (lb -0.0019; 16 trusted at birth, 23 dropped); adult +0.0009 (lb -0.0008; 16 trusted at birth, 18 dropped); credit +0.0030 (lb 0.0004; 16 trusted at birth, 18 dropped); coupon +0.0016 (lb -0.0013; 8 trusted at birth, 38 dropped)"
+  },
+  "T3": {
+   "pass": true,
+   "measured": "0 of 10 early lives significantly worse with the slice (every 95% upper bound ≥ 0): shop D1 ub 0.0010, shop D2 ub 0.0085, bank D1 ub 0.0033, bank D2 ub 0.0019, adult D1 ub 0.0066, adult D2 ub 0.0029, credit D1 ub 0.0115, credit D2 ub 0.0053, coupon D1 ub 0.0011, coupon D2 ub 0.0044"
+  },
+  "T4": {
+   "pass": true,
+   "measured": "0 canaries and 0 raw rows of 14223 parent episodes in the children after both lives; slice fields exact in 5/5, adopted/dropped fields exact in 5/5",
+   "children": [
+    {
+     "dataset": "shop",
+     "scannedEpisodes": 3096,
+     "childBytes": 530209,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "scannedEpisodes": 2350,
+     "childBytes": 651377,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "scannedEpisodes": 2417,
+     "childBytes": 660537,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "scannedEpisodes": 3210,
+     "childBytes": 688593,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "scannedEpisodes": 3150,
+     "childBytes": 611801,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    }
+   ]
+  }
+ },
+ "held": 2,
+ "of": 4,
+ "children": [
+  {
+   "dataset": "shop",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": -0.130754,
+    "lb": -0.162937
+   },
+   "provenD1": {
+    "mean": 0.000109,
+    "lb": -0.002692
+   },
+   "provenD2": {
+    "mean": -0.002503,
+    "lb": -0.006933
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": -0.004543,
+    "lb": -0.011167,
+    "ub": 0.00104,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 17,
+    "dropped": 9,
+    "inUseAtEnd": {
+     "A": 0,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 24
+   },
+   "D2": {
+    "rows": "gate 0–1900",
+    "tasks": 1901,
+    "mean": 0.003459,
+    "lb": -0.001352,
+    "ub": 0.00853,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 18,
+    "dropped": 9,
+    "inUseAtEnd": {
+     "A": 1,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 15
+   }
+  },
+  {
+   "dataset": "bank",
+   "born": false,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.002575,
+    "lb": -0.00225
+   },
+   "provenD1": {
+    "mean": 0.001466,
+    "lb": 0.000086
+   },
+   "provenD2": {
+    "mean": -0.000188,
+    "lb": -0.000756
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.000765,
+    "lb": -0.001313,
+    "ub": 0.003272,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 31,
+    "dropped": 16,
+    "inUseAtEnd": {
+     "A": 7,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 10
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": -0.000258,
+    "lb": -0.001888,
+    "ub": 0.001899,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 39,
+    "dropped": 23,
+    "inUseAtEnd": {
+     "A": 8,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 12
+   }
+  },
+  {
+   "dataset": "adult",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.003499,
+    "lb": 0.000428
+   },
+   "provenD1": {
+    "mean": 0.00107,
+    "lb": -0.000475
+   },
+   "provenD2": {
+    "mean": 0.000168,
+    "lb": -0.0006
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.003406,
+    "lb": 0.00059,
+    "ub": 0.006592,
+    "pass": true,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 25,
+    "dropped": 12,
+    "inUseAtEnd": {
+     "A": 5,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 7
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.000893,
+    "lb": -0.000782,
+    "ub": 0.002939,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 33,
+    "dropped": 18,
+    "inUseAtEnd": {
+     "A": 7,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 16
+   }
+  },
+  {
+   "dataset": "credit",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.011213,
+    "lb": 0.006403
+   },
+   "provenD1": {
+    "mean": 0.006333,
+    "lb": 0.003692
+   },
+   "provenD2": {
+    "mean": 0.001443,
+    "lb": 0.000022
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.007679,
+    "lb": 0.003928,
+    "ub": 0.011458,
+    "pass": true,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 41,
+    "dropped": 25,
+    "inUseAtEnd": {
+     "A": 8,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 13
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.003034,
+    "lb": 0.000355,
+    "ub": 0.005344,
+    "pass": true,
+    "noHarm": true,
+    "adoptedAtBirth": 16,
+    "adopted": 29,
+    "dropped": 18,
+    "inUseAtEnd": {
+     "A": 3,
+     "B": 8
+    },
+    "neverUsed": 0,
+    "ownVerified": 13
+   }
+  },
+  {
+   "dataset": "coupon",
+   "born": true,
+   "inherited": 8,
+   "fromA": 8,
+   "fromB": 0,
+   "blindD1": {
+    "mean": -0.000287,
+    "lb": -0.002056
+   },
+   "provenD1": {
+    "mean": -0.0005,
+    "lb": -0.001783
+   },
+   "provenD2": {
+    "mean": 0.001488,
+    "lb": -0.001044
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": -0.000454,
+    "lb": -0.002202,
+    "ub": 0.001122,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 8,
+    "adopted": 36,
+    "dropped": 31,
+    "inUseAtEnd": {
+     "A": 5,
+     "B": 0
+    },
+    "neverUsed": 0,
+    "ownVerified": 5
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.001612,
+    "lb": -0.001267,
+    "ub": 0.004389,
+    "pass": false,
+    "noHarm": true,
+    "adoptedAtBirth": 8,
+    "adopted": 41,
+    "dropped": 38,
+    "inUseAtEnd": {
+     "A": 3,
+     "B": 0
+    },
+    "neverUsed": 0,
+    "ownVerified": 11
+   }
+  }
+ ],
+ "histories": [
+  {
+   "dataset": "shop",
+   "child": {
+    "key": "9650e616388d9d8acb6dba722fa8c6c4b4577d85acf130603d4b8ad5413c82b7",
+    "head": "c65dbda0ded4d006fc9b43c0b101ff4e9bf16f95d0e0a1420784318f43e5840a",
+    "entries": 113,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "bank",
+   "child": {
+    "key": "0e8c1a09705d3ee44825471266ed712157854d5dcb533c96bac424d7b6fc85aa",
+    "head": "4e10e1914ef176ab3269aba861ff20c5b0d7b9da721bf2a0632a738664b4f8e2",
+    "entries": 152,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "adult",
+   "child": {
+    "key": "79546f398c2e0e250990837aa39f6cd26a7048f158452d1a884be21fbef33a99",
+    "head": "3e2b6d4a27f377246e2a9f5bff1218333e54b0961c39767148f7152969ddfd6e",
+    "entries": 132,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "credit",
+   "child": {
+    "key": "ba9f62915be1acc96b5c0db570ead8212b91842b8e0731b4a512cafb193e4b23",
+    "head": "79b09905e8253cfd6a3c187e972aa3677a54a7fcf779b037e7344e353b098316",
+    "entries": 160,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "coupon",
+   "child": {
+    "key": "86452ded3fcf8f9a2c7dec8befa7049a823252c6bdb545cfbbdb32cfc4d13423",
+    "head": "eefd0e47dcca72b4c96ee660183e2905b7e9096252c1960761aa860739833f3c",
+    "entries": 183,
+    "ok": true
+   }
+  }
+ ]
+}
