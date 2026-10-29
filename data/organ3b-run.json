@@ -1,0 +1,357 @@
+{
+ "kind": "watch-dream-remember.organ3b.inheritance-fix.run",
+ "seal": "348da53",
+ "notes": [
+  "Organ 3’s minds rebuilt and checked against data/organ3-run.json (every parent and child id, born or not, slice size) before anything was measured.",
+  "blindD1 is organ 3’s M2 result on the same rows (the slice applied from birth), for comparison.",
+  "Both arms live the same cycle; the arm without the slice still learns its own lessons. The improvement is what inheritance adds on top of that."
+ ],
+ "fixed": false,
+ "claims": {
+  "N1": {
+   "pass": false,
+   "measured": "2 of 5 children better with a verified inheritance on M2's rows (bar 4): shop +0.0001 (lb -0.0027; 9 adopted, 1 dropped); bank +0.0015 (lb 0.0001; 14 adopted, 1 dropped); adult +0.0011 (lb -0.0005; 18 adopted, 10 dropped); credit +0.0063 (lb 0.0037; 10 adopted, 1 dropped); coupon -0.0005 (lb -0.0018; 7 adopted, 3 dropped)",
+   "note": "designed after seeing M2 fail on these rows: a repair check, not out of sample"
+  },
+  "N2": {
+   "pass": false,
+   "measured": "1 of 5 children better on rows no lesson was ever scored on (bar 4): shop -0.0025 (lb -0.0069; 16 adopted, 8 dropped); bank -0.0002 (lb -0.0008; 19 adopted, 8 dropped); adult +0.0002 (lb -0.0006; 9 adopted, 0 dropped); credit +0.0014 (lb 0.0000; 25 adopted, 14 dropped); coupon +0.0015 (lb -0.0010; 8 adopted, 5 dropped)"
+  },
+  "N3": {
+   "pass": true,
+   "measured": "0 of 10 early lives significantly worse with the slice (every 95% upper bound ≥ 0): shop D1 ub 0.0029, shop D2 ub 0.0019, bank D1 ub 0.0034, bank D2 ub 0.0005, adult D1 ub 0.0028, adult D2 ub 0.0009, credit D1 ub 0.0091, credit D2 ub 0.0028, coupon D1 ub 0.0008, coupon D2 ub 0.0039"
+  },
+  "N4": {
+   "pass": true,
+   "measured": "0 canaries and 0 raw rows of 14223 parent episodes in the children after both lives; slice fields exact in 5/5, adopted/dropped fields exact in 5/5",
+   "children": [
+    {
+     "dataset": "shop",
+     "scannedEpisodes": 3096,
+     "childBytes": 525939,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "bank",
+     "scannedEpisodes": 2350,
+     "childBytes": 634709,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "adult",
+     "scannedEpisodes": 2417,
+     "childBytes": 647458,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "credit",
+     "scannedEpisodes": 3210,
+     "childBytes": 673920,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    },
+    {
+     "dataset": "coupon",
+     "scannedEpisodes": 3150,
+     "childBytes": 581743,
+     "canaryHits": 0,
+     "rowHits": 0,
+     "sliceFieldsOk": true,
+     "crossFieldsOk": true,
+     "pass": true
+    }
+   ]
+  }
+ },
+ "held": 2,
+ "of": 4,
+ "children": [
+  {
+   "dataset": "shop",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": -0.130754,
+    "lb": -0.162937
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.000109,
+    "lb": -0.002692,
+    "ub": 0.002887,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 9,
+    "dropped": 1,
+    "inUseAtEnd": {
+     "A": 0,
+     "B": 8
+    },
+    "neverAdopted": 7,
+    "ownVerified": 24
+   },
+   "D2": {
+    "rows": "gate 0–1900",
+    "tasks": 1901,
+    "mean": -0.002503,
+    "lb": -0.006933,
+    "ub": 0.001933,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 16,
+    "dropped": 8,
+    "inUseAtEnd": {
+     "A": 0,
+     "B": 8
+    },
+    "neverAdopted": 0,
+    "ownVerified": 15
+   }
+  },
+  {
+   "dataset": "bank",
+   "born": false,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.002575,
+    "lb": -0.00225
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.001466,
+    "lb": 0.000086,
+    "ub": 0.003438,
+    "pass": true,
+    "noHarm": true,
+    "adopted": 14,
+    "dropped": 1,
+    "inUseAtEnd": {
+     "A": 7,
+     "B": 6
+    },
+    "neverAdopted": 3,
+    "ownVerified": 10
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": -0.000188,
+    "lb": -0.000756,
+    "ub": 0.000461,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 19,
+    "dropped": 8,
+    "inUseAtEnd": {
+     "A": 8,
+     "B": 3
+    },
+    "neverAdopted": 2,
+    "ownVerified": 12
+   }
+  },
+  {
+   "dataset": "adult",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.003499,
+    "lb": 0.000428
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.00107,
+    "lb": -0.000475,
+    "ub": 0.002769,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 18,
+    "dropped": 10,
+    "inUseAtEnd": {
+     "A": 5,
+     "B": 3
+    },
+    "neverAdopted": 2,
+    "ownVerified": 7
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.000168,
+    "lb": -0.0006,
+    "ub": 0.00093,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 9,
+    "dropped": 0,
+    "inUseAtEnd": {
+     "A": 7,
+     "B": 2
+    },
+    "neverAdopted": 7,
+    "ownVerified": 16
+   }
+  },
+  {
+   "dataset": "credit",
+   "born": true,
+   "inherited": 16,
+   "fromA": 8,
+   "fromB": 8,
+   "blindD1": {
+    "mean": 0.011213,
+    "lb": 0.006403
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": 0.006333,
+    "lb": 0.003692,
+    "ub": 0.009094,
+    "pass": true,
+    "noHarm": true,
+    "adopted": 10,
+    "dropped": 1,
+    "inUseAtEnd": {
+     "A": 8,
+     "B": 1
+    },
+    "neverAdopted": 7,
+    "ownVerified": 13
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.001443,
+    "lb": 0.000022,
+    "ub": 0.002779,
+    "pass": true,
+    "noHarm": true,
+    "adopted": 25,
+    "dropped": 14,
+    "inUseAtEnd": {
+     "A": 3,
+     "B": 8
+    },
+    "neverAdopted": 0,
+    "ownVerified": 13
+   }
+  },
+  {
+   "dataset": "coupon",
+   "born": true,
+   "inherited": 8,
+   "fromA": 8,
+   "fromB": 0,
+   "blindD1": {
+    "mean": -0.000287,
+    "lb": -0.002056
+   },
+   "D1": {
+    "rows": "test 0–1999",
+    "tasks": 2000,
+    "mean": -0.0005,
+    "lb": -0.001783,
+    "ub": 0.000784,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 7,
+    "dropped": 3,
+    "inUseAtEnd": {
+     "A": 4,
+     "B": 0
+    },
+    "neverAdopted": 3,
+    "ownVerified": 5
+   },
+   "D2": {
+    "rows": "gate 0–1999",
+    "tasks": 2000,
+    "mean": 0.001488,
+    "lb": -0.001044,
+    "ub": 0.003912,
+    "pass": false,
+    "noHarm": true,
+    "adopted": 8,
+    "dropped": 5,
+    "inUseAtEnd": {
+     "A": 3,
+     "B": 0
+    },
+    "neverAdopted": 1,
+    "ownVerified": 11
+   }
+  }
+ ],
+ "histories": [
+  {
+   "dataset": "shop",
+   "child": {
+    "key": "9650e616388d9d8acb6dba722fa8c6c4b4577d85acf130603d4b8ad5413c82b7",
+    "head": "a448a4adff8c90cf72578dd7a297d3a9e8c5ba625e9fba1e66e1d44ef6b97ae3",
+    "entries": 94,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "bank",
+   "child": {
+    "key": "0e8c1a09705d3ee44825471266ed712157854d5dcb533c96bac424d7b6fc85aa",
+    "head": "5c37c973465989610817a5818cf5ebea3acd863f642b5294861d59c0fd32a1e8",
+    "entries": 85,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "adult",
+   "child": {
+    "key": "79546f398c2e0e250990837aa39f6cd26a7048f158452d1a884be21fbef33a99",
+    "head": "4f136c117a4d4e23a28f0c5c0a9af4ec4a12ccc782723af7d290a20f1499c8e6",
+    "entries": 81,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "credit",
+   "child": {
+    "key": "ba9f62915be1acc96b5c0db570ead8212b91842b8e0731b4a512cafb193e4b23",
+    "head": "1c5d94c7aa96789f13a3a56c14147823a44dfb081b1d820021f3300c4628504e",
+    "entries": 97,
+    "ok": true
+   }
+  },
+  {
+   "dataset": "coupon",
+   "child": {
+    "key": "86452ded3fcf8f9a2c7dec8befa7049a823252c6bdb545cfbbdb32cfc4d13423",
+    "head": "da2299252aebfc244461fd34e293dafaa2a0c55959c420ca38f793f98b43f9b6",
+    "entries": 60,
+    "ok": true
+   }
+  }
+ ]
+}
