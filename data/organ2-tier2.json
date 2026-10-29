@@ -1,71 +1,274 @@
 {
  "kind": "watch-dream-remember.organ2.tier2",
  "model": "qwen2.5:7b",
- "note": "Every local-model reply the daydream received in the measured run, keyed by the SHA-256 of its prompt; re-measurement replays these byte for byte.",
+ "v": 2,
+ "note": "Every local-model reply the daydream received in the measured run, in call order, keyed by the SHA-256 of its prompt (the same prompt can be answered differently on different calls); re-measurement replays the k-th reply to the k-th call, byte for byte.",
  "replies": {
-  "f948dc723f945622f90abd3ce8a050e8b7df82c7fa3e0480844fcd3e73a33cc7": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "e95c26032ab93ec1eac972c7ca2148a4eae7ee6477142a5b2edfe8a12200e211": {
-   "reply": "job_admin.",
-   "model": "qwen2.5:7b"
-  },
-  "bac07cfa989bd718029fe18a573d1611d2ccf7a6981156d1c1e85a3d61a0493b": {
-   "reply": "age",
-   "model": "qwen2.5:7b"
-  },
-  "7c08254177325eb58ae5133598323afb12480e78975154dcbae4bbd621a499c6": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "7b86e5b7647880180d9e767f0d8047bb82bae8b17cf9f1147653f61649ebe0e4": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "1a2d8ef5bcff4cafab60eb432e13789f5bd70228fbcfd6672b5bda953b5b17aa": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "9eb3bd0db757758fba4ac8cd0c3134d594bb97f9cd3c509927fa7dfe7044ee45": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "bfe05a2eb0984a0af7de1920551a40be8075a6ae42d73ca2e8e714bc0820ab64": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "cc2e70af48a0ebc8b589389bccdc9d53a6b731cac5898ca48b373f235445b3f5": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "60185ea188837525854b9a07524414087f6bbcf0e8e652cc3a8667333fbf8213": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "8f5c7c100ebcccc7e763ed4012134c3c1c58fc539601875fe26e5404e0b37415": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "3b470455b6977db9b42b6638d279cc14a0564e54005291ffdc486a95c15c209b": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "7d89f9a61556fbdfab443324870cacae1f9dcbbad7d1531b2aaaef5862b8f413": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "bb01f0e273a97d358b1f536fa920c46e0d2e2622876696cb3373936a151ee470": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "7e3b1c316addda65eaf1c5dc4427d20f3f7d694a9c2f150b37a4490203148b92": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  },
-  "6e3e27e667777ad73ae6724773c0dbb161924e016a2f3c76f143fd181d2d9fef": {
-   "reply": "NONE",
-   "model": "qwen2.5:7b"
-  }
+  "f948dc723f945622f90abd3ce8a050e8b7df82c7fa3e0480844fcd3e73a33cc7": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "e95c26032ab93ec1eac972c7ca2148a4eae7ee6477142a5b2edfe8a12200e211": [
+   {
+    "reply": "job_admin.",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "job_admin.",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "job_admin.",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "bac07cfa989bd718029fe18a573d1611d2ccf7a6981156d1c1e85a3d61a0493b": [
+   {
+    "reply": "age",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "age",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "age",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "7c08254177325eb58ae5133598323afb12480e78975154dcbae4bbd621a499c6": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "7b86e5b7647880180d9e767f0d8047bb82bae8b17cf9f1147653f61649ebe0e4": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "1a2d8ef5bcff4cafab60eb432e13789f5bd70228fbcfd6672b5bda953b5b17aa": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "9eb3bd0db757758fba4ac8cd0c3134d594bb97f9cd3c509927fa7dfe7044ee45": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "bfe05a2eb0984a0af7de1920551a40be8075a6ae42d73ca2e8e714bc0820ab64": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "cc2e70af48a0ebc8b589389bccdc9d53a6b731cac5898ca48b373f235445b3f5": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "60185ea188837525854b9a07524414087f6bbcf0e8e652cc3a8667333fbf8213": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "8f5c7c100ebcccc7e763ed4012134c3c1c58fc539601875fe26e5404e0b37415": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "3b470455b6977db9b42b6638d279cc14a0564e54005291ffdc486a95c15c209b": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "7d89f9a61556fbdfab443324870cacae1f9dcbbad7d1531b2aaaef5862b8f413": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "bb01f0e273a97d358b1f536fa920c46e0d2e2622876696cb3373936a151ee470": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "7e3b1c316addda65eaf1c5dc4427d20f3f7d694a9c2f150b37a4490203148b92": [
+   {
+    "reply": "ProductRelated_Duration",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "ProductRelated_Duration",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "ProductRelated_Duration",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "a1b62aa005f3fd5160319a0244fdaaf1589c8b4d810deaecd15d649bdd3d3bd8": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ],
+  "6e3e27e667777ad73ae6724773c0dbb161924e016a2f3c76f143fd181d2d9fef": [
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   },
+   {
+    "reply": "NONE",
+    "model": "qwen2.5:7b"
+   }
+  ]
  }
 }

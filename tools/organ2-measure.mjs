@@ -26,17 +26,19 @@ export const NIGHTS = 14, LOCAL = 'http://localhost:11434', MODEL = 'qwen2.5:7b'
 
 /** The local model, live (recording every reply) or replayed. Every URL it is asked to reach is counted. */
 export function localModel(mode, recorded) {
-  const urls = [], book = { ...(recorded || {}) };
+  // Every reply in call order, per prompt: the local model can answer the same prompt differently on different calls
+  // (CPU inference is not bit-stable even at temperature 0), so a replay must hand back the k-th reply to the k-th call.
+  const urls = [], book = {}, seen = {};
+  for (const [k, v] of Object.entries(recorded || {})) book[k] = Array.isArray(v) ? v.slice() : [];
   const ask = async (prompt, { maxTokens }) => {
-    const k = sha(prompt);
-    if (process.env.WDR_SYNTH) { urls.push(LOCAL + '/api/generate'); book[k] = { reply: 'NONE', model: 'dry-run' }; return 'NONE'; }
-    if (mode === 'replay') { urls.push(LOCAL + '/api/generate'); if (!(k in book)) throw new Error('no recorded reply for a prompt'); return book[k].reply; }
-    const url = LOCAL + '/api/generate';
-    urls.push(url);
-    const r = await fetch(url, { method: 'POST', body: JSON.stringify({ model: MODEL, prompt, stream: false, options: { temperature: 0, seed: 0, num_predict: maxTokens } }) });
+    const k = sha(prompt), n = (seen[k] = (seen[k] || 0) + 1) - 1;
+    urls.push(LOCAL + '/api/generate');
+    if (process.env.WDR_SYNTH) { (book[k] ??= []).push({ reply: 'NONE', model: 'dry-run' }); return 'NONE'; }
+    if (mode === 'replay') { if (!book[k] || !book[k][n]) throw new Error('no recorded reply for call ' + (n + 1) + ' of a prompt'); return book[k][n].reply; }
+    const r = await fetch(LOCAL + '/api/generate', { method: 'POST', body: JSON.stringify({ model: MODEL, prompt, stream: false, options: { temperature: 0, seed: 0, num_predict: maxTokens } }) });
     const j = await r.json();
-    book[k] = { reply: String(j.response ?? ''), model: MODEL };
-    return book[k].reply;
+    (book[k] ??= []).push({ reply: String(j.response ?? ''), model: MODEL });
+    return book[k][n].reply;
   };
   return { ask, urls, book };
 }
@@ -164,13 +166,17 @@ if (cmd === '--check') {
   const claims = { D1: result.claims.D1, D1b: result.claims.D1b, D2: readD2(), D3: result.claims.D3, D4: result.claims.D4 };
   const full = { ...result, claims, held: Object.values(claims).filter((c) => c.pass).length, of: 5 };
   if (cmd === '--run') {
-    writeFileSync(file(TIER2), out({ kind: 'watch-dream-remember.organ2.tier2', model: MODEL, note: 'Every local-model reply the daydream received in the measured run, keyed by the SHA-256 of its prompt; re-measurement replays these byte for byte.', replies: book }));
+    writeFileSync(file(TIER2), out({ kind: 'watch-dream-remember.organ2.tier2', model: MODEL, v: 2, note: 'Every local-model reply the daydream received in the measured run, in call order, keyed by the SHA-256 of its prompt (the same prompt can be answered differently on different calls); re-measurement replays the k-th reply to the k-th call, byte for byte.', replies: book }));
     writeFileSync(file(RUN), out(full));
     console.error(`✓ organ 2: ${full.held} of 5 held`);
     for (const [k, c] of Object.entries(claims)) console.error(`  ${k} ${c.pass ? 'HELD' : 'FAILED'} · ${c.measured}`);
   } else {
     const old = readFileSync(file(RUN), 'utf8');
-    if (old.replace(/\r\n/g, '\n') !== out(full)) { console.error('✗ organ 2 does not re-measure to the committed receipt'); process.exit(1); }
+    if (old.replace(/\r\n/g, '\n') !== out(full)) {
+      const A = old.replace(/\r\n/g, '\n').split('\n'), B = out(full).split('\n'), i = A.findIndex((l, k) => l !== B[k]);
+      console.error(`✗ organ 2 does not re-measure to the committed receipt — first difference at line ${i + 1}:\n  receipt: ${A[i]}\n  now:     ${B[i]}`);
+      process.exit(1);
+    }
     console.error(`✓ organ 2 re-measured from the recorded local-model replies: identical (${full.held} of 5 held)`);
   }
 } else if (cmd) { console.error('organ2-measure — --check | --run | --verify'); process.exit(2); }
