@@ -123,7 +123,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   </div>
   <div class="panel"><h3>The five test faults, in plain words</h3><ul>
     <li><b>Stuck loop, normal speed.</b> The same action every 10 minutes, without end: an agent caught repeating one step.</li>
-    <li><b>Stuck loop, fast.</b> The same action 20 or more times an hour.</li>
+    <li><b>Stuck loop, fast.</b> The same stuck loop, but 20 or more times an hour.</li>
     <li><b>Hijacked, random actions.</b> Random actions at a normal pace: what a stolen key driving the agent looks like.</li>
     <li><b>Greedy.</b> The agent's own kind of work, at three times its busiest hour.</li>
     <li><b>History rewritten.</b> An earlier record in the agent's journal is altered after the regulator checked it.</li></ul>
@@ -167,7 +167,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 
 <section id="remember">
   <h2>Remember: per-mind memory and inherited history</h2>
-  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents. It inherits its <b>inherited slice</b>: up to eight of each parent's best verified lessons, tagged with who learnt them. Its own memory starts empty.</p>
+  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT, a compact and lossless storage format). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents. It inherits its <b>inherited slice</b>: up to eight of each parent's best verified lessons, tagged with who learnt them. Its own memory starts empty. In its early life the child lives the same cycle as its parents. It learns its own lessons, and it uses an inherited lesson only while the lesson keeps making its predictions better on its own cases. The three ways of doing that which were tried, and what each measured, are below.</p>
   <div class="grid g2">
     <div class="panel"><h3>Memory vs no memory, and inheritance vs none</h3><div id="m-chart"></div><p class="note" id="m-chart-note"></p></div>
     <div class="panel"><h3>Breed two minds, then delete memories (in your browser, demo data)</h3>

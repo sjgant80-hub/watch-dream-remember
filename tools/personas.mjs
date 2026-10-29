@@ -38,7 +38,8 @@ function ask(prompt) {
 const save = (results) => writeFileSync(outFile, JSON.stringify({ kind: 'watch-dream-remember.personas', model: MODEL, when: new Date().toISOString(), pageChars: page.length, results }, null, 1) + '\n');
 
 const results = [];
-for (const [role, who] of PERSONAS) {
+const only = (process.env.WDR_ROLES || '').split(',').filter(Boolean);   // e.g. WDR_ROLES=Procurement walks one persona
+for (const [role, who] of PERSONAS.filter(([r]) => !only.length || only.includes(r))) {
   const prompt = `You are ${who}\n\nYou have opened this product page cold. Its full text follows between the lines.\n----\n${page}\n----\n\nAs that buyer, list in plain bullet points: (1) anything you could not understand or had to guess; (2) objections the page does not answer; (3) claims you do not believe or that have no evidence on the page; (4) what you would need before you said yes. Be specific and quote the page where you can. At most 12 bullets.`;
   const t0 = Date.now();
   const reply = await ask(prompt);
