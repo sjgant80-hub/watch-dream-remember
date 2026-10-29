@@ -1,6 +1,7 @@
 // tools/datasets.mjs — the five real datasets as a lab (src/lab.mjs), read through dex-frontier's vendored loaders from
 // .data/ (node tools/data.mjs --fetch). WDR_SYNTH=1 swaps in synthetic datasets of the same shape: a dry run of the
 // tooling that never reads the real data. Shared by the organ 2 and organ 3 measurements; no top-level work.
+// loadRaw() gives the loaders' output itself (every row each loader has, beyond the ones prepare() keeps), for organ 3d.
 import { readFileSync } from 'node:fs';
 import { loadBank, loadAdult } from '../vendor/dex-frontier/src/fresh.mjs';
 import { loadCredit } from '../vendor/dex-frontier/src/fresh2.mjs';
@@ -14,13 +15,18 @@ const file = (p) => new URL(p, ROOT);
 
 export function loadLab() {
   if (process.env.WDR_SYNTH) return synthLab();   // a dry run: every input synthetic
+  return prepare(loadRaw());
+}
+
+/** The five loaders' output, every row (no synthetic swap: organ 3d builds its own dry-run data). */
+export function loadRaw() {
   const t = (p) => readFileSync(file('.data/' + p), 'utf8');
   const ds = {
     shop: loadShop(t('data/online_shoppers_intention.csv')), bank: loadBank(t('data/bank-additional-full.csv')),
     adult: loadAdult(t('data/adult.data'), t('data/adult.test')), credit: loadCredit(t('data/credit-default.csv')), coupon: loadCoupon(t('data/in-vehicle-coupon-recommendation.csv')),
   };
   for (const [k, d] of Object.entries(ds)) if (!d.ok) throw new Error(k + ': ' + d.error);
-  return prepare(ds);
+  return ds;
 }
 
 /** Synthetic datasets with the loaders' shape (a dry run of the tooling never reads the real data). */

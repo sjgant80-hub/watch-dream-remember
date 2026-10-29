@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { BATCH, MODES, priorOf, ownLessons, earlyLife } from '../src/inherit.mjs';
-import { relive, live, sliceOf, isVerified, loss, shiftOf, founderIn, MIN_LATER } from '../src/memory.mjs';
+import { relive, live, sliceOf, isVerified, loss, shiftOf, founderIn, etaWith, MIN_LATER } from '../src/memory.mjs';
 import { genesOf, etaOf, cellsOf, cellKey } from '../src/mind.mjs';
 import { prepare } from '../src/lab.mjs';
 
@@ -148,7 +148,7 @@ test('garbage in: no positions, no slice', () => {
 
 // ── organ 3c: trust from birth, checked case by case ──
 test('MODES and priorOf: the parent’s record worth 30 of the child’s cases', () => {
-  assert.deepEqual(MODES, ['prove', 'trust']);
+  assert.deepEqual(MODES, ['prove', 'trust', 'blind']);
   assert.ok(Object.isFrozen(MODES));
   assert.equal(priorOf({ n: 100, gain: 5 }), 30 * 0.05);
   assert.equal(priorOf({ n: 100, gain: -5 }), -1.5);
@@ -208,4 +208,48 @@ test('trust: a lesson with no record behind it waits for the child’s own evide
   assert.equal(t.history.filter((h) => h.kind === 'adopted' || h.kind === 'dropped').length, 0);
   assert.deepEqual(t.inherited[0].here, { gain: 0, later: 0, verified: false, usable: false, prior: priorOf(thin), inUse: false });
   assert.deepEqual(Array.from(t.eta), Array.from(earlyLife(L, genes, founder, 'test', early.slice(0, 600), [], 'trust').eta));
+});
+
+// ── organ 3d: M2's own framing (no own lessons during the scored life) and blind, as context ──
+test('blind with no own lessons IS organ 3’s M2 application: etaWith, exactly', () => {
+  const pos = early.slice(0, 600);
+  const a = earlyLife(L, genes, founder, 'test', pos, slice, 'blind', { own: false });
+  assert.deepEqual(Array.from(a.eta), Array.from(etaWith(L, genes, founder, 'test', pos, slice)));
+  assert.equal(a.history.filter((h) => h.kind === 'dropped').length, 0);
+  assert.equal(a.history.filter((h) => h.kind === 'adopted' && h.batch === -1).length, a.inherited.filter((x) => x.here.usable).length);
+  assert.ok(a.inherited.every((x) => x.here.inUse === x.here.usable));
+});
+
+test('own: false — the child forms no lessons of its own; with no slice it predicts with its genes alone', () => {
+  const pos = early.slice(0, 600);
+  const z = earlyLife(L, genes, founder, 'test', pos, [], 'trust', { own: false });
+  assert.deepEqual(Array.from(z.eta), Array.from(etaOf(L, genes, 'test', pos)));
+  assert.deepEqual(z.lessons, {});
+  assert.equal(z.history.filter((h) => h.kind === 'lesson').length, 0);
+  assert.deepEqual(z.history.map((h) => h.kind), ['outcome', 'outcome', 'outcome']);
+  const withOwn = earlyLife(L, genes, founder, 'test', pos, [], 'trust');
+  assert.ok(Object.keys(withOwn.lessons).length > 0);
+  assert.notDeepEqual(Array.from(withOwn.eta), Array.from(z.eta));
+  // anything that is not exactly { own: false } keeps the child's own lessons
+  for (const o of [undefined, null, {}, { own: 0 }, 'own: false', Object.assign(() => {}, { own: false })]) assert.deepEqual(earlyLife(L, genes, founder, 'test', pos, [], 'trust', o).lessons, withOwn.lessons);
+});
+
+test('trust with no own lessons: the slice is used, and checked, exactly as under trust', () => {
+  const one = slice[3], pos = early.slice(0, BATCH * 2);
+  const a = earlyLife(L, genes, founder, 'test', pos, [one], 'trust', { own: false });
+  const eta = etaOf(L, genes, 'test', pos);
+  const sh = shiftOf(one, founderIn(L, genes, founder, one.cell, one.context));
+  const above = (f, p) => (L.ds.cols[f][L.sets.test[p]] > L.stats[f].q[0.5] ? 1 : 0);
+  let g = 0;
+  const want = pos.map((p, j) => {
+    const hit = above('seg', p) === one.context.side && above(one.cell.f, p) === one.cell.a && above(one.cell.g, p) === one.cell.b;
+    const e = hit && priorOf(one) + g > 0 ? eta[j] + sh : eta[j];
+    if (hit) g += loss(eta[j], L.y.test[p]) - loss(eta[j] + sh, L.y.test[p]);
+    return e;
+  });
+  assert.deepEqual(Array.from(a.eta), want);
+  const bad = { ...one, rate: 1 - one.rate, lineage: ['q'] };
+  const b = earlyLife(L, genes, founder, 'test', pos, [bad], 'blind', { own: false });
+  assert.equal(b.inherited[0].here.inUse, true);   // blind never drops, however it does
+  assert.ok(b.inherited[0].here.gain < 0);
 });

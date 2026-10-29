@@ -22,7 +22,7 @@ import { etaOf, cellsOf, cellKey, inCell } from './mind.mjs';
 import { inContext, founderIn, isVerified, shiftOf, loss, MIN_LATER } from './memory.mjs';
 
 export const BATCH = 200;
-export const MODES = Object.freeze(['prove', 'trust']);
+export const MODES = Object.freeze(['prove', 'trust', 'blind']);
 
 const holds = (L, l, set, pos) => inCell(L, l.cell, set, pos) && inContext(L, l.context, set, pos);
 const crossing = (kind, batch, l, t) => ({ kind, batch, cell: { ...l.cell }, context: l.context ? { ...l.context } : null, lineage: [...l.lineage], gain: t.gain, later: t.later });
@@ -48,15 +48,18 @@ export function ownLessons(L, cells, episodes, set) {
  *   mode             'prove' (organ 3b, the default): a candidate, used only once verified here, by the batch
  *                    'trust' (organ 3c): used from birth on its parent's record (priorOf), checked case by case, used for a case
  *                    exactly when prior + its gain here over the cases before it > 0
+ *                    'blind' (organ 3's M2 mechanism, reported as context by organ 3d): used from birth, never dropped
+ *   opts             { own: false } (organ 3d, M2's own framing): the child forms no lessons of its own during this life
  * → { eta: Float64Array (the prediction used for each case, in order), lessons: { key: own lesson + gain, later, verified },
  *     inherited: [{ lesson: the slice entry as inherited, here: { gain, later, verified, usable } (+ prior, inUse under trust) }],
  *     history: [entry], episodes: [{ id, pos, batch, values, outcome }] }   (usable: the child has the ≥ 5 founder cases it needs)
  * The child's own lessons live organ 3's batch cycle in both modes.
  */
-export function earlyLife(L, genes, founder, set, positions, inherited, mode) {
+export function earlyLife(L, genes, founder, set, positions, inherited, mode, opts) {
   const pos = Array.isArray(positions) ? positions : [];
   const slice = Array.isArray(inherited) ? inherited : [];
-  const trust = mode === 'trust';
+  const blind = mode === 'blind', trust = mode === 'trust' || blind;
+  const own = !(opts && typeof opts === 'object' && opts.own === false);
   const cells = cellsOf(genes);
   const ys = L.y[set];
   const out = new Float64Array(pos.length);
@@ -64,13 +67,13 @@ export function earlyLife(L, genes, founder, set, positions, inherited, mode) {
   const ishift = slice.map((l) => shiftOf(l, founderIn(L, genes, founder, l.cell, l.context)));
   const history = [];
   const prior = slice.map((l) => (trust ? priorOf(l) : 0));
-  const inUse = (i) => ishift[i] !== null && prior[i] + itrack[i].gain > 0;
+  const inUse = (i) => ishift[i] !== null && (blind || prior[i] + itrack[i].gain > 0);
   if (trust) slice.forEach((l, i) => { if (inUse(i)) history.push(crossing('adopted', -1, l, itrack[i])); });   // at birth, on trust
   let seen = [];
   for (let b = 0, at = 0; at < pos.length; b++, at += BATCH) {
     const bp = pos.slice(at, at + BATCH);
     const eta = etaOf(L, genes, set, bp);
-    const now = ownLessons(L, cells, seen, set);
+    const now = own ? ownLessons(L, cells, seen, set) : {};
     const shifts = [];
     for (const [k, l] of Object.entries(now)) {
       const s = shiftOf(l, founderIn(L, genes, founder, l.cell, l.context));
@@ -105,10 +108,10 @@ export function earlyLife(L, genes, founder, set, positions, inherited, mode) {
       if (was !== is) history.push(crossing(is ? 'adopted' : 'dropped', b, l, itrack[i]));
     });
     seen = seen.concat(bp.map((p) => ({ pos: p, outcome: ys[p] })));
-    for (const k of Object.keys(ownLessons(L, cells, seen, set))) if (!track[k]) track[k] = { gain: 0, later: 0, first: b };
+    if (own) for (const k of Object.keys(ownLessons(L, cells, seen, set))) if (!track[k]) track[k] = { gain: 0, later: 0, first: b };
   }
   const lessons = {};
-  for (const [k, l] of Object.entries(ownLessons(L, cells, seen, set))) {
+  for (const [k, l] of Object.entries(own ? ownLessons(L, cells, seen, set) : {})) {
     const t = track[k] || { gain: 0, later: 0 };
     lessons[k] = { ...l, gain: t.gain, later: t.later, verified: isVerified(t) };
   }
