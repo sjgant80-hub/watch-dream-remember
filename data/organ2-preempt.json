@@ -1,0 +1,288 @@
+{
+ "kind": "watch-dream-remember.organ2.preempt",
+ "model": "qwen2.5:7b",
+ "measured": "2026-10-29T11:31:16.992Z",
+ "device": "12th Gen Intel Core i7-1255U, CPU only (size_vram 0)",
+ "note": "Each real job is a streaming local-model request; dispatch = its handler start − its scheduled arrival; time-to-first-token from the handler start. Each job with the daydream working is paired with the next job while the daydream is paused. Other sessions may share the same local model; their load falls on both arms alike.",
+ "stats": {
+  "slices": 21966,
+  "tier2": 110,
+  "aborted": 7,
+  "jobs": 60
+ },
+ "jobs": [
+  {
+   "dispatchMs": 3.8508727413109227,
+   "ttftMs": 182.89100000000053,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 13.842559463213547,
+   "ttftMs": 169.26929999999993,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 0.08299598298617639,
+   "ttftMs": 167.4331999999995,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 12.403804497269448,
+   "ttftMs": 337.35289999999804,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 17.38536557648331,
+   "ttftMs": 178.85499999999593,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 1.0713771472364897,
+   "ttftMs": 176.57360000000335,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 1.6183461505133891,
+   "ttftMs": 178.88559999999416,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": -0.37777611045748927,
+   "ttftMs": 217.44800000000396,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 0.81168907310348,
+   "ttftMs": 182.19740000000456,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.95610279700486,
+   "ttftMs": 287.2158000000054,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": -0.05269774352200329,
+   "ttftMs": 189.7711999999883,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 8.955270087666577,
+   "ttftMs": 200.74150000000373,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 4.561919684667373,
+   "ttftMs": 372.93940000000293,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 3.6438528738508467,
+   "ttftMs": 316.26209999999264,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 9.400098417390836,
+   "ttftMs": 181.88709999999264,
+   "duringTier2": true
+  },
+  {
+   "dispatchMs": 3.2079702226037625,
+   "ttftMs": 185.81510000000708,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": -1.3055782652227208,
+   "ttftMs": 178.61030000000028,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.1224138390971348,
+   "ttftMs": 166.42359999998007,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 3.1812290213420056,
+   "ttftMs": 178.3562999999849,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.749174260068685,
+   "ttftMs": 179.94799999997485,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.374306413345039,
+   "ttftMs": 174.99179999995977,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": -0.9874752988107502,
+   "ttftMs": 174.86469999997644,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 3.844975069630891,
+   "ttftMs": 183.5524999999907,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 0.5252077879849821,
+   "ttftMs": 178.98730000003707,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.448193482181523,
+   "ttftMs": 173.788499999966,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 3.698116898711305,
+   "ttftMs": 167.69959999999264,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 0.3227813860285096,
+   "ttftMs": 172.8747999999905,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 2.860047406866215,
+   "ttftMs": 209.0462000000407,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": -1.0795035701594315,
+   "ttftMs": 185.70709999999963,
+   "duringTier2": false
+  },
+  {
+   "dispatchMs": 0.6085222078254446,
+   "ttftMs": 185.53149999998277,
+   "duringTier2": false
+  }
+ ],
+ "pairs": [
+  {
+   "on": 182.89100000000053,
+   "off": 183.79329999999936
+  },
+  {
+   "on": 169.26929999999993,
+   "off": 179.90220000000045
+  },
+  {
+   "on": 167.4331999999995,
+   "off": 180.52790000000095
+  },
+  {
+   "on": 337.35289999999804,
+   "off": 170.62979999999516
+  },
+  {
+   "on": 178.85499999999593,
+   "off": 171.64590000000317
+  },
+  {
+   "on": 176.57360000000335,
+   "off": 175.09930000000168
+  },
+  {
+   "on": 178.88559999999416,
+   "off": 172.4762000000046
+  },
+  {
+   "on": 217.44800000000396,
+   "off": 173.31570000000647
+  },
+  {
+   "on": 182.19740000000456,
+   "off": 189.9551999999967
+  },
+  {
+   "on": 287.2158000000054,
+   "off": 202.2091000000073
+  },
+  {
+   "on": 189.7711999999883,
+   "off": 170.492900000012
+  },
+  {
+   "on": 200.74150000000373,
+   "off": 194.84489999999641
+  },
+  {
+   "on": 372.93940000000293,
+   "off": 177.9206000000122
+  },
+  {
+   "on": 316.26209999999264,
+   "off": 176.33150000000023
+  },
+  {
+   "on": 181.88709999999264,
+   "off": 182.91120000000228
+  },
+  {
+   "on": 185.81510000000708,
+   "off": 187.15650000001187
+  },
+  {
+   "on": 178.61030000000028,
+   "off": 181.4482999999891
+  },
+  {
+   "on": 166.42359999998007,
+   "off": 180.789300000004
+  },
+  {
+   "on": 178.3562999999849,
+   "off": 173.20789999997942
+  },
+  {
+   "on": 179.94799999997485,
+   "off": 172.3534000000218
+  },
+  {
+   "on": 174.99179999995977,
+   "off": 174.74829999997746
+  },
+  {
+   "on": 174.86469999997644,
+   "off": 170.71830000000773
+  },
+  {
+   "on": 183.5524999999907,
+   "off": 183.44579999998678
+  },
+  {
+   "on": 178.98730000003707,
+   "off": 184.24609999998938
+  },
+  {
+   "on": 173.788499999966,
+   "off": 196.56790000002366
+  },
+  {
+   "on": 167.69959999999264,
+   "off": 188.55939999996917
+  },
+  {
+   "on": 172.8747999999905,
+   "off": 168.7666999999783
+  },
+  {
+   "on": 209.0462000000407,
+   "off": 187.03429999999935
+  },
+  {
+   "on": 185.70709999999963,
+   "off": 175.86589999997523
+  },
+  {
+   "on": 185.53149999998277,
+   "off": 171.3025000000489
+  }
+ ],
+ "tier3Sink": 80023
+}
