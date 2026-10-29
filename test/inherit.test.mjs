@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BATCH, ownLessons, earlyLife } from '../src/inherit.mjs';
+import { BATCH, MODES, priorOf, ownLessons, earlyLife } from '../src/inherit.mjs';
 import { relive, live, sliceOf, isVerified, loss, shiftOf, founderIn, MIN_LATER } from '../src/memory.mjs';
 import { genesOf, etaOf, cellsOf, cellKey } from '../src/mind.mjs';
 import { prepare } from '../src/lab.mjs';
@@ -144,4 +144,68 @@ test('garbage in: no positions, no slice', () => {
   const b = earlyLife(L, genes, founder, 'test', early.slice(0, 10), 'x');
   assert.equal(b.inherited.length, 0);
   assert.equal(b.eta.length, 10);
+});
+
+// ── organ 3c: trust from birth, checked case by case ──
+test('MODES and priorOf: the parent’s record worth 30 of the child’s cases', () => {
+  assert.deepEqual(MODES, ['prove', 'trust']);
+  assert.ok(Object.isFrozen(MODES));
+  assert.equal(priorOf({ n: 100, gain: 5 }), 30 * 0.05);
+  assert.equal(priorOf({ n: 100, gain: -5 }), -1.5);
+  assert.equal(priorOf({ n: 0, gain: 5 }), 0);
+  assert.equal(priorOf({ n: 100, gain: NaN }), 0);
+  assert.equal(priorOf(null), 0);
+});
+
+test('trust: with no slice, the same life as prove', () => {
+  const pos = early.slice(0, 600);
+  assert.deepEqual(earlyLife(L, genes, founder, 'test', pos, [], 'trust'), earlyLife(L, genes, founder, 'test', pos, []));
+});
+
+test('trust: used from birth, exactly while prior + its gain over the cases before > 0', () => {
+  const one = slice[3], pos = early.slice(0, BATCH);
+  const a = earlyLife(L, genes, founder, 'test', pos, [one], 'trust');
+  const eta = etaOf(L, genes, 'test', pos);
+  const sh = shiftOf(one, founderIn(L, genes, founder, one.cell, one.context));
+  const above = (f, p) => (L.ds.cols[f][L.sets.test[p]] > L.stats[f].q[0.5] ? 1 : 0);
+  const prior = priorOf(one);
+  let g = 0, n = 0;
+  const want = pos.map((p, j) => {
+    const hit = above('seg', p) === one.context.side && above(one.cell.f, p) === one.cell.a && above(one.cell.g, p) === one.cell.b;
+    const e = hit && prior + g > 0 ? eta[j] + sh : eta[j];
+    if (hit) { g += loss(eta[j], L.y.test[p]) - loss(eta[j] + sh, L.y.test[p]); n++; }
+    return e;
+  });
+  assert.deepEqual(Array.from(a.eta), want);
+  assert.deepEqual(a.inherited[0].here, { gain: g, later: n, verified: g > 0 && n >= MIN_LATER, usable: true, prior, inUse: prior + g > 0 });
+  assert.deepEqual(a.history[0], { kind: 'adopted', batch: -1, cell: one.cell, context: one.context, lineage: ['p'], gain: 0, later: 0 });
+  assert.ok(prior > 0);
+});
+
+test('trust: a lesson that hurts is dropped the moment the child’s evidence outweighs its parent’s; prove mode carries no prior', () => {
+  const bad = { ...slice[3], rate: 1 - slice[3].rate, lineage: ['q'] };
+  const a = earlyLife(L, genes, founder, 'test', early.slice(0, 600), [bad], 'trust');
+  const drops = a.history.filter((h) => h.kind === 'dropped');
+  assert.ok(drops.length >= 1);
+  assert.equal(drops[0].batch, 0);
+  assert.ok(drops[0].gain + priorOf(bad) <= 0);
+  assert.ok(drops[0].later < 60);
+  assert.deepEqual(Object.keys(drops[0]).sort(), ['batch', 'cell', 'context', 'gain', 'kind', 'later', 'lineage']);
+  assert.equal(a.inherited[0].here.inUse, false);
+  const p = earlyLife(L, genes, founder, 'test', early.slice(0, 600), [bad]);
+  assert.ok(!('prior' in p.inherited[0].here) && !('inUse' in p.inherited[0].here));
+});
+
+test('trust: a lesson with no record behind it waits for the child’s own evidence; one the child cannot apply is never used', () => {
+  const blank = { ...slice[3], gain: 0 };
+  const a = earlyLife(L, genes, founder, 'test', early.slice(0, 600), [blank], 'trust');
+  assert.equal(a.history.filter((h) => h.kind === 'adopted' && h.batch === -1).length, 0);
+  assert.deepEqual(Array.from(a.eta.slice(0, 1)), Array.from(etaOf(L, genes, 'test', [0])));
+  const later = a.history.find((h) => h.kind === 'adopted');
+  if (later) assert.ok(later.batch >= 0 && later.gain > 0);
+  const thin = { ...slice[3], n: 5 };
+  const t = earlyLife(L, genes, founder, 'test', early.slice(0, 600), [thin], 'trust');
+  assert.equal(t.history.filter((h) => h.kind === 'adopted' || h.kind === 'dropped').length, 0);
+  assert.deepEqual(t.inherited[0].here, { gain: 0, later: 0, verified: false, usable: false, prior: priorOf(thin), inUse: false });
+  assert.deepEqual(Array.from(t.eta), Array.from(earlyLife(L, genes, founder, 'test', early.slice(0, 600), [], 'trust').eta));
 });
