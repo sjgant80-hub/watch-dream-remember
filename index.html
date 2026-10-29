@@ -119,13 +119,20 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <div id="w-svg"></div>
     <p class="out" id="w-out" aria-live="polite">Pick a build and a fault, then press Run.</p>
   </div>
+  <div class="panel"><h3>The five test faults, in plain words</h3><ul>
+    <li><b>Stuck loop, normal speed.</b> The same action every 10 minutes, without end: an agent caught repeating one step.</li>
+    <li><b>Stuck loop, fast.</b> The same action 20 or more times an hour.</li>
+    <li><b>Hijacked, random actions.</b> Random actions at a normal pace: what a stolen key driving the agent looks like.</li>
+    <li><b>Greedy.</b> The agent's own kind of work, at three times its busiest hour.</li>
+    <li><b>History rewritten.</b> An earlier record in the agent's journal is altered after the regulator checked it.</li></ul>
+    <p>These are test cases, not a list the regulator looks for. It looks for any departure from each agent's own normal, in what the agent touches, how much it touches and its rhythm, so behaviour nobody listed is caught the same way. An agent that keeps overspending is throttled, then paused. If it is high-stakes, the pause is renewed for as long as the behaviour lasts and is lifted only by a named person.</p></div>
   <div class="grid g2">
     <div class="panel"><h3>What it checks, every visit</h3><ul>
       <li><b>Drift.</b> How surprising the hour's actions are against this build's own normal: which part of the build it touched, how many files, and the rhythm. A stuck loop is too regular; a hijacker is too random.</li>
       <li><b>Rate.</b> How fast that surprise is rising.</li>
       <li><b>Budget.</b> Actions per hour and per day, against this build's own signed envelope.</li>
       <li><b>Health.</b> Whether the build's hash-chained journal still matches what the regulator verified last time.</li></ul></div>
-    <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most two new pauses in any six hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module.</p></div>
+    <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most two new pauses in any six hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module. <span id="w-r2"></span></p><p><b>High-stakes</b> means an agent that spends money or speaks for you in public; in the measured mesh, two of the ten builds are marked that way. Every other agent is <b>low-stakes</b>: the regulator may lift its pause itself, on probation (throttled), after a cool-down that doubles each time.</p></div>
   </div>
   <div class="panel" id="w-receipt"></div>
 </section>
@@ -145,6 +152,13 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
       <div class="controls"><button id="d-add">Daydream: add 30</button><button id="d-day">Next day</button><button id="d-promote">Night: promote 10</button></div>
       <p class="out" id="d-log-out" aria-live="polite"></p></div>
   </div>
+  <div class="panel"><h3>What the daydream found, in plain words</h3>
+    <p class="note">The five sources: <b>transfer</b> tries a change that worked on one dataset on the most similar column of another. <b>transfer-7b</b> does the same, with the local model naming the most similar column. <b>association</b> looks for two features whose joint effect on the outcome differs from what each predicts alone, such as which customer segment answers which kind of call. <b>gap</b> looks for the split that best separates the cases the model is least sure of. <b>rehearsal</b> tries a variation of last night's adopted change. "Judged" means the gate tested it on held-out data. "Verified" means a separate test set, which nothing selected on, confirmed it.</p>
+    <div class="scroll" id="d-found"></div></div>
+  <div class="grid g2">
+    <div class="panel"><h3>"Inert", and what happens when the gate says no</h3><p>An <b>inert</b> record is data only. Nothing executes it, and the only thing that reads it is the nightly gate, which can do one thing with it: test the one model change it describes on held-out data. When the gate says no, the record is dropped and the model stays exactly as it was. The current model is always the fallback, so a bad idea costs one test, never a change.</p></div>
+    <div class="panel"><h3>Integrity</h3><p>A tampered or poisoned candidate still has to beat held-out data, re-scored by the gate itself, and then a separate test set nobody selected on. The daydream's code imports no file, network or process module. Every adoption in the run is backed by its gate record, and a battery of hostile local-model replies produced no action (all measured). The log is LIGHT, a lossless codec. It is not encryption, so on a shared machine you protect it as you would any local file.</p></div>
+  </div>
   <div class="panel" id="d-receipt"></div>
 </section>
 
@@ -154,7 +168,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <div class="grid g2">
     <div class="panel"><h3>Memory vs no memory, and inheritance vs none</h3><div id="m-chart"></div><p class="note" id="m-chart-note"></p></div>
     <div class="panel"><h3>Breed two minds, then delete memories (in your browser, demo data)</h3>
-      <p class="note">Two parents live on different halves of a demo population. Every case they see carries a planted note, standing in for what a person might have said.</p>
+      <p class="note">Two parents live on different halves of a demo population. Every case they see carries a planted note, standing in for what a person might have said. Each note holds a unique random token, a <b>canary</b>: if any canary turned up anywhere in a child, personal content would have leaked.</p>
       <div class="controls"><button class="go" id="m-breed">Breed</button><button id="m-delete" disabled>Delete 25 memories</button></div>
       <p class="out" id="m-out" aria-live="polite"></p><div class="scroll" id="m-lessons"></div></div>
   </div>

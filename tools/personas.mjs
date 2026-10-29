@@ -3,9 +3,13 @@
 // page's rendered text cold and list every confusion, unanswered objection and unbacked claim. Sovereign: nothing leaves.
 //   node tools/personas.mjs <page-text.txt> [out.json]
 import { readFileSync, writeFileSync } from 'node:fs';
+import { request } from 'node:http';
 
 const [, , textFile, outFile = 'data/personas-qwen7b.json'] = process.argv;
-const page = readFileSync(textFile, 'utf8');
+// the Receipts table repeats each organ's measured list word for word: one copy is enough for a reader
+const raw = readFileSync(textFile, 'utf8');
+const cut = [raw.indexOf('\nReceipts\n'), raw.indexOf('Re-run any of it yourself')];
+const page = cut[0] > 0 && cut[1] > cut[0] ? raw.slice(0, cut[0]) + raw.slice(cut[1]) : raw;
 const MODEL = 'qwen2.5:7b';
 export const PERSONAS = [
   ['CFO', 'the chief financial officer of a 200-person UK services firm that already runs a handful of AI agents. You care about cost, savings you can defend to the board, and anything that looks like a hidden bill.'],
@@ -15,17 +19,20 @@ export const PERSONAS = [
   ['Procurement', 'the procurement lead. You care who the supplier is, the licence, support terms, exit, references, and every claim the contract would rely on.'],
 ];
 
-/** Streamed, so a long read of the page on a CPU never trips a header timeout. */
-async function ask(prompt) {
-  const r = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: MODEL, prompt, stream: true, options: { temperature: 0.2, seed: 7, num_ctx: 12288, num_predict: 700 } }) });
-  const dec = new TextDecoder();
-  let buf = '', out = '';
-  for await (const chunk of r.body) {
-    buf += dec.decode(chunk, { stream: true });
-    let nl;
-    while ((nl = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1); if (line) out += JSON.parse(line).response || ''; }
-  }
-  return out;
+/** Through node:http, streamed: a long read of the page on a CPU has no header or body timeout to trip. */
+function ask(prompt) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({ model: MODEL, prompt, stream: true, options: { temperature: 0.2, seed: 7, num_ctx: 12288, num_predict: 700 } });
+    const req = request({ host: '127.0.0.1', port: 11434, path: '/api/generate', method: 'POST', headers: { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) } }, (res) => {
+      let buf = '', out = '';
+      res.setEncoding('utf8');
+      res.on('data', (c) => { buf += c; let nl; while ((nl = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1); if (line) out += JSON.parse(line).response || ''; } });
+      res.on('end', () => resolve(out));
+    });
+    req.on('error', reject);
+    req.setTimeout(0);
+    req.end(body);
+  });
 }
 const save = (results) => writeFileSync(outFile, JSON.stringify({ kind: 'watch-dream-remember.personas', model: MODEL, when: new Date().toISOString(), pageChars: page.length, results }, null, 1) + '\n');
 

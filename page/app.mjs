@@ -269,6 +269,10 @@ function receipts() {
   $('m-receipt').innerHTML = `<h3>Measured (organ 3, sealed 4da8aa4, superseding d838607 before any real data was read)</h3><ul>${Object.entries(R.o3.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul><p class="note">M2 failed. On shop sessions, the parent that lived on low-value sessions learnt lessons that hurt both itself and the child. On bank calls the fusion did not beat both parents, so the child kept a parent's model. Inheritance helped on census and credit. The fix will be sealed as a new step.</p>`;
   const src = R.o2.arms.daydream.bySource;
   $('d-sources').innerHTML = `<table><thead><tr><th>Source</th><th>judged</th><th>adopted</th><th>verified</th></tr></thead><tbody>${Object.entries(src).map(([k, s]) => `<tr><td>${esc(k === 'dream' ? 'the dream’s own (random)' : k)}</td><td>${s.judged}</td><td>${s.adopted}</td><td>${s.verified}</td></tr>`).join('')}</tbody></table>`;
+  const TITLES = { shop: 'shop sessions', bank: 'bank calls', adult: 'census people', credit: 'credit clients', coupon: 'coupon offers' };
+  const plain = (k) => { const m = k.match(/^(\w+)\((.+)\)$/); if (!m) return k; const [a, b] = m[2].split(','); return ({ log: `the logarithm of ${a}`, sq: `${a} squared`, step: `whether ${a} is above its ${Math.round(+b * 100)}th percentile`, cross: `${a} × ${b}` })[m[1]] || k; };
+  const found = R.o2.arms.daydream.adoptions.filter((x) => x.verified && x.source !== 'dream');
+  $('d-found').innerHTML = `<table><thead><tr><th>Night</th><th>Dataset</th><th>The change</th><th>Source</th></tr></thead><tbody>${found.map((x) => `<tr><td>${x.night + 1}</td><td>${esc(TITLES[x.dataset] || x.dataset)}</td><td>${esc(plain(x.spec))}</td><td>${esc(x.source)}</td></tr>`).join('')}</tbody></table>`;
   $('d-chart-note').textContent = `${R.o2.claims.D1.measured}. ${R.o2.claims.D1b.measured}.`;
   $('m-chart-note').textContent = 'Each bar is the mean change in log-loss on 2,000 held-out tasks, in nats. Green passes its sealed bar (≥ 0.001 better, with a bootstrap lower bound above zero); red does not.';
 }
@@ -345,6 +349,7 @@ async function main() {
   $('roles').innerHTML = ROLES.map(([r, t]) => `<div class="panel role"><h3>${r}</h3><p>${esc(t)}</p></div>`).join('');
   const t3 = R.o1.claims.R3.laptop;
   $('c-round').textContent = fmt(t3.roundMax, 0);
+  { const bat = R.o1.claims.R2.battery; $('w-r2').textContent = `Measured: ${bat.filter((x) => x.ok).length} of ${bat.length} forbidden, forged or out-of-scope attempts were refused at their sealed step (or admitted, for the five legitimate verbs), and ${R.o1.claims.R2.hits.length} file, network or process capabilities were found in its ${R.o1.claims.R2.scanned.length} runtime files.`; }
   $('c-risks').innerHTML = [
     `<b>False alarms.</b> On the real history, one real burst of work on one build was paused by the budget rule: ${R.o1.claims.R1f.verdicts.pause} pause verdicts, which is one pause and its renewals. It is recorded as a failure. The fix, a throttle on budget alone, will be sealed and measured as its own step.`,
     `<b>Speed.</b> The per-visit time missed its bar on a busy laptop (p99 ${fmt(t3.p99, 2)} ms against 1 ms), mostly the cost of signing each verdict. The whole round still costs ${fmt(t3.roundMax * 50 / 36000, 4)}% of one core on a device 50 times slower. It is recorded as a failure.`,
