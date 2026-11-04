@@ -41,13 +41,22 @@ node tools/organ3c-measure.mjs --verify
 node tools/organ3d-measure.mjs --verify
 ```
 
-CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness, `--cap 1000`).
+CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness pinned at its `v0.6` tag, `--cap 1000`). The page's blueprint shows each kernel's tests and gate result from `data/witness-ci.json`, built from one CI run's witness reports by `tools/witness-receipt.mjs`; CI checks on every push that every kernel and test file still hashes to what that run gated. After changing a kernel or its tests, push, then refresh the receipt from that run:
+
+```bash
+gh run download <run> -D art && gh run view <run> --json databaseId,url,headSha,conclusion,createdAt,jobs > run.json
+node tools/witness-receipt.mjs --from art --meta run.json --witness <the witness commit the run's log prints>
+```
+
+## The case for a buyer
+
+The page carries the brochure: benefits by role, roll-out, security and data protection, ownership and exit, risks answered straight, and a cost case computed by `src/costcase.mjs` from the vendored, sourced basis (ONS pay, employer NI and pension, UK CPI, a Microsoft 365 Copilot seat, DESNZ electricity) and the reader's own hours. It sets today's staff time against the same with a rented assistant seat for each person and against owning this, a year and over the reader's years. No saving is counted for inheritance: it was measured four ways and does not reliably help.
 
 ## Layout
 
 - `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` (watch) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` `inherit` (remember) · `costcase`.
-- `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, and a local server (`node tools/serve.mjs`).
-- `data/`: the sealed preregistrations, the receipts, the node histories, and the recorded local-model replies.
+- `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, the gate receipt (`witness-receipt.mjs`), and a local server (`node tools/serve.mjs`).
+- `data/`: the sealed preregistrations, the receipts, the node histories, the recorded local-model replies, and `witness-ci.json` (each kernel's mutation gate as GitHub's runner reported it).
 - `vendor/`: verbatim copies with pinned hashes. From fall-kit: identity, SHA-256 and the LIGHT codec. From dex-frontier: the dataset loaders. From sovereign-enterprise: the sourced cost basis.
 
 ## Credit

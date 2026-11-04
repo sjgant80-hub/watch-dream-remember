@@ -34,6 +34,8 @@ table{border-collapse:collapse;width:100%;font-size:14.5px}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--soft);font-weight:600}
 .scroll{overflow-x:auto}
+.scroll table.wide{min-width:720px}
+.diagram svg{min-width:760px}
 code,.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13.5px}
 code{background:var(--code);padding:1px 5px;border-radius:4px}
 button,select,input{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:7px 11px}
@@ -188,15 +190,19 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 
 <section id="how">
   <h2>How it works</h2>
-  <div class="panel"><h3>One regulator visit, traced from the measured run</h3><div id="h-visit"></div></div>
-  <div class="panel"><h3>Daydream → dream → gate</h3><div id="h-tiers"></div></div>
-  <div class="panel"><h3>A life, a lesson, a child</h3><div id="h-life"></div></div>
+  <div class="panel"><h3>One regulator visit, traced from the measured run</h3><div class="scroll diagram" id="h-visit"></div></div>
+  <div class="panel"><h3>Daydream → dream → gate</h3><div class="scroll diagram" id="h-tiers"></div></div>
+  <div class="panel"><h3>A life, a lesson, a child</h3><div class="scroll diagram" id="h-life"></div></div>
 </section>
 
 <section id="blueprint">
   <h2>Blueprint</h2>
   <p>Every part is a small, pure kernel with its own tests. Each one runs through a mutation gate ("witness"), which changes the code one operator at a time and requires the tests to catch every change. The live page imports the same files.</p>
-  <div class="scroll"><table id="b-table"><thead><tr><th>Part</th><th>File</th><th>What it does</th></tr></thead><tbody></tbody></table></div>
+  <p class="note" id="b-note"></p>
+  <div class="scroll"><table id="b-table" class="wide"><thead><tr><th>Part</th><th>File</th><th>What it does</th><th>Tests</th><th>Mutation gate</th></tr></thead><tbody></tbody></table></div>
+  <h3>The measuring tools and the page</h3>
+  <p>The kernels above are the product. The tools below measure it: each organ's tool re-derives its receipt from the pinned public data, and continuous integration runs every one of them, checks every seal against its sealing commit, and re-derives the build histories byte for byte, on every change.</p>
+  <div class="scroll"><table id="b-tools" class="wide"><thead><tr><th>File</th><th>What it does</th><th>Its result</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 <section id="business">

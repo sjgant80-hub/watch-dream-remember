@@ -30,6 +30,8 @@ jobs:
           node tools/nodes-fresh.mjs --check
       - name: unit suites
         run: node --test test/*.test.mjs
+      - name: the page's gate table (data/witness-ci.json) still describes these exact kernels and tests
+        run: node tools/witness-receipt.mjs --check
       - name: organ 1 (the regulator) seal unchanged, receipt re-measured
         run: |
           node tools/organ1-measure.mjs --check

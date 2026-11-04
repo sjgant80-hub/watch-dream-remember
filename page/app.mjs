@@ -347,6 +347,35 @@ const BLUEPRINT = [
   ['Remember', 'src/inherit.mjs', 'a child’s early life: inherited lessons used only once proven on its own cases, dropped when they stop holding (organ 3b)'],
   ['Case', 'src/costcase.mjs', 'staff time taken off people at sourced UK pay; today, rented assistant seats and owned, over the years with CPI; the source of every figure'],
 ];
+const TOOLS = [
+  ['tools/organ1-measure.mjs', 'organ 1: the regulator on the ten builds, the sealed injected faults, the envelope battery, kill and rogue, the timing', '1'],
+  ['tools/organ1b-measure.mjs', 'organ 1b: the fix for R1f, on the same ten builds, ten never seen, and the faults again', '1b'],
+  ['tools/organ2-measure.mjs', 'organ 2: the sealed nights with and without the daydream, from the recorded local-model replies', '2'],
+  ['tools/organ3-measure.mjs', 'organ 3: parents, children and deletion on the five datasets', '3'],
+  ['tools/organ3b-measure.mjs', 'organ 3b: inheritance proven first', '3b'],
+  ['tools/organ3c-measure.mjs', 'organ 3c: inheritance trusted from birth, checked every case', '3c'],
+  ['tools/organ3d-measure.mjs', 'organ 3d: M2 on five fresh families', '3d'],
+];
+/** The blueprint: every kernel with its tests and its mutation gate as GitHub's runner reported it (data/witness-ci.json). */
+function blueprint(gate) {
+  const run = gate.run, by = Object.fromEntries(gate.kernels.map((k) => [k.src, k]));
+  const at = `<a href="${esc(run.url)}">CI run ${esc(run.id)}</a> at commit <a href="https://github.com/sjgant80-hub/watch-dream-remember/commit/${esc(run.headSha)}">${esc(run.headSha.slice(0, 7))}</a>`;
+  const clean = gate.kernels.filter((k) => k.clean).length, mutants = gate.kernels.reduce((a, k) => a + k.total, 0), ignored = gate.kernels.reduce((a, k) => a + k.ignored, 0);
+  $('b-note').innerHTML = `Gate results from ${at}, witness ${esc(gate.witness.tag)} (cap ${gate.witness.cap} mutants a file): ${clean} of ${gate.kernels.length} kernels clean, ${mutants} mutants judged, every one killed except ${ignored} reviewed as equivalent, each with its written reason in <a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/src/witness.baseline.json">src/witness.baseline.json</a>. On every push, CI checks that each kernel and test file still hashes to what that run gated, so this table cannot describe code that has since changed.`;
+  document.querySelector('#b-table tbody').innerHTML = BLUEPRINT.map(([a, f, w]) => {
+    const k = by[f];
+    const g = !k ? '—' : `<span class="${k.clean ? 'held' : 'failed'}">${k.clean ? 'clean' : 'NOT clean'}</span>: ${k.killed} of ${k.total} killed${k.ignored ? `, ${k.ignored} reviewed-equivalent` : ''}`;
+    return `<tr><td>${a}</td><td class="mono"><a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${f}">${f}</a></td><td>${esc(w)}</td><td>${k ? `<a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${k.test}">${k.tests}</a>` : '—'}</td><td>${g}</td></tr>`;
+  }).join('');
+  const organ = (k) => { const o = R['o' + k]; return `${run.claimsJob === 'success' ? 're-measured identically in that run' : 'claims job: ' + esc(run.claimsJob)}; ${n(o)} of ${of(o)} sealed claims held` + (n(o) < of(o) ? ` (${Object.entries(o.claims).filter(([, c]) => !c.pass).map(([id]) => id).join(', ')} failed, kept)` : ''); };
+  document.querySelector('#b-tools tbody').innerHTML = [
+    ...TOOLS.map(([f, w, k]) => [f, w, organ(k)]),
+    ['tools/data.mjs · tools/nodes.mjs · tools/nodes-fresh.mjs', 'fetch the five UCI datasets at pinned commits and re-derive the builds’ commit histories from GitHub', 'checked byte for byte against their pinned hashes in CI'],
+    ['tools/nodes-burst.mjs', 'the search for a real burst to test organ 1b on (organ 1c)', `kept as data: ${R.burst.rule.skipped.noHeldOverrun.length} builds with enough history, none overran`],
+    ['tools/witness-receipt.mjs', 'turns a CI run’s witness reports into data/witness-ci.json, and checks it against the files', `the receipt for ${at}`],
+    ['page/app.mjs', 'this page: the same kernels, the receipts read as it loads', `test/page.test.mjs: ${run.claimsJob === 'success' ? 'passed in that run' : esc(run.claimsJob)}`],
+  ].map(([f, w, r]) => `<tr><td class="mono">${esc(f)}</td><td>${esc(w)}</td><td>${r}</td></tr>`).join('');
+}
 const ROLES = [
   ['CEO', 'A system of agents you can leave running. Something independent watches every one of them, and the evidence for every claim is public and re-runnable.'],
   ['CFO', 'The cost case below is computed from ONS pay data and your own inputs. Running cost is electricity on hardware you already own. The regulator\'s envelope holds a spending budget of zero.'],
@@ -381,7 +410,7 @@ function faq() {
 }
 
 async function main() {
-  const [nodes, basis, burst, ...docs] = await Promise.all(['data/nodes.json', 'vendor/sovereign-enterprise/data/basis.json', 'data/nodes-burst.json', ...ORGANS.flatMap((k) => [`data/organ${k}-run.json`, `data/organ${k}-prereg.json`])].map(get));
+  const [nodes, basis, burst, gate, ...docs] = await Promise.all(['data/nodes.json', 'vendor/sovereign-enterprise/data/basis.json', 'data/nodes-burst.json', 'data/witness-ci.json', ...ORGANS.flatMap((k) => [`data/organ${k}-run.json`, `data/organ${k}-prereg.json`])].map(get));
   ORGANS.forEach((k, i) => { R['o' + k] = docs[2 * i]; R['p' + k] = docs[2 * i + 1]; });
   R.burst = burst;
   const { p1 } = R;
@@ -414,7 +443,7 @@ async function main() {
   $('m-delete').addEventListener('click', del);
   $('m-early').addEventListener('click', early);
   drawHow();
-  document.querySelector('#b-table tbody').innerHTML = BLUEPRINT.map(([a, f, w]) => `<tr><td>${a}</td><td class="mono"><a href="https://github.com/sjgant80-hub/watch-dream-remember/blob/main/${f}">${f}</a></td><td>${esc(w)}</td></tr>`).join('');
+  blueprint(gate);
   $('roles').innerHTML = ROLES.map(([r, t]) => `<div class="panel role"><h3>${r}</h3><p>${esc(t)}</p></div>`).join('');
   const t3 = R.o1.claims.R3.laptop;
   $('c-round').textContent = fmt(t3.roundMax, 0);

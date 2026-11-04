@@ -69,3 +69,9 @@ test('no sourced figure is typed into the page: the cost case reads every one fr
   assert.ok(!/\b15 W\b/.test(html + app), 'the laptop draw typed in');
   assert.ok(app.includes('sourcesOf(basis)'), 'every figure cited from the basis');
 });
+
+test('every data file the page fetches is in the repository', () => {
+  const files = [...new Set([...app.matchAll(/'((?:data|vendor)\/[^'$`]+\.json)'/g)].map((m) => m[1]))];
+  assert.ok(files.includes('data/witness-ci.json') && files.includes('vendor/sovereign-enterprise/data/basis.json'));
+  for (const f of files) readFileSync(new URL(f, root));
+});
