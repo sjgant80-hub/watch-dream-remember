@@ -3,11 +3,12 @@
  "v": 1,
  "note": "Each kernel's mutation gate as GitHub's runner reported it (witness, pinned at its tag), with the hashes of the files it gated. CI re-checks the hashes on every push (tools/witness-receipt.mjs --check), so the page never shows a gate result for code that has since changed.",
  "run": {
-  "id": 41845990070,
-  "url": "https://github.com/sjgant80-hub/watch-dream-remember/actions/runs/41845990070",
-  "headSha": "7a9e525547f944efc7c50e8463baba107c66f574",
+  "id": 41895968628,
+  "url": "https://github.com/sjgant80-hub/watch-dream-remember/actions/runs/41895968628",
+  "headSha": "5d57f608e68a21366947d5b34f40fd8a50d82ad1",
   "conclusion": "success",
-  "createdAt": "2026-11-04T14:16:57Z",
+  "createdAt": "2026-11-04T19:20:20Z",
+  "event": "workflow_dispatch",
   "claimsJob": "success"
  },
  "witness": {
@@ -26,16 +27,16 @@
    "kernel": "costcase",
    "src": "src/costcase.mjs",
    "test": "test/costcase.test.mjs",
-   "tests": 6,
-   "total": 24,
-   "killed": 24,
+   "tests": 7,
+   "total": 26,
+   "killed": 26,
    "ignored": 0,
    "survived": 0,
    "capped": false,
    "clean": true,
    "job": "success",
-   "srcSha256": "d360cc84144f8f800891ed91d656c9e465c509a1b4a8f6c99bde7eb8a52aabb7",
-   "testSha256": "28e8695ed290775803fe993a5d9a12cae0e1b6a302144d09953c5ab0bb262909"
+   "srcSha256": "5070e687a36b5a4ecf9c780b459c0962ce932cfd69ac54d4a3c55fadac0625af",
+   "testSha256": "2d256757e793e5e3546b5aa81262a06edd70835ff0cdd922f87c2c88a57fe99a"
   },
   {
    "kernel": "daydream",
@@ -261,6 +262,21 @@
    "job": "success",
    "srcSha256": "548169bae401106c166c5a6afa9db1464bc010e0a0e0d952afc37113580c726e",
    "testSha256": "f3a3160d645817391c7ab7905f8ef9a379fb254373a03d63bbe26aef0729c35e"
+  },
+  {
+   "kernel": "yours",
+   "src": "src/yours.mjs",
+   "test": "test/yours.test.mjs",
+   "tests": 9,
+   "total": 19,
+   "killed": 19,
+   "ignored": 0,
+   "survived": 0,
+   "capped": false,
+   "clean": true,
+   "job": "success",
+   "srcSha256": "100cf16072fcae854dab07cc49dfc89272b8c09e28ce3bf912613c94947cb445",
+   "testSha256": "8cbccbbfd2dfae605acb09d3038e2c51db91f716f8bc3c07149cd46c4e9e4248"
   }
  ]
 }
