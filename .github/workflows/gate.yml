@@ -6,6 +6,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      refresh:
+        description: 'a refresh run for data/witness-ci.json: run every gate on new kernel code, but not the check that the receipt matches it (it cannot yet)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -31,6 +36,7 @@ jobs:
       - name: unit suites
         run: node --test test/*.test.mjs
       - name: the page's gate table (data/witness-ci.json) still describes these exact kernels and tests
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.refresh) }}
         run: node tools/witness-receipt.mjs --check
       - name: organ 1 (the regulator) seal unchanged, receipt re-measured
         run: |
@@ -68,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        kernel: [streams, journal, envelope, regulator, mesh, inject, model, lab, daylog, daydream, dream, idle, memory, mind, inherit, costcase]
+        kernel: [streams, journal, envelope, regulator, mesh, inject, yours, model, lab, daylog, daydream, dream, idle, memory, mind, inherit, costcase]
     steps:
       - uses: actions/checkout@v4
         with:

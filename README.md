@@ -1,6 +1,6 @@
 # Watch · Dream · Remember
 
-**▶ Live: https://sjgant80-hub.github.io/watch-dream-remember/**. The page explains itself. The regulator runs live in the tab on the real data, and every number there is read from the receipts below.
+**▶ Live: https://sjgant80-hub.github.io/watch-dream-remember/**. The page explains itself. The regulator runs live in the tab on the real data, and every number there is read from the receipts below. **Run it on your own build:** the page's *Your build* section takes any git repository's history (`git log --reverse --format=@%ct --name-only`) and replays it through the measured regulator in your browser, sending nothing; from a terminal, `node tools/watch-repo.mjs <path>` does the same.
 
 Three upgrades for an AI system that runs itself:
 
@@ -41,21 +41,24 @@ node tools/organ3c-measure.mjs --verify
 node tools/organ3d-measure.mjs --verify
 ```
 
-CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness pinned at its `v0.6` tag, `--cap 1000`). The page's blueprint shows each kernel's tests and gate result from `data/witness-ci.json`, built from one CI run's witness reports by `tools/witness-receipt.mjs`; CI checks on every push that every kernel and test file still hashes to what that run gated. After changing a kernel or its tests, push, then refresh the receipt from that run:
+CI re-derives the data from its pinned commits, checks every seal, re-measures every receipt, and mutation-tests every kernel (witness pinned at its `v0.6` tag, `--cap 1000`). The page's blueprint shows each kernel's tests and gate result from `data/witness-ci.json`, built from one CI run's witness reports by `tools/witness-receipt.mjs`; CI checks on every push that every kernel and test file still hashes to what that run gated. A kernel change makes that check fail until the receipt is refreshed, so the change goes to a branch first, a refresh run gates it there (every gate except that one check), and the receipt from it lands on the branch before main moves:
 
 ```bash
-gh run download <run> -D art && gh run view <run> --json databaseId,url,headSha,conclusion,createdAt,jobs > run.json
+git push origin HEAD:<branch> && gh workflow run gate.yml --ref <branch> -f refresh=true
+gh run download <run> -D art && gh run view <run> --json databaseId,url,headSha,conclusion,createdAt,event,jobs > run.json
 node tools/witness-receipt.mjs --from art --meta run.json --witness <the witness commit the run's log prints>
+git add data/witness-ci.json && git commit && git push origin HEAD:<branch> HEAD:main
 ```
 
 ## The case for a buyer
 
-The page carries the brochure: benefits by role, roll-out, security and data protection, ownership and exit, risks answered straight, and a cost case computed by `src/costcase.mjs` from the vendored, sourced basis (ONS pay, employer NI and pension, UK CPI, a Microsoft 365 Copilot seat, DESNZ electricity) and the reader's own hours. It sets today's staff time against the same with a rented assistant seat for each person and against owning this, a year and over the reader's years. No saving is counted for inheritance: it was measured four ways and does not reliably help.
+The page carries the brochure: benefits by role, what it needs from a buyer's systems, roll-out, security and data protection (a strict Content Security Policy keeps the page to its own site), ownership and exit, a procurement panel, risks answered straight, and a cost case computed by `src/costcase.mjs` from the vendored, sourced basis (ONS pay, employer NI and pension, UK CPI, a Microsoft 365 Copilot seat, DESNZ electricity, and a Mac mini M4 Pro for a reader who buys a machine for it) and the reader's own hours. It sets today's staff time against the same with a rented assistant seat for each person and against owning this, a year and over the reader's years, with the one-off set-up hours and any machine in the first year and the payback. No saving is counted for inheritance: it was measured four ways and does not reliably help. Buyer walk-throughs are kept in `data/personas-*`.
 
 ## Layout
 
-- `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` (watch) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` `inherit` (remember) · `costcase`.
-- `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, the gate receipt (`witness-receipt.mjs`), and a local server (`node tools/serve.mjs`).
+- `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` `yours` (watch, and your own build) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` `inherit` (remember) · `costcase`.
+- `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, the gate receipt (`witness-receipt.mjs`), the regulator on any repository (`watch-repo.mjs`), and a local server (`node tools/serve.mjs`).
+- `page/`: the live page's script (`app.mjs`) and the kernels' constants in the words its prose uses (`constants.mjs`; a test keeps the prose equal to them).
 - `data/`: the sealed preregistrations, the receipts, the node histories, the recorded local-model replies, and `witness-ci.json` (each kernel's mutation gate as GitHub's runner reported it).
 - `vendor/`: verbatim copies with pinned hashes. From fall-kit: identity, SHA-256 and the LIGHT codec. From dex-frontier: the dataset loaders. From sovereign-enterprise: the sourced cost basis.
 

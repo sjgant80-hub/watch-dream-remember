@@ -4,7 +4,9 @@
 //
 //   node tools/witness-receipt.mjs --from <dir> --meta <run.json> --witness <commit>
 //        <dir>      the run's artifacts (gh run download <id> -D <dir>): witness-<kernel>/<kernel>.out, each witness's report
-//        <run.json> gh run view <id> --json databaseId,url,headSha,conclusion,createdAt,jobs
+//        <run.json> gh run view <id> --json databaseId,url,headSha,conclusion,createdAt,event,jobs
+//   A kernel change makes the push run's receipt check fail (the receipt describes the old code), so the receipt is refreshed
+//   from a REFRESH run at the new code: gh workflow run gate.yml --ref <branch> -f refresh=true runs every gate but that check.
 //        <commit>   the witness commit the run cloned (the v0.6 tag), as its log prints it
 //   node tools/witness-receipt.mjs --check
 //        every kernel in src/ is in the receipt, every one clean and not capped, the run succeeded, and every kernel, its test
@@ -45,7 +47,7 @@ function build() {
   const receipt = {
     kind: 'watch-dream-remember.witness-ci', v: 1,
     note: 'Each kernel\'s mutation gate as GitHub\'s runner reported it (witness, pinned at its tag), with the hashes of the files it gated. CI re-checks the hashes on every push (tools/witness-receipt.mjs --check), so the page never shows a gate result for code that has since changed.',
-    run: { id: meta.databaseId, url: meta.url, headSha: meta.headSha, conclusion: meta.conclusion, createdAt: meta.createdAt, claimsJob: claims ? jobs[claims] : null },
+    run: { id: meta.databaseId, url: meta.url, headSha: meta.headSha, conclusion: meta.conclusion, createdAt: meta.createdAt, event: meta.event ?? null, claimsJob: claims ? jobs[claims] : null },
     witness: { repo: 'sjgant80-hub/witness', tag: TAG, commit: witness, cap: 1000 },
     baseline: { path: 'src/witness.baseline.json', sha256: sha('src/witness.baseline.json'), entries: JSON.parse(readFileSync(join(ROOT, 'src/witness.baseline.json'), 'utf8')).length },
     kernels: rows,

@@ -9,8 +9,9 @@ const b = {
   employerNiThreshold: { value: 5000 }, pensionEmployerRate: { value: 0.03 }, pensionQeLower: { value: 6000 }, pensionQeUpper: { value: 50000 },
   laptopExtraWatts: { value: 10 }, electricityPencePerKwh: { value: 25 }, hoursPerYear: { value: 8760, what: '24 x 365' },
   'seat.copilot': { value: 20, unit: 'GBP per user per month', product: 'an assistant', source: 'https://seat.example' }, cpi: { value: 0.1 },
+  hub: { product: 'a box', priceIncVat: 1000, priceSource: 'https://box.example', watts: 100, wattsSource: 'https://watts.example' },
 };
-const IN = { hoursPerWeek: 40, watchHoursNow: 5, watchHoursAfter: 1, hoursPerIdea: 3, reviewHoursPerIdea: 1, ideasPerMonth: 3, people: 2, years: 2 };
+const IN = { hoursPerWeek: 40, watchHoursNow: 5, watchHoursAfter: 1, hoursPerIdea: 3, reviewHoursPerIdea: 1, ideasPerMonth: 3, people: 2, years: 2, setupHours: 0, machines: 0 };
 
 test('loadedHourly: salary + employer NI above the threshold + pension on qualifying earnings, over the year’s hours', () => {
   // 52000 + 0.15·47000 + 0.03·(50000 − 6000) = 52000 + 7050 + 1320 = 60370; / (40·52 = 2080) = 29.0240…
@@ -49,6 +50,8 @@ test('costCase: two lines of hours taken off people, priced; today, rented seats
   assert.deepEqual(c.over, { today: 22426.66, rentSeats: 23434.66, own: 5408.89 });
   assert.equal(c.years, 2);
   assert.equal(c.savingOver, 17017.77);
+  assert.equal(c.oneOff, 0);
+  assert.equal(c.paybackMonths, 0);   // nothing to pay back
   assert.ok(c.lines.every((l) => typeof l.what === 'string' && l.what.length > 20));
   const d = costCase(basis, {});
   assert.equal(d.ok, true);
@@ -78,16 +81,52 @@ test('costCase refuses what it cannot price', () => {
   for (const years of [0, 1.5, 11]) assert.deepEqual(costCase(b, { years }), { ok: false, why: 'years: a whole number from 1 to 10' }, String(years));
   assert.deepEqual(costCase(null, {}), { ok: false, why: 'the basis or the working week is not readable' });
   assert.deepEqual(costCase(b, { hoursPerWeek: 0 }), { ok: false, why: 'the basis or the working week is not readable' });
-  for (const k of ['seniorSalary', 'seat.copilot', 'cpi', 'laptopExtraWatts', 'electricityPencePerKwh', 'hoursPerYear']) assert.deepEqual(costCase({ ...b, [k]: undefined }, {}), { ok: false, why: 'the basis or the working week is not readable' }, k);
+  assert.deepEqual(costCase(b, { machines: 1.5 }), { ok: false, why: 'machines: a whole number' });
+  assert.deepEqual(costCase(b, { machines: -1 }), { ok: false, why: 'machines: a number, zero or more' });
+  assert.deepEqual(costCase(b, { setupHours: -1 }), { ok: false, why: 'setupHours: a number, zero or more' });
+  assert.deepEqual(costCase({ ...b, hub: { ...b.hub, priceIncVat: 'x' } }, {}), { ok: false, why: 'the basis or the working week is not readable' });
+  assert.deepEqual(costCase({ ...b, hub: { ...b.hub, watts: null } }, {}), { ok: false, why: 'the basis or the working week is not readable' });
+  for (const k of ['seniorSalary', 'seat.copilot', 'cpi', 'laptopExtraWatts', 'electricityPencePerKwh', 'hoursPerYear', 'hub']) assert.deepEqual(costCase({ ...b, [k]: undefined }, {}), { ok: false, why: 'the basis or the working week is not readable' }, k);
   const evil = {};
   Object.defineProperty(evil, 'hoursPerWeek', { enumerable: true, get() { throw new Error('x'); } });
   assert.deepEqual(costCase(b, evil), { ok: false, why: 'unreadable' });
-  assert.deepEqual(Object.keys(DEFAULTS), ['hoursPerWeek', 'watchHoursNow', 'watchHoursAfter', 'hoursPerIdea', 'reviewHoursPerIdea', 'ideasPerMonth', 'people', 'years']);
+  assert.deepEqual(Object.keys(DEFAULTS), ['hoursPerWeek', 'watchHoursNow', 'watchHoursAfter', 'hoursPerIdea', 'reviewHoursPerIdea', 'ideasPerMonth', 'people', 'years', 'setupHours', 'machines']);
+});
+
+test('costCase: the one-off costs of owning it, set-up hours and machines, in the first year; the payback', () => {
+  const c = costCase(b, IN);
+  const s = costCase(b, { ...IN, setupHours: 10 });
+  assert.equal(s.oneOff, 290.2);                         // 10 h × 29.02
+  assert.equal(s.running, c.running);
+  assert.deepEqual(s.routes, c.routes);                  // a one-off is not a yearly cost
+  assert.equal(s.over.own, 5699.09);                     // 5408.89 + 290.2, in the first year, no CPI
+  assert.deepEqual([s.over.today, s.over.rentSeats], [c.over.today, c.over.rentSeats]);
+  assert.equal(s.savingOver, 16727.57);
+  assert.equal(s.paybackMonths, 0.4);                    // 12 × 290.2 / (10679.36 − 2575.66)
+  const m = costCase(b, { ...IN, machines: 2 });
+  assert.equal(m.oneOff, 2000);                          // 2 × 1000
+  assert.equal(m.running, 438);                          // 2 × 100 W (they replace the laptop's 10 W) × 8760 h × 25p
+  assert.equal(m.routes.own, 2991.76);                   // 88 h × 29.02 + 438
+  assert.equal(m.paybackMonths, 3.1);                    // 12 × 2000 / (10679.36 − 2991.76)
+  assert.equal(costCase(b, { ...IN, years: 1, setupHours: 1, machines: 1 }).over.own, Math.round((costCase(b, { ...IN, machines: 1 }).routes.own + 29.02 + 1000) * 100) / 100);
+  assert.equal(costCase(b, { ...IN, watchHoursNow: 1, hoursPerIdea: 1 }).paybackMonths, null);   // no saving: nothing pays back
+  // a saving of exactly zero pays nothing back: 26 an hour, 2 h a week now and 1 after, and 1,352 a year of electricity
+  const z = { ...b, seniorSalary: { value: 54080 }, employerNiRate: { value: 0 }, employerNiThreshold: { value: 0 }, pensionEmployerRate: { value: 0 }, pensionQeLower: { value: 0 }, pensionQeUpper: { value: 0 }, laptopExtraWatts: { value: 1000 }, electricityPencePerKwh: { value: 100 }, hoursPerYear: { value: 1352 } };
+  const zero = costCase(z, { hoursPerWeek: 40, watchHoursNow: 2, watchHoursAfter: 1, hoursPerIdea: 0, reviewHoursPerIdea: 0, ideasPerMonth: 0, setupHours: 1, machines: 0 });
+  assert.deepEqual([zero.hourly, zero.routes.today, zero.routes.own, zero.paybackMonths], [26, 2704, 2704, null]);
+  const d = costCase(basis, {});
+  assert.equal(d.oneOff, Math.round(DEFAULTS.setupHours * d.hourly * 100) / 100);
+  assert.ok(d.paybackMonths > 0 && d.paybackMonths < 12);
 });
 
 test('sourcesOf: every figure the case reads, with its unit, what it is and where it came from', () => {
   const s = sourcesOf(b);
-  assert.deepEqual(s.map((x) => x.key), [...BASIS_KEYS]);
+  assert.deepEqual(s.map((x) => x.key), [...BASIS_KEYS.filter((k) => k !== 'hub'), 'hub', 'hub.watts']);
+  assert.deepEqual(s.slice(-2), [
+    { key: 'hub', value: 1000, unit: 'GBP including VAT', what: 'a box', source: 'https://box.example' },
+    { key: 'hub.watts', value: 100, unit: 'watts at most', what: 'a box', source: 'https://watts.example' },
+  ]);
+  assert.deepEqual(sourcesOf({ ...b, hub: undefined }), []);
   assert.deepEqual(s[0], { key: 'seniorSalary', value: 52000, unit: 'GBP per year', what: 'pay', source: 'https://pay.example' });
   assert.deepEqual(s[1], { key: 'employerNiRate', value: 0.15, unit: null, what: 'ni', source: 'https://ni.example' });
   assert.deepEqual(s.find((x) => x.key === 'seat.copilot'), { key: 'seat.copilot', value: 20, unit: 'GBP per user per month', what: 'an assistant', source: 'https://seat.example' });
@@ -95,7 +134,7 @@ test('sourcesOf: every figure the case reads, with its unit, what it is and wher
   assert.deepEqual(sourcesOf({ ...b, cpi: undefined }), []);
   assert.deepEqual(sourcesOf(null), []);
   const real = sourcesOf(basis);
-  assert.equal(real.length, BASIS_KEYS.length);
+  assert.equal(real.length, BASIS_KEYS.length + 1);
   for (const x of real) {
     assert.ok(Number.isFinite(x.value), x.key);
     assert.ok(typeof x.what === 'string' && x.what.length > 5, x.key);

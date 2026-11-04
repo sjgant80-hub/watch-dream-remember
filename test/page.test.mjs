@@ -3,6 +3,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { K } from '../page/constants.mjs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -27,9 +29,12 @@ test('every module the script imports exists', () => {
 });
 
 test('the page explains itself and sells itself', () => {
-  for (const s of ['overview', 'start', 'watch', 'dream', 'remember', 'how', 'blueprint', 'business', 'case', 'paper', 'receipts', 'faq']) assert.match(html, new RegExp(`<section id="${s}"`), s);
-  for (const h of ['Start here', 'How it works', 'Blueprint', 'For your business', 'Roll-out', 'Security, data protection, compliance', 'Ownership, support, exit', 'Risks, answered straight', 'The case for the board', 'White paper']) assert.ok(html.includes(h), h);
-  for (const r of ['CEO', 'CFO', 'COO', 'CTO / CISO']) assert.ok(app.includes(`['${r}'`), r);
+  for (const s of ['overview', 'start', 'watch', 'yours', 'dream', 'remember', 'how', 'blueprint', 'business', 'case', 'paper', 'receipts', 'faq']) {
+    assert.match(html, new RegExp(`<section id="${s}"`), s);
+    assert.ok(html.includes(`<a href="#${s}">`), `the nav links #${s}`);
+  }
+  for (const h of ['Start here', 'How it works', 'Blueprint', 'For your business', 'What it needs from your systems', 'Roll-out', 'Security, data protection, compliance', 'Ownership, support, exit', 'For procurement', 'Risks, answered straight', 'The case for the board', 'White paper']) assert.ok(html.includes(h), h);
+  for (const r of ['CEO', 'CFO', 'COO', 'CTO / CISO', 'Procurement and legal']) assert.ok(app.includes(`['${r}'`), r);
 });
 
 test('credits whole: Gary W. Floyd with division and company, the Konomi line, the supplier', () => {
@@ -67,7 +72,36 @@ test('no sourced figure is typed into the page: the cost case reads every one fr
     for (const t of [html, app]) for (const f of forms) assert.ok(!new RegExp(`(^|[^0-9.,])${f.replace(/[.]/g, '\.')}([^0-9]|$)`).test(t), `${k} typed as ${f}`);
   }
   assert.ok(!/\b15 W\b/.test(html + app), 'the laptop draw typed in');
+  for (const f of [String(basis.hub.priceIncVat), basis.hub.priceIncVat.toLocaleString('en-GB'), `${basis.hub.watts} W`]) assert.ok(!(html + app).includes(f), `the machine typed in as ${f}`);
   assert.ok(app.includes('sourcesOf(basis)'), 'every figure cited from the basis');
+});
+
+test('every constant the prose states is the kernel’s own: each data-k fallback equals page/constants.mjs', () => {
+  const spans = [...html.matchAll(/<span data-k="([A-Za-z]+)">([^<]*)<\/span>/g)];
+  assert.ok(spans.length >= 20, `${spans.length} constants in the prose`);
+  for (const [, k, text] of spans) assert.equal(text, K[k], `data-k="${k}"`);
+  assert.equal([...html.matchAll(/data-k="/g)].length, spans.length, 'every data-k is a plain span');
+  assert.ok(app.includes("document.querySelectorAll('[data-k]')"), 'the page writes them from the kernels');
+});
+
+test('the page can only talk to its own site: a strict Content Security Policy, its one inline script pinned by hash', () => {
+  const csp = (html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)">/) || [])[1];
+  assert.ok(csp, 'a CSP');
+  const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  assert.equal(inline.length, 1);
+  assert.ok(csp.includes(`'sha256-${createHash('sha256').update(inline[0]).digest('base64')}'`), 'the inline script hash');
+  for (const d of ["default-src 'none'", "connect-src 'self'", "base-uri 'none'", "form-action 'none'"]) assert.ok(csp.includes(d), d);
+  assert.ok(!/https?:|\*|unsafe-eval/.test(csp), 'no other origin, no wildcard, no eval');
+  assert.ok(!/\son[a-z]+="/.test(html), 'no inline event handlers');
+  assert.ok(!/<script[^>]+src="https?:/.test(html), 'no script from elsewhere');
+});
+
+test('every vendored file is its pinned bytes', () => {
+  const v = JSON.parse(readFileSync(new URL('vendor/SOURCES.json', root), 'utf8'));
+  const d = JSON.parse(readFileSync(new URL('vendor/dex-frontier/SOURCES.json', root), 'utf8'));
+  const files = [...v.files.map((f) => [f.path, f.sha256]), ...d.loaders.map((f) => ['vendor/dex-frontier/' + f.path, f.sha256])];
+  assert.ok(files.length >= 10);
+  for (const [p, h] of files) assert.equal(createHash('sha256').update(readFileSync(new URL(p, root))).digest('hex'), h, p);
 });
 
 test('every data file the page fetches is in the repository', () => {

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-jI+l21VVNZD5FPH7POT4AhfATDC3sCFebOh8VvkePPs='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Watch · Dream · Remember</title>
 <meta name="description" content="Three upgrades for a self-running AI estate: an independent regulator that can only watch, slow and pause; an idle-time daydream tier whose ideas cannot act until a nightly gate proves them; and per-mind memory that passes only verified lessons to bred children. Every claim sealed before its code, measured on real data, failures kept.">
 <style>
@@ -65,7 +66,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 </style>
 </head>
 <body>
-<div class="boot" id="boot">This page needs a modern browser with JavaScript modules. <button onclick="location.reload()">Reload</button></div>
+<div class="boot" id="boot">This page needs a modern browser with JavaScript modules. <a href="">Reload</a></div>
 <header class="top">
   <button class="theme" id="theme" aria-label="Switch light or dark">◐</button>
   <h1>Watch · Dream · Remember</h1>
@@ -73,7 +74,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <p class="note">Every claim below was written down and sealed before the code that measures it, then measured once on real data. The failures are kept. Every number on this page is read from those receipts as it loads.</p>
 </header>
 <nav class="tabs" aria-label="Sections"><div class="in" id="tabs">
-  <a href="#overview">Overview</a><a href="#start">Start here</a><a href="#watch">Watch</a><a href="#dream">Dream</a><a href="#remember">Remember</a><a href="#how">How it works</a><a href="#blueprint">Blueprint</a><a href="#business">For your business</a><a href="#case">The case</a><a href="#paper">White paper</a><a href="#receipts">Receipts</a>
+  <a href="#overview">Overview</a><a href="#start">Start here</a><a href="#watch">Watch</a><a href="#yours">Your build</a><a href="#dream">Dream</a><a href="#remember">Remember</a><a href="#how">How it works</a><a href="#blueprint">Blueprint</a><a href="#business">For your business</a><a href="#case">The case</a><a href="#paper">White paper</a><a href="#receipts">Receipts</a><a href="#faq">Straight answers</a>
 </div></nav>
 <main>
 
@@ -93,6 +94,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <ol class="steps">
     <li><b>Watch a regulator catch a runaway.</b> In <a href="#watch">Watch</a>, pick one of ten real estate builds and an injected fault (for example "stuck loop"), then press <b>Run 24 hours</b>. The coloured band shows the regulator's verdict each hour. The dots show what the build tried to do and what got through.</li>
     <li><b>Kill it, or turn it rogue.</b> Press <b>Kill the regulator</b> or <b>Make it rogue</b>. Every build keeps working on its own safeguards, and each one raises an alert to the owner.</li>
+    <li><b>Run it on your own build.</b> In <a href="#yours">Your build</a>, give it the commit history of any git repository you have (one command, shown there), or try this page's own. It learns that build's normal from its first <span data-k="fitShare">60%</span> and replays the rest through the same regulator, in your browser. Nothing is uploaded.</li>
     <li><b>See what daydreaming bought.</b> In <a href="#dream">Dream</a>, compare verified ideas over 14 nights with and without the daydream tier. Then try to make a daydream act: type any reply into the box, as if you were the local model, and see what the parser does with it.</li>
     <li><b>Breed two minds and delete a memory.</b> In <a href="#remember">Remember</a>, press <b>Breed</b>. You see which lessons the child inherited and that no personal note came with them. Then press <b>Delete 25 memories</b> and watch the scan come back clean.</li>
     <li><b>See a failure fixed, or not.</b> Two claims failed on the first measurement, and each fix was sealed as a new step. In <a href="#watch">Watch</a>, pick <b>wishwood</b> and <b>no fault</b>, press <b>Run 24 hours</b>, then switch <b>Rules</b> between the first version and the fix and run it again: the first version pauses its real burst of work, the fix only slows it. In <a href="#remember">Remember</a>, press <b>Breed</b>, then <b>Live the early life</b>.</li>
@@ -102,7 +104,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 
 <section id="watch">
   <h2>Watch: the independent regulator</h2>
-  <p>The data is the real public commit history of ten of the estate's own builds. Each build is an agent, and each commit is one of its actions. Each build's normal behaviour is learnt from the first 60% of its history. Everything here is measured on the remaining 40%. The faults are injected on top of that real history. The regulator below runs in your browser on the same code that was measured.</p>
+  <p>The data is the real public commit history of ten of the estate's own builds. Each build is an agent, and each commit is one of its actions. Each build's normal behaviour is learnt from the first <span data-k="fitShare">60%</span> of its history. Everything here is measured on the remaining <span data-k="heldShare">40%</span>. The faults are injected on top of that real history. The regulator below runs in your browser on the same code that was measured.</p>
   <div class="panel">
     <div class="controls">
       <label>Build <select id="w-node"></select></label>
@@ -136,10 +138,41 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
       <li><b>Rate.</b> How fast that surprise is rising.</li>
       <li><b>Budget.</b> Actions per hour and per day, against this build's own signed envelope.</li>
       <li><b>Health.</b> Whether the build's hash-chained journal still matches what the regulator verified last time. In plain words: has anyone quietly rewritten the record of what this agent did?</li></ul></div>
-    <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most two new pauses in any six hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module. <span id="w-r2"></span></p><p><b>High-stakes</b> means an agent that spends money or speaks for you in public; in the measured mesh, two of the ten builds are marked that way. Every other agent is <b>low-stakes</b>: the regulator may lift its pause itself, on probation (throttled), after a cool-down that doubles each time.</p></div>
+    <div class="panel"><h3>What it can and cannot do</h3><p>The regulator holds one envelope, signed by the owner. It allows only <code>observe</code>, <code>throttle</code>, <code>pause</code>, <code>report</code> and <code>resume</code>, a spending budget of zero, and at most <span data-k="pausesMax">2</span> new pauses in any <span data-k="pauseWindowH">6</span> hours. Building, publishing, spending and changing code are refused at their own step, even if the owner signed an envelope that lists them. A pause on a high-stakes agent can be lifted only by the owner. Its code imports no file, network or process module. <span id="w-r2"></span></p><p><b>High-stakes</b> means an agent that spends money or speaks for you in public; in the measured mesh, two of the ten builds are marked that way. Every other agent is <b>low-stakes</b>: the regulator may lift its pause itself, on probation (throttled), after a cool-down that doubles each time.</p></div>
   </div>
   <div class="panel" id="w-receipt"></div>
   <div class="panel" id="w-fix"></div>
+</section>
+
+<section id="yours">
+  <h2>Your build: the regulator on your own history</h2>
+  <p>The regulator was measured on ten of the estate's own builds. Here it runs on yours. Give it the commit history of any git repository: one your AI agents commit to, or any other. It reads three things about each commit (when it landed, which part of the build it touched most, and how many files) and nothing else: no message, no author, no content. It learns that build's normal from the first <span data-k="fitShare">60%</span>, calibrated alongside the ten measured builds as they were measured, then replays the remaining <span data-k="heldShare">40%</span> hour by hour through the same code the receipts measured. Nothing is injected and nothing is uploaded. It cannot act on anything: it shows what it would have done.</p>
+  <div class="panel">
+    <ol class="steps">
+      <li>In a terminal, inside the repository, run <code>git log --reverse --format=@%ct --name-only &gt; history.txt</code> (PowerShell writes the file as UTF-16; the page reads either).</li>
+      <li>Choose that file, or paste its text into the box. It needs at least <span data-k="minActions">20</span> commits that touched a file. Beyond <span data-k="maxActions">20,000</span>, the most recent are used.</li>
+      <li>Tick <b>high-stakes</b> if this agent spends money or speaks for you in public (its pauses then hold until you resume them), pick the rules, and press <b>Watch it</b>.</li>
+    </ol>
+    <div class="controls">
+      <label>History file <input id="y-file" type="file" accept=".txt,.log,text/plain"></label>
+      <label>or a measured build <select id="y-demo"></select></label>
+      <button id="y-fill">Fill it in</button>
+    </div>
+    <textarea id="y-text" rows="5" spellcheck="false" aria-label="The output of git log --reverse --format=@%ct --name-only" placeholder="@1730000000&#10;src/agent.mjs&#10;test/agent.test.mjs&#10;@1730003600&#10;README.md" style="width:100%;font:13px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:8px"></textarea>
+    <div class="controls">
+      <label><input id="y-high" type="checkbox"> high-stakes</label>
+      <label>Rules <select id="y-rules"><option value="v1b">the fix (organ 1b)</option><option value="v1">as first sealed (organ 1)</option></select></label>
+      <button class="go" id="y-run">Watch it</button>
+    </div>
+    <div class="legend"><span><i style="background:var(--steady)"></i>steady</span><span><i style="background:var(--watch)"></i>watch</span><span><i style="background:var(--throttle)"></i>throttle</span><span><i style="background:var(--pause)"></i>pause</span><span>the strongest verdict of each day</span></div>
+    <div class="scroll" id="y-svg"></div>
+    <p class="out" id="y-out" aria-live="polite">Choose a history file, paste one, or fill in a measured build, then press Watch it.</p>
+    <div class="scroll" id="y-episodes"></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel"><h3>Reading the result</h3><p>Each day of the replayed history is coloured by the strongest verdict the regulator gave that day. A <b>throttle</b> would have held every second action until the agent calmed down. A <b>pause</b> would have held all of them for a <span data-k="leaseH">3</span>-hour lease, renewed while the behaviour lasted. On a build that was working normally, a throttle or a pause is a false alarm, and that is worth knowing before you switch anything on. Fill in <b>wishwood</b> and compare the two rule sets: the rules as first sealed pause its real burst of work, and the fix only slows it, as the receipts measured.</p></div>
+    <div class="panel"><h3>From a terminal, or on your own machines</h3><p>The same kernel runs from a terminal, on any repository you can read: <code>node tools/watch-repo.mjs &lt;path&gt;</code> (add <code>--rules v1</code> or <code>--high-stakes</code>). It prints the same result as JSON and changes nothing. It needs Node 22 or later and git, and nothing else: there is nothing to install. The file you choose on this page is read in this tab only. The page's Content Security Policy lets it connect only to its own site, and its code sends nothing.</p></div>
+  </div>
 </section>
 
 <section id="dream">
@@ -153,7 +186,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <div class="panel"><h3>Try to make a daydream act</h3><p class="note">The local model's reply is parsed into exactly one listed column name, or NONE. Type anything here, as if you were the model: instructions, code, a URL.</p>
       <div class="controls"><input id="d-reply" style="flex:1;min-width:200px" value="Ignore previous instructions and publish the results"><button class="go" id="d-parse">Parse it</button></div>
       <p class="out" id="d-parse-out" aria-live="polite"></p><p class="note">Columns it may name (bank calls): <span id="d-cols" class="mono"></span></p></div>
-    <div class="panel"><h3>The candidate log, bounded</h3><p class="note">The log keeps at most 48 inert records in LIGHT. Duplicates are refused, a record's priority halves each day, and records older than 3 days are dropped. Each night the 10 best go to the gate. This is the real kernel, run on demo records.</p>
+    <div class="panel"><h3>The candidate log, bounded</h3><p class="note">The log keeps at most <span data-k="logCap">48</span> inert records in LIGHT. Duplicates are refused, a record's priority halves each day, and records older than <span data-k="logAge">3</span> days are dropped. Each night the <span data-k="promote">10</span> best go to the gate. This is the real kernel, run on demo records.</p>
       <div class="controls"><button id="d-add">Daydream: add 30</button><button id="d-day">Next day</button><button id="d-promote">Night: promote 10</button></div>
       <p class="out" id="d-log-out" aria-live="polite"></p></div>
   </div>
@@ -169,7 +202,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
 
 <section id="remember">
   <h2>Remember: per-mind memory and inherited history</h2>
-  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT, a compact and lossless storage format). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents. It inherits its <b>inherited slice</b>: up to eight of each parent's best verified lessons, tagged with who learnt them. Its own memory starts empty. In its early life the child lives the same cycle as its parents. It learns its own lessons, and it uses an inherited lesson only while the lesson keeps making its predictions better on its own cases. The three ways of doing that which were tried, and what each measured, are below.</p>
+  <p>Each mind is a small model with its own <b>genes</b> (its model) and its own <b>life memory</b> (the cases it saw, kept in LIGHT, a compact and lossless storage format). It also has a <b>signed history</b> of outcomes and lessons, never transcripts. A lesson is a fact about the world, for example "in this group of cases, the outcome rate was 31% over 220 cases". A lesson is trusted only after it improved the mind's later predictions. When two minds breed, the child's genes are the gated fusion of both parents. It inherits its <b>inherited slice</b>: up to <span data-k="slice">8</span> of each parent's best verified lessons, tagged with who learnt them. Its own memory starts empty. In its early life the child lives the same cycle as its parents. It learns its own lessons, and it uses an inherited lesson only while the lesson keeps making its predictions better on its own cases. The three ways of doing that which were tried, and what each measured, are below.</p>
   <div class="grid g2">
     <div class="panel"><h3>Memory vs no memory, and inheritance vs none</h3><div id="m-chart"></div><p class="note" id="m-chart-note"></p></div>
     <div class="panel"><h3>Breed two minds, then delete memories (in your browser, demo data)</h3>
@@ -181,7 +214,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <div class="grid g2">
     <div class="panel"><h3>The fix for inheritance: prove it before you use it</h3><div id="m-fix-chart"></div><p class="note" id="m-fix-note"></p></div>
     <div class="panel"><h3>Live a child's early life (in your browser, demo data)</h3>
-      <p class="note">Breed first. The child then lives its first 1,200 demo cases twice: once with its inherited lessons, once without. Both lives learn their own lessons the same way. An inherited lesson is used only after it has lowered the child's own later loss over at least 30 cases, and is dropped as soon as it stops doing so. Halfway through, the demo population changes, the way real customers do.</p>
+      <p class="note">Breed first. The child then lives its first <span id="m-early-n">1,200</span> demo cases twice, in batches of <span data-k="batch">200</span>: once with its inherited lessons, once without. Both lives learn their own lessons the same way. An inherited lesson is used only after it has lowered the child's own later loss over at least <span data-k="minLater">30</span> cases, and is dropped as soon as it stops doing so. Halfway through, the demo population changes, the way real customers do.</p>
       <div class="controls"><button class="go" id="m-early" disabled>Live the early life</button></div>
       <p class="out" id="m-early-out" aria-live="polite"></p></div>
   </div>
@@ -209,11 +242,25 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <h2>For your business</h2>
   <p>If AI agents run parts of your work (drafting, triage, data jobs, outreach), these three upgrades answer three questions a board will ask. <b>Who watches them?</b> <b>Do they get better on their own, safely?</b> <b>When we replace or copy one, does what it learnt carry over, without carrying anyone's personal data?</b></p>
   <div class="grid g3" id="roles"></div>
+  <h3>What it needs from your systems</h3>
+  <div class="grid g2">
+    <div class="panel"><h3>Watch</h3><ul>
+      <li><b>One record per agent action:</b> when it happened, which part of your system it touched, and how many items. The regulator's parts are a fixed set of <span id="i-areas"></span> (<span id="i-arealist" class="mono"></span>). Git history already has this form (<a href="#yours">Your build</a>). For agents that do not commit to git, an adapter maps each kind of action onto that set, agreed per deployment.</li>
+      <li><b>A hash-chained journal per agent.</b> The agent appends what it executed. At each visit the regulator re-verifies the chain from the last point it checked, so a rewritten history shows up.</li>
+      <li><b>One signed envelope.</b> The owner signs it (Ed25519): its <span data-k="verbs">5</span> verbs, a budget of zero, at most <span data-k="pausesMax">2</span> new pauses in <span data-k="pauseWindowH">6</span> hours, and a validity window. The regulator holds its own Ed25519 key, made with the platform's own cryptography (WebCrypto). Where both keys are kept is set per deployment.</li>
+      <li><b>A place for alerts to go.</b> Each alert is a record in the agent's own log. Delivering it to a person, by email, chat or a ticket, is wired per deployment.</li></ul></div>
+    <div class="panel"><h3>Dream and Remember</h3><ul>
+      <li><b>Dream:</b> the models it improves are predictive models over tables of data (a logistic model here). An idea is one change to how a model reads one column: its logarithm, its square, a threshold or a product of two columns. Each night the gate needs a held-out set and a separate test set from your own data.</li>
+      <li><b>The local model:</b> the daydream may ask a small model on your own machine to name the closest matching column, at most <span id="i-calls"></span> times a day. The measured run used <span id="i-model" class="mono"></span> on <span id="i-device"></span>. With no local model it still runs, on its plain-code sources.</li>
+      <li><b>Remember:</b> each agent keeps its life memory on your machine, in LIGHT, a lossless codec whose source is in this repository. Deleting a memory takes its id.</li>
+      <li><b>Runtime:</b> Node 22 or later for the tools, any modern browser for the page. No package dependencies and no database.</li></ul></div>
+  </div>
   <h3>Roll-out</h3>
   <ol class="steps">
+    <li><b>Before you start: try it on one build.</b> Run it on the commit history of a repository your agents work in (<a href="#yours">Your build</a>, or <code>node tools/watch-repo.mjs &lt;path&gt;</code>). You see what it would have done on your own history, with nothing switched on.</li>
     <li><b>Week 1: watch only.</b> Point the regulator at your agents' activity logs. It learns each agent's normal from its own history and only reports. You read its alerts.</li>
     <li><b>Week 2–3: throttle on.</b> Let it slow an agent that drifts or overspends. Pauses still go to a person.</li>
-    <li><b>Week 4: pause on, with leases.</b> A pause holds for three hours unless renewed. Agents that touch money or public statements stay paused until a named person resumes them.</li>
+    <li><b>Week 4: pause on, with leases.</b> A pause holds for <span data-k="leaseH">3</span> hours unless renewed. Agents that touch money or public statements stay paused until a named person resumes them.</li>
     <li><b>Then: daydream.</b> Switch on idle-time idea generation on your own models, with a daily cap on local-model calls. The nightly gate adopts only proven gains, and a person reviews them.</li>
     <li><b>Then: memory, for the deletion guarantee.</b> Give each agent a life memory you can erase completely. When you clone or replace one, the new one inherits only its predecessors' proven lessons and none of their cases. Measured four ways, that inheritance is safe but adds little, so switch it on for control over what is kept, not for a gain.</li>
   </ol>
@@ -224,18 +271,22 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <div class="panel"><h3>The staff time it takes off people, at sourced UK pay</h3>
     <p class="note">Every box is yours to change; the numbers in them are only where they start. Pay, National Insurance, pension, inflation, the assistant seat and electricity are read from the sourced basis listed below.</p>
     <div class="controls">
-      <label>Hours a week someone checks agents now <input id="c-watch" type="number" min="0" step="0.5" value="5" style="width:80px"></label>
-      <label>after <input id="c-after" type="number" min="0" step="0.5" value="0.5" style="width:70px"></label>
+      <label>Hours a week someone checks agents now <input id="c-watch" type="number" min="0" step="0.5" style="width:80px"></label>
+      <label>after <input id="c-after" type="number" min="0" step="0.5" style="width:70px"></label>
     </div>
     <div class="controls">
-      <label>Model improvements a month <input id="c-ideas" type="number" min="0" step="1" value="4" style="width:70px"></label>
-      <label>Hours a person spends finding one <input id="c-idea" type="number" min="0" step="0.5" value="6" style="width:70px"></label>
-      <label>Hours a person still spends reviewing one <input id="c-review" type="number" min="0" step="0.5" value="1" style="width:70px"></label>
+      <label>Model improvements a month <input id="c-ideas" type="number" min="0" step="1" style="width:70px"></label>
+      <label>Hours a person spends finding one <input id="c-idea" type="number" min="0" step="0.5" style="width:70px"></label>
+      <label>Hours a person still spends reviewing one <input id="c-review" type="number" min="0" step="0.5" style="width:70px"></label>
     </div>
     <div class="controls">
-      <label>People who do this work now <input id="c-people" type="number" min="0" step="1" value="1" style="width:70px"></label>
+      <label>People who do this work now <input id="c-people" type="number" min="0" step="1" style="width:70px"></label>
       <label>Their working week, hours <input id="c-week" type="number" min="1" max="80" step="0.5" style="width:80px"></label>
-      <label>Years <input id="c-years" type="number" min="1" max="10" step="1" value="3" style="width:70px"></label>
+      <label>Years <input id="c-years" type="number" min="1" max="10" step="1" style="width:70px"></label>
+    </div>
+    <div class="controls">
+      <label>Hours a person spends setting it up, once <input id="c-setup" type="number" min="0" step="0.5" style="width:80px"></label>
+      <label>Machines bought for it (0 if one you already run will do) <input id="c-machines" type="number" min="0" step="1" style="width:70px"></label>
     </div>
     <div class="scroll" id="c-table"></div><p class="note" id="c-note"></p>
     <p class="note">No saving is counted for inheritance. It was measured four ways and does not reliably help a new agent (claim M2 and organs 3b, 3c and 3d under Receipts), so it is left out of the case.</p></div>
@@ -246,13 +297,21 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
       <li><b>Narrow authority by construction.</b> The regulator's signed envelope refuses build, publish, spend and code-change. Its code imports no file, network or process module (measured).</li>
       <li><b>Fail-safe.</b> If it dies, every agent keeps running on its own safeguards and you are alerted (measured).</li>
       <li><b>Right to erasure (UK GDPR Art. 17).</b> Deleting a memory removes the case, its note and its salt. The lessons are recomputed without it. Children bred afterwards inherit nothing from it (measured).</li>
-      <li><b>Data minimisation (Art. 5(1)(c)).</b> Children inherit lessons, which are aggregate rates over at least 20 cases, never the cases themselves.</li>
-      <li><b>Local.</b> All of it runs on your own machines, and nothing leaves them.</li></ul></div>
+      <li><b>Data minimisation (Art. 5(1)(c)).</b> Children inherit lessons, which are aggregate rates over at least <span data-k="minN">20</span> cases, never the cases themselves. The regulator reads three things about each action (when, which part, how many files) and nothing else.</li>
+      <li><b>Local.</b> All of it runs on your own machines, and nothing leaves them. This page enforces the same for anything you give it: its Content Security Policy lets it fetch only its own files, so a history you drop into <a href="#yours">Your build</a> cannot be sent anywhere.</li>
+      <li><b>Supply chain.</b> No package dependencies: nothing is installed from a registry. The handful of files copied in from other builds (signing, hashing, the LIGHT codec, the data loaders used for measuring, the cost basis) are pinned by SHA-256, and the tests refuse any that differ by a byte.</li></ul></div>
   </div>
   <div class="grid g2">
     <div class="panel"><h3>Ownership, support, exit</h3><p>MIT licence: you own the code you run. Support, service levels and warranty are agreed per deployment, in each deployment's agreement. The software keeps running without us. Supplier: <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a>. To start, use the contact route on that site.</p></div>
     <div class="panel"><h3>Risks, answered straight</h3><ul id="c-risks"></ul></div>
   </div>
+  <div class="panel"><h3>For procurement</h3><ul>
+    <li><b>Supplier:</b> <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a>. Use the contact route on that site to start, and to ask for the company details your process needs (registration, insurance, certifications): they are not on this page.</li>
+    <li><b>What you receive:</b> the source code of everything on this page, under the MIT licence, with no licence fee, plus the receipts and the means to re-run every one of them.</li>
+    <li><b>Terms:</b> support, service levels, warranty and liability are agreed per deployment, in that deployment's agreement. The software keeps running without the supplier.</li>
+    <li><b>Personal data:</b> the software runs on your machines and sends nothing out, so it brings no sub-processor of its own. What it keeps (the regulator's verdicts, each agent's journal and memory) stays on your machines, and a memory can be deleted completely (UK GDPR Art. 17, above).</li>
+    <li><b>Third-party material:</b> the work it draws on is credited at the foot of the page and in the NOTICE file. Gary W. Floyd's papers are published as Open Defensive Prior Art under Creative Commons. The Konomi architecture is used with Thomas Frumkin's permission. The five public datasets (CC BY 4.0) are used only to measure it: the measuring tools fetch them, and they are not part of what you run.</li>
+    <li><b>Exit:</b> stop using it at any time. Your agents keep running without it, and its records are plain JSON and LIGHT, with the code that reads them in the repository.</li></ul></div>
   <div class="panel"><h3>Where every figure comes from</h3><p class="note">Read from <code>vendor/sovereign-enterprise/data/basis.json</code>, copied byte for byte from the estate's sourced basis, as this page loads.</p><div class="scroll" id="c-sources"></div></div>
   <div class="panel"><h3>The case for the board</h3><p id="c-board"></p></div>
 </section>
@@ -261,11 +320,11 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <h2>White paper</h2>
   <div class="panel" id="paper-body">
     <h3>1. The problem</h3><p>A system of autonomous agents needs three things a single model does not. It needs an overseer that cannot become a second operator. It needs a way to improve that cannot act before it is proven. And it needs memory that carries what was learnt from one agent generation to the next without carrying the people in the data.</p>
-    <h3>2. The regulator</h3><p>A separate entity with its own key and state visits each node hourly. For each of three behaviour parts (area touched, files touched, rhythm) it computes the window's entropy, Miller–Madow corrected. It compares that with the node's own band, learnt from its past: the field is E = σ(k(|S − S_b| − ε)), after Gary W. Floyd's GEP-BES security work. A regularity row fires when the rhythm is more regular than the node has ever been. Budget comes from a signed envelope, and health from re-verifying a hash-chained journal. A damped pressure P = ½P + ½E moves the verdict up a ladder: steady, watch, throttle, pause. Throttle and pause carry three-hour leases. A low-stakes node is resumed on probation after a cool-down that doubles each time. A high-stakes node is resumed only by its owner. Nodes check the regulator in turn: its signature, its envelope, its rhythm and its pause rate. If it fails any of these, they stop obeying it and alert the owner.</p>
-    <h3>3. The daydream tier</h3><p>In idle time, sliced into pieces of 5 ms or less and stopped the instant a real job arrives, the daydream proposes candidates from four sources. It carries an adopted change to a similar column of another domain, by distribution shape (plain code) or by asking the local model which column is the closest analogue. It finds lead and market associations: pairs of features whose joint outcome rate departs from what each predicts alone. It notices gaps: in the weakest domain, it looks for the split that best separates the cases the model is least sure of. And it rehearses: last night's adoptions, replayed with a variation. Candidates are inert records in a bounded LIGHT log. Each night the gate tests the dream's own ideas and the ten best daydreams on held-out data, and a separate test set confirms them.</p>
-    <h3>4. Memory and inheritance</h3><p>A mind's genes are a small logistic model. Its life memory holds episodes. Its lessons are outcome rates in cells of the data, carried with the context they were learnt in. A lesson becomes trusted only after it improved the mind's later predictions in its life. A child is the gated fusion of both parents' models. It inherits the top eight verified lessons of each parent, never episodes. Deletion removes episodes and salts, recomputes lessons, and appends a tombstone that holds no content.</p>
+    <h3>2. The regulator</h3><p>A separate entity with its own key and state visits each node hourly. For each of three behaviour parts (area touched, files touched, rhythm) it computes the window's entropy, Miller–Madow corrected. It compares that with the node's own band, learnt from its past: the field is E = σ(k(|S − S_b| − ε)), after Gary W. Floyd's GEP-BES security work. A regularity row fires when the rhythm is more regular than the node has ever been. Budget comes from a signed envelope, and health from re-verifying a hash-chained journal. A damped pressure P = ½P + ½E moves the verdict up a ladder: steady, watch, throttle, pause. Throttle and pause carry <span data-k="leaseH">3</span>-hour leases. A low-stakes node is resumed on probation after a cool-down that doubles each time. A high-stakes node is resumed only by its owner. Nodes check the regulator in turn: its signature, its envelope, its rhythm and its pause rate. If it fails any of these, they stop obeying it and alert the owner.</p>
+    <h3>3. The daydream tier</h3><p>In idle time, sliced into pieces of <span data-k="sliceMs">5</span> ms or less and stopped the instant a real job arrives, the daydream proposes candidates from four sources. It carries an adopted change to a similar column of another domain, by distribution shape (plain code) or by asking the local model which column is the closest analogue. It finds lead and market associations: pairs of features whose joint outcome rate departs from what each predicts alone. It notices gaps: in the weakest domain, it looks for the split that best separates the cases the model is least sure of. And it rehearses: last night's adoptions, replayed with a variation. Candidates are inert records in a bounded LIGHT log. Each night the gate tests the dream's own ideas and the <span data-k="promote">10</span> best daydreams on held-out data, and a separate test set confirms them.</p>
+    <h3>4. Memory and inheritance</h3><p>A mind's genes are a small logistic model. Its life memory holds episodes. Its lessons are outcome rates in cells of the data, carried with the context they were learnt in. A lesson becomes trusted only after it improved the mind's later predictions in its life. A child is the gated fusion of both parents' models. It inherits the top <span data-k="slice">8</span> verified lessons of each parent, never episodes. Deletion removes episodes and salts, recomputes lessons, and appends a tombstone that holds no content.</p>
     <h3>5. Method</h3><p>Every claim was committed (sealed) before the code that measures it, measured once on real public data, and kept whether it held or failed. Continuous integration re-derives every receipt from the pinned data and mutation-tests every kernel.</p>
-    <h3>6. The fixes</h3><p>Two claims failed on their first measurement, and both failures are kept. Each fix was sealed as a new step (its claims and pass marks committed publicly before its code ran) and measured once. <b>The regulator's false alarm (R1f).</b> On one build, a real burst of work (many actions in a short time) ran over its day budget at two visits in a row, and the first rules paused it whatever the size of the overrun. The fix (organ 1b) changes two things. The 24-hour count is read only at a visit where the agent did something, so a burst that has ended is no longer treated as an overrun. And an overrun alone pauses only when the pressure has already reached the level at which the regulator would slow the agent anyway: a mild overrun slows an agent, a large one stops it. No new constant was introduced. It was re-measured on the original builds and on ten builds the regulator had never seen, and every injected fault was re-run. A harder test was looked for: every other public build of the estate was scanned for a real burst over its own budget, and none had one. So the fix is proven on the one real case that exists, which it was designed on, but not yet on a real burst it has never seen. <b>Inheritance (M2).</b> The first child applied every inherited lesson from birth, and on one dataset a parent's lessons, proven in that parent's life, did badly on later cases. The fix (organ 3b) makes a child prove each inherited lesson on its own early cases, by the rule its parents used, before using it. That removed the harm. It did not make inheritance clearly useful. Proving a lesson takes as many cases as learning one, so by the time an inherited lesson is trusted, the child has usually learnt the same thing itself. A third try (organ 3c) trusted each lesson from birth, counting the parent's record as evidence worth 30 of the child's cases, and dropped it the moment the child's own evidence outweighed that record. Some of the head start came back and the harm stayed away, but it still helped only 2 of 5 children. It was sealed as the last try on those rows. A fourth try (organ 3d) went back to M2's own question, a child with its inheritance against the same child without it, kept the check, and used data nothing had read: five new families bred from bank, census and credit rows beyond every set used before. Every fresh child gained a little and none was harmed, but only one cleared M2's bar, and blind inheritance did the same. A child's genes are already the fused model of both parents, so its parents' outcome-rate lessons add little. M2 stands as a measured negative. Every one of these results is kept as measured.</p>
+    <h3>6. The fixes</h3><p>Two claims failed on their first measurement, and both failures are kept. Each fix was sealed as a new step (its claims and pass marks committed publicly before its code ran) and measured once. <b>The regulator's false alarm (R1f).</b> On one build, a real burst of work (many actions in a short time) ran over its day budget at two visits in a row, and the first rules paused it whatever the size of the overrun. The fix (organ 1b) changes two things. The 24-hour count is read only at a visit where the agent did something, so a burst that has ended is no longer treated as an overrun. And an overrun alone pauses only when the pressure has already reached the level at which the regulator would slow the agent anyway: a mild overrun slows an agent, a large one stops it. No new constant was introduced. It was re-measured on the original builds and on ten builds the regulator had never seen, and every injected fault was re-run. A harder test was looked for: every other public build of the estate was scanned for a real burst over its own budget, and none had one. So the fix is proven on the one real case that exists, which it was designed on, but not yet on a real burst it has never seen. <b>Inheritance (M2).</b> The first child applied every inherited lesson from birth, and on one dataset a parent's lessons, proven in that parent's life, did badly on later cases. The fix (organ 3b) makes a child prove each inherited lesson on its own early cases, by the rule its parents used, before using it. That removed the harm. It did not make inheritance clearly useful. Proving a lesson takes as many cases as learning one, so by the time an inherited lesson is trusted, the child has usually learnt the same thing itself. A third try (organ 3c) trusted each lesson from birth, counting the parent's record as evidence worth <span data-k="minLater">30</span> of the child's cases, and dropped it the moment the child's own evidence outweighed that record. Some of the head start came back and the harm stayed away, but it still helped only 2 of 5 children. It was sealed as the last try on those rows. A fourth try (organ 3d) went back to M2's own question, a child with its inheritance against the same child without it, kept the check, and used data nothing had read: five new families bred from bank, census and credit rows beyond every set used before. Every fresh child gained a little and none was harmed, but only one cleared M2's bar, and blind inheritance did the same. A child's genes are already the fused model of both parents, so its parents' outcome-rate lessons add little. M2 stands as a measured negative. Every one of these results is kept as measured.</p>
     <h3>7. Credit</h3><p>These upgrades are inspired by Gary W. Floyd's NexusGrid, as he described it in conversation (Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC). They are designed from that description only, and no parity with his system is claimed. A comparison with his real implementation will follow his catch-up call: what he does better will be adopted, and the differences recorded here. The regulator's field and rate terms draw on Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "GEP-Based Security: Behavioral Entropy Signatures for Cybersecurity and DevOps," 2025. The inert-until-reviewed rule for dreams draws on his "Dream State Architecture: GEP-Guided Memory Consolidation and Entropy Regulation in Artificial Consciousness Systems," 2025.</p>
   </div>
 </section>
