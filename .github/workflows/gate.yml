@@ -71,8 +71,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: wdr
-      - name: clone the witness gate
-        run: git clone --depth 1 https://github.com/sjgant80-hub/witness.git witness
+      - name: clone the witness gate, pinned at v0.6
+        run: |
+          git clone --depth 1 --branch v0.6 https://github.com/sjgant80-hub/witness.git witness
+          git -C witness rev-parse HEAD
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -85,3 +87,10 @@ jobs:
           node ../witness/witness.mjs mutate "src/$k.mjs" --cap 1000 --timeout $t --test node --max-old-space-size=1024 --test "test/$k.test.mjs" | tee "$k.out"   # a heap cap: a mutant that runs away with memory dies fast (killed), never the runner
           grep -q '"clean": true' "$k.out" || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
           grep -q '"capped": false' "$k.out" || { echo "::error::src/$k.mjs was capped: not every mutant judged"; exit 1; }
+      - name: keep the gate's report (the page's blueprint reads it, through data/witness-ci.json)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: witness-${{ matrix.kernel }}
+          path: wdr/${{ matrix.kernel }}.out
+          if-no-files-found: ignore

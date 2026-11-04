@@ -209,24 +209,33 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <li><b>Week 2–3: throttle on.</b> Let it slow an agent that drifts or overspends. Pauses still go to a person.</li>
     <li><b>Week 4: pause on, with leases.</b> A pause holds for three hours unless renewed. Agents that touch money or public statements stay paused until a named person resumes them.</li>
     <li><b>Then: daydream.</b> Switch on idle-time idea generation on your own models, with a daily cap on local-model calls. The nightly gate adopts only proven gains, and a person reviews them.</li>
-    <li><b>Then: memory.</b> Give each agent a life memory; when you clone or replace one, the new one inherits only its predecessors' proven lessons.</li>
+    <li><b>Then: memory, for the deletion guarantee.</b> Give each agent a life memory you can erase completely. When you clone or replace one, the new one inherits only its predecessors' proven lessons and none of their cases. Measured four ways, that inheritance is safe but adds little, so switch it on for control over what is kept, not for a gain.</li>
   </ol>
 </section>
 
 <section id="case">
   <h2>The case</h2>
   <div class="panel"><h3>The staff time it takes off people, at sourced UK pay</h3>
+    <p class="note">Every box is yours to change; the numbers in them are only where they start. Pay, National Insurance, pension, inflation, the assistant seat and electricity are read from the sourced basis listed below.</p>
     <div class="controls">
       <label>Hours a week someone checks agents now <input id="c-watch" type="number" min="0" step="0.5" value="5" style="width:80px"></label>
       <label>after <input id="c-after" type="number" min="0" step="0.5" value="0.5" style="width:70px"></label>
-      <label>Model improvements a month <input id="c-ideas" type="number" min="0" step="1" value="4" style="width:70px"></label>
-      <label>Hours a person spends finding one <input id="c-idea" type="number" min="0" step="1" value="6" style="width:70px"></label>
-      <label>New agents a year <input id="c-minds" type="number" min="0" step="1" value="12" style="width:70px"></label>
-      <label>Hours to bring one up to speed <input id="c-hand" type="number" min="0" step="1" value="8" style="width:70px"></label>
     </div>
-    <div class="scroll" id="c-table"></div><p class="note" id="c-note"></p></div>
+    <div class="controls">
+      <label>Model improvements a month <input id="c-ideas" type="number" min="0" step="1" value="4" style="width:70px"></label>
+      <label>Hours a person spends finding one <input id="c-idea" type="number" min="0" step="0.5" value="6" style="width:70px"></label>
+      <label>Hours a person still spends reviewing one <input id="c-review" type="number" min="0" step="0.5" value="1" style="width:70px"></label>
+    </div>
+    <div class="controls">
+      <label>People who do this work now <input id="c-people" type="number" min="0" step="1" value="1" style="width:70px"></label>
+      <label>Their working week, hours <input id="c-week" type="number" min="1" max="80" step="0.5" style="width:80px"></label>
+      <label>Years <input id="c-years" type="number" min="1" max="10" step="1" value="3" style="width:70px"></label>
+    </div>
+    <div class="scroll" id="c-table"></div><p class="note" id="c-note"></p>
+    <p class="note">No saving is counted for inheritance. It was measured four ways and does not reliably help a new agent (claim M2 and organs 3b, 3c and 3d under Receipts), so it is left out of the case.</p></div>
   <div class="grid g2">
-    <div class="panel"><h3>Against what you pay now</h3><p>The usual answers are a person on call to watch the agents, analyst time spent hunting for improvements, and re-training each new agent from scratch. Agent-monitoring products usually charge by the user or by the event, and usually send your agents' activity to someone else's cloud. Here, everything runs on hardware you already own: the regulator's whole hourly round of ten agents took at most <span id="c-round"></span> ms on a busy laptop, and the daydream uses a local model under a hard daily cap. Nothing is sent out. The licence is MIT.</p></div>
+    <div class="panel"><h3>Against what you pay now</h3><p>What this work costs you today is staff time. The table sets that against the same work with a rented AI assistant seat for each of those people (Microsoft 365 Copilot, at its sourced list price), and against owning this. An assistant helps a person work, but it does not visit your agents every hour, hold a signed envelope or test a model change on held-out data, so it takes none of these hours off on its own. Owning this costs the hours that stay with a person plus electricity on a machine you already run: the regulator's whole hourly round of ten agents took at most <span id="c-round"></span> ms on a busy laptop, and the daydream uses a local model under a hard daily cap. Nothing is sent out. There is no licence fee (MIT); support is agreed per deployment and is not in this table.</p>
+      <div class="scroll" id="c-versus"></div></div>
     <div class="panel"><h3>Security, data protection, compliance</h3><ul>
       <li><b>Narrow authority by construction.</b> The regulator's signed envelope refuses build, publish, spend and code-change. Its code imports no file, network or process module (measured).</li>
       <li><b>Fail-safe.</b> If it dies, every agent keeps running on its own safeguards and you are alerted (measured).</li>
@@ -238,6 +247,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <div class="panel"><h3>Ownership, support, exit</h3><p>MIT licence: you own the code you run. Support, service levels and warranty are agreed per deployment, in each deployment's agreement. The software keeps running without us. Supplier: <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a>. To start, use the contact route on that site.</p></div>
     <div class="panel"><h3>Risks, answered straight</h3><ul id="c-risks"></ul></div>
   </div>
+  <div class="panel"><h3>Where every figure comes from</h3><p class="note">Read from <code>vendor/sovereign-enterprise/data/basis.json</code>, copied byte for byte from the estate's sourced basis, as this page loads.</p><div class="scroll" id="c-sources"></div></div>
   <div class="panel"><h3>The case for the board</h3><p id="c-board"></p></div>
 </section>
 

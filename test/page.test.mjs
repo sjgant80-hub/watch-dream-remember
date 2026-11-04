@@ -2,7 +2,7 @@
 // stranger needs is there, the credits are whole, and no price of ours appears anywhere.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -49,4 +49,23 @@ test('no price of ours, and none of the private cosmology', () => {
     assert.ok(!/[φκ]|\+1\b/.test(t), 'cosmology');
   }
   assert.ok(!/£\s?\d/.test(html), 'a pound figure typed into the page');
+});
+
+test('every kernel is on the blueprint and in the CI mutation gate, and the gate is witness pinned at v0.6', () => {
+  const kernels = readdirSync(new URL('src/', root)).filter((f) => f.endsWith('.mjs')).map((f) => f.slice(0, -4)).sort();
+  const gate = readFileSync(new URL('.github/workflows/gate.yml', root), 'utf8');
+  const matrix = (gate.match(/kernel: \[([^\]]+)\]/) || [])[1].split(',').map((x) => x.trim()).sort();
+  assert.deepEqual(matrix, kernels, 'the witness matrix is every kernel in src/');
+  for (const k of kernels) assert.ok(app.includes(`'src/${k}.mjs'`), `blueprint row for src/${k}.mjs`);
+  assert.match(gate, /git clone --depth 1 --branch v0\.6 https:\/\/github\.com\/sjgant80-hub\/witness\.git witness/);
+});
+
+test('no sourced figure is typed into the page: the cost case reads every one from the vendored basis', () => {
+  const basis = JSON.parse(readFileSync(new URL('vendor/sovereign-enterprise/data/basis.json', root), 'utf8'));
+  for (const k of ['seniorSalary', 'employerNiThreshold', 'pensionQeLower', 'pensionQeUpper', 'cpi', 'seat.copilot', 'electricityPencePerKwh', 'hoursPerYear']) {
+    const v = basis[k].value, forms = [String(v), v.toLocaleString('en-GB'), k === 'cpi' ? `${(v * 100).toFixed(1)}%` : null].filter(Boolean);
+    for (const t of [html, app]) for (const f of forms) assert.ok(!new RegExp(`(^|[^0-9.,])${f.replace(/[.]/g, '\.')}([^0-9]|$)`).test(t), `${k} typed as ${f}`);
+  }
+  assert.ok(!/\b15 W\b/.test(html + app), 'the laptop draw typed in');
+  assert.ok(app.includes('sourcesOf(basis)'), 'every figure cited from the basis');
 });

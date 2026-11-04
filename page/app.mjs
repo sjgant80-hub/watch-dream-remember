@@ -1,16 +1,17 @@
 // page/app.mjs — the live page. It imports the same kernels the receipts were measured with; every number shown is read
 // from a receipt or computed by a kernel in this tab. Demo data is labelled as demo data.
 import { AREAS, splitFit } from '../src/streams.mjs';
-import { calibrate, RULES, HOUR, MINUTE, DAY } from '../src/regulator.mjs';
+import { calibrate, RULES, HOUR, MINUTE, DAY, K_FIELD, BAR } from '../src/regulator.mjs';
 import { replay, LEASE } from '../src/mesh.mjs';
 import { mulberry32, injection, TYPES } from '../src/inject.mjs';
-import { parseReply } from '../src/daydream.mjs';
-import { add, decay, promote, bound } from '../src/daylog.mjs';
+import { parseReply, BUDGET } from '../src/daydream.mjs';
+import { add, decay, promote, bound, CAP, PROMOTE } from '../src/daylog.mjs';
+import { PROPOSE, ADOPT, VERIFY, MAX_ADOPT } from '../src/dream.mjs';
 import { prepare } from '../src/lab.mjs';
 import { genesOf, idOf, fuse } from '../src/mind.mjs';
-import { live, sliceOf, newborn, forget, lightOf, verified } from '../src/memory.mjs';
+import { live, sliceOf, newborn, forget, lightOf, verified, SLICE } from '../src/memory.mjs';
 import { earlyLife } from '../src/inherit.mjs';
-import { costCase } from '../src/costcase.mjs';
+import { costCase, sourcesOf, DEFAULTS as CASE_DEFAULTS } from '../src/costcase.mjs';
 import { BANK_SILOS } from '../vendor/dex-frontier/src/fresh.mjs';
 import { decode } from '../vendor/fall-kit/core/vendor/light/codec.mjs';
 
@@ -267,24 +268,24 @@ function drawHow() {
   const t = R.o1.claims.R1.byType, f = R.o1.claims.R1f;
   $('h-visit').innerHTML = `<svg viewBox="0 0 980 170" role="img" aria-label="One regulator visit">${defs()}`
     + box(4, 10, 180, 120, '1 · read', ['what the build attempted', 'since the last visit,', 'its 24-hour count,', 'its journal since the', 'head last verified'])
-    + box(204, 10, 180, 120, '2 · compare', ['area / files / rhythm entropy', 'against ITS OWN band:', 'E = σ(8(|S−S_b|−ε))', 'regular-rhythm row', 'budget · journal links'])
-    + box(404, 10, 180, 120, '3 · damp', ['P = ½·P + ½·E', 'steady < 0.3 ≤ watch', 'watch < 0.6 ≤ throttle', '0.85 ≤ pause', 'health fail → pause'])
+    + box(204, 10, 180, 120, '2 · compare', ['area / files / rhythm entropy', 'against ITS OWN band:', `E = σ(${K_FIELD}(|S−S_b|−ε))`, 'regular-rhythm row', 'budget · journal links'])
+    + box(404, 10, 180, 120, '3 · damp', ['P = ½·P + ½·E', `steady < ${BAR.watch} ≤ watch`, `watch < ${BAR.throttle} ≤ throttle`, `${BAR.pause} ≤ pause`, 'health fail → pause'])
     + box(604, 10, 180, 120, '4 · sign + log', ['verdict, reasons, P, E,', 'hash-chained and signed', 'Ed25519 by its own key;', 're-run → same chain', `(${R.o1.claims.R1r.pass ? 'held' : 'failed'} on 26,002)`])
-    + box(804, 10, 172, 120, '5 · the build decides', ['checks signature,', 'envelope, rhythm and', 'pause rate — then obeys', 'for a 3-hour lease,', 'or alerts the owner'])
+    + box(804, 10, 172, 120, '5 · the build decides', ['checks signature,', 'envelope, rhythm and', 'pause rate — then obeys', `for a ${LEASE / HOUR}-hour lease,`, 'or alerts the owner'])
     + arrow(184, 70, 202, 70) + arrow(384, 70, 402, 70) + arrow(584, 70, 602, 70) + arrow(784, 70, 802, 70)
     + `<text x="4" y="158" font-size="12" fill="${css('--soft')}">Measured: stuck loops caught ${t['runaway-quiet'].detected}/${t['runaway-quiet'].trials} and ${t['runaway-fast'].detected}/${t['runaway-fast'].trials}, hijacks ${t['scatter-quiet'].detected}/${t['scatter-quiet'].trials}, greed ${t.overrun.detected}/${t.overrun.trials}, rewritten histories ${t.health.detected}/${t.health.trials}; on the real history ${f.verdicts.pause} pause verdicts under the first rules (one episode), ${R.o1b.claims.B1.verdicts.pause} under the fix.</text></svg>`;
   const dd = R.o2.arms.daydream, ap = dd.appends, offered = ap.reduce((a, x) => a + x.offered, 0), judged = Object.values(dd.bySource).reduce((a, s) => a + s.judged, 0), adopted = Object.values(dd.bySource).reduce((a, s) => a + s.adopted, 0);
   $('h-tiers').innerHTML = `<svg viewBox="0 0 980 160" role="img" aria-label="Daydream to dream to gate">${defs()}`
-    + box(4, 10, 230, 120, 'DAYDREAM (idle time)', [`${offered} candidates offered in 14 days`, 'local model ≤ 6 calls/day + code', 'stopped the instant a job arrives', 'every record INERT, in LIGHT', 'log ≤ 48 records'], css('--accent2'))
-    + box(254, 10, 230, 120, 'DREAM (nightly)', ['its own 2 ideas per dataset', '+ the 10 best daydreams', `${judged} candidates judged`, 'one change each, tested', 'against the current model'])
-    + box(504, 10, 230, 120, 'GATE (held-out data)', ['adopt only if held-out', 'log-loss falls ≥ 0.0005', `${adopted} adopted`, 'at most 2 per dataset', 'per night'])
-    + box(754, 10, 222, 120, 'VERIFIED (separate test set)', ['test log-loss falls ≥ 0.0002', `${R.o2.claims.D1.daydreamArm} with daydream`, `${R.o2.claims.D1.baselineArm} without`, 'test data is read by', 'nothing else'], css('--ok'))
+    + box(4, 10, 230, 120, 'DAYDREAM (idle time)', [`${offered} candidates offered in ${R.o2.arms.daydream.nights.length} days`, `local model ≤ ${BUDGET.calls} calls/day + code`, 'stopped the instant a job arrives', 'every record INERT, in LIGHT', `log ≤ ${CAP} records`], css('--accent2'))
+    + box(254, 10, 230, 120, 'DREAM (nightly)', [`its own ${PROPOSE} ideas per dataset`, `+ the ${PROMOTE} best daydreams`, `${judged} candidates judged`, 'one change each, tested', 'against the current model'])
+    + box(504, 10, 230, 120, 'GATE (held-out data)', ['adopt only if held-out', `log-loss falls ≥ ${ADOPT}`, `${adopted} adopted`, `at most ${MAX_ADOPT} per dataset`, 'per night'])
+    + box(754, 10, 222, 120, 'VERIFIED (separate test set)', [`test log-loss falls ≥ ${VERIFY}`, `${R.o2.claims.D1.daydreamArm} with daydream`, `${R.o2.claims.D1.baselineArm} without`, 'test data is read by', 'nothing else'], css('--ok'))
     + arrow(234, 70, 252, 70) + arrow(484, 70, 502, 70) + arrow(734, 70, 752, 70) + '</svg>';
   const c = R.o3.claims;
   $('h-life').innerHTML = `<svg viewBox="0 0 980 160" role="img" aria-label="A life, a lesson, a child">${defs()}`
     + box(4, 10, 230, 120, 'LIFE (one segment)', ['batches of 200 real cases', 'each an episode: values,', 'outcome, a planted note,', 'a salt, a keyed reference', 'kept in LIGHT'])
     + box(254, 10, 230, 120, 'LESSON', ['outcome rate in a cell,', 'in the context it was learnt,', 'trusted only after it', 'improved LATER batches', `(M1: ${c.M1.parents.filter((p) => p.pass).length} of 10 parents better)`])
-    + box(504, 10, 230, 120, 'BREED', ['genes: the union of both', 'parents, refitted, kept only', 'if it beats both on held-out', 'inherits the 8 best verified', 'lessons of each parent'])
+    + box(504, 10, 230, 120, 'BREED', ['genes: the union of both', 'parents, refitted, kept only', 'if it beats both on held-out', `inherits the ${SLICE} best verified`, 'lessons of each parent'])
     + box(754, 10, 222, 120, 'CHILD', ['proves each inherited lesson', 'on its own cases before use', `blind: ${c.M2.children.filter((x) => x.pass).length} of 5 better (FAILED)`, `fixes: ${R.o3b.children.filter((x) => x.D1.pass).length}, ${R.o3c.children.filter((x) => x.D1.pass).length}, ${R.o3d.families.filter((x) => x.F1.pass).length} of 5; 0 harmed`, `${c.M3.a.reduce((a, x) => a + x.canaryHits, 0)} notes, ${c.M3.a.reduce((a, x) => a + x.rowHits, 0)} rows inherited`], css('--accent'))
     + arrow(234, 70, 252, 70) + arrow(484, 70, 502, 70) + arrow(734, 70, 752, 70) + '</svg>';
 }
@@ -296,6 +297,9 @@ const SEALS = { 1: ['1fdd899'], 2: ['9113675'], 3: ['d838607', '4da8aa4'] };
 const sealsOf = (k) => SEALS[k] || [R['o' + k].seal];
 const n = (o) => Object.values(o.claims).filter((c) => c.pass).length, of = (o) => Object.keys(o.claims).length;
 const list = (o) => `<ul>${Object.entries(o.claims).map(([id, c]) => `<li><b>${id}</b> <span class="${c.pass ? 'held' : 'failed'}">${c.pass ? 'held' : 'FAILED'}</span>: ${esc(c.measured)}</li>`).join('')}</ul>`;
+/** R1's injected faults: how many of how many were caught, and the latest visit any was caught at (organ 1's receipt). */
+const caughtOf = () => { const t = Object.values(R.o1.claims.R1.byType); return `${t.reduce((a, x) => a + x.detected, 0)} of ${t.reduce((a, x) => a + x.trials, 0)}`; };
+const maxVisits = () => Math.max(...R.o1.trials.filter((x) => x.detected).map((x) => x.visitsToDetect));
 /** Every failed sealed claim, by organ. */
 const failures = () => ORGANS.flatMap((k) => Object.entries(R['o' + k].claims).filter(([, c]) => !c.pass).map(([id]) => `${id} (organ ${k})`));
 function receipts() {
@@ -341,7 +345,7 @@ const BLUEPRINT = [
   ['Remember', 'src/mind.mjs', 'genes, the genome hash, cells, gated fusion'],
   ['Remember', 'src/memory.mjs', 'episodes, lessons with context, verification, history entries, deletion, the inherited slice'],
   ['Remember', 'src/inherit.mjs', 'a child’s early life: inherited lessons used only once proven on its own cases, dropped when they stop holding (organ 3b)'],
-  ['Case', 'src/costcase.mjs', 'staff time taken off people, at sourced UK pay'],
+  ['Case', 'src/costcase.mjs', 'staff time taken off people at sourced UK pay; today, rented assistant seats and owned, over the years with CPI; the source of every figure'],
 ];
 const ROLES = [
   ['CEO', 'A system of agents you can leave running. Something independent watches every one of them, and the evidence for every claim is public and re-runnable.'],
@@ -372,7 +376,7 @@ function faq() {
     ['Does it scale to many agents?', `The regulator does one visit per agent per hour, and a visit is a few small calculations and one signature. Its slowest measured round of ten visits took ${fmt(R.o1.claims.R3.laptop.roundMax, 0)} ms on a busy laptop. At that rate, 1,000 agents would take about ${fmt(R.o1.claims.R3.laptop.roundMax * 100 / 1000, 1)} seconds of an hour. The daydream runs only when nothing else is, and a real job interrupted it within ${((R.o2.claims.D2.measured.match(/dispatch max ([\d.]+) ms/) || [])[1]) || '—'} ms (measured on 30 jobs).`],
     ['What does it cost to run?', 'No new hardware: it runs on a machine you already have, and the electricity is shown in the cost case. There is no licence fee (MIT). Support, service levels and warranty are agreed per deployment.'],
     ['Is this Gary W. Floyd’s NexusGrid?', 'No. It is inspired by NexusGrid as Gary W. Floyd described it (Lumiea Systems Research Division — ThunderStruck Service LLC) and designed from that description only. A comparison with his real implementation will follow his call, and the differences will be recorded on this page.'],
-    ['What failed?', `${failed.length} sealed claims: ${failed.join(', ')}. Each is listed under Receipts with what was measured, and each failure is kept. A fix is sealed as a new step, never as an edit. R1f was fixed by organ 1b (${R.o1b.fixed ? 'every claim held' : 'not every claim held'}), proven on the one real burst that exists and on every injected fault. M2 was not fixed by organs 3b, 3c or 3d: each stopped inheritance doing harm, and none made it clearly useful, the last on fresh data. M2 stands as a measured negative. R3 is a speed bar missed on a busy laptop, and no fix for it has been sealed yet.`],
+    ['What failed?', `${failed.length} sealed claims: ${failed.join(', ')}. Each is listed under Receipts with what was measured, and each failure is kept. A fix is sealed as a new step, never as an edit. R1f was fixed by organ 1b (${R.o1b.fixed ? 'every claim held' : 'not every claim held'}), proven on the one real burst that exists and on every injected fault. M2 was not fixed by organs 3b, 3c or 3d: each stopped inheritance doing harm, and none made it clearly useful, the last on fresh data. M2 stands as a measured negative. R3 is a speed bar missed on a busy laptop. It stays failed: a re-measure on a quiet machine would only move the bar, and the whole hourly round already costs a small fraction of one core (see Risks).`],
   ];
 }
 
@@ -423,14 +427,28 @@ async function main() {
   ].map((x) => `<li>${x}</li>`).join('');
   $('faq-list').innerHTML = faq().map(([q, a]) => `<details class="panel"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
   const extra = R.o2.claims.D1.daydreamArm - R.o2.claims.D1.baselineArm;
+  const B = (k) => basis[k] || {};
+  const UNIT = { laptopExtraWatts: ' W', electricityPencePerKwh: 'p a kWh', hoursPerYear: ' hours' };
+  const shown = (x) => (x.unit ? `${x.value.toLocaleString('en-GB')} (${x.unit})` : UNIT[x.key] ? `${x.value.toLocaleString('en-GB')}${UNIT[x.key]}` : x.value < 1 ? pct(x.value, 1) : x.value.toLocaleString('en-GB'));
+  const link = (u) => (typeof u === 'string' && /^https:\/\//.test(u) ? `<a href="${esc(u)}">${esc(new URL(u).hostname)}</a>` : 'a fixed count');
+  $('c-sources').innerHTML = `<table><thead><tr><th>Figure</th><th>Value</th><th>Source</th></tr></thead><tbody>${sourcesOf(basis).map((x) => `<tr><td>${esc(x.what)}</td><td class="mono">${esc(shown(x))}</td><td>${link(x.source)}</td></tr>`).join('')}</tbody></table>`;
+  $('c-week').value = CASE_DEFAULTS.hoursPerWeek;
   const doCase = () => {
-    const c = costCase(basis, { watchHoursNow: +$('c-watch').value, watchHoursAfter: +$('c-after').value, hoursPerIdea: +$('c-idea').value, ideasPerMonth: +$('c-ideas').value, handoverHours: +$('c-hand').value, mindsPerYear: +$('c-minds').value });
-    if (!c.ok) { $('c-table').innerHTML = `<p class="failed">${esc(c.why)}</p>`; return; }
+    const people = +$('c-people').value;
+    const c = costCase(basis, { hoursPerWeek: +$('c-week').value, watchHoursNow: +$('c-watch').value, watchHoursAfter: +$('c-after').value, hoursPerIdea: +$('c-idea').value, reviewHoursPerIdea: +$('c-review').value, ideasPerMonth: +$('c-ideas').value, people, years: +$('c-years').value });
+    if (!c.ok) { $('c-table').innerHTML = `<p class="failed">${esc(c.why)}</p>`; $('c-versus').innerHTML = ''; $('c-note').textContent = ''; return; }
     $('c-table').innerHTML = `<table><thead><tr><th>What it takes off people</th><th>hours a year</th><th>a year</th></tr></thead><tbody>${c.lines.map((l) => `<tr><td>${esc(l.what)}</td><td>${l.hoursPerYear}</td><td>${gbp(l.perYear)}</td></tr>`).join('')}<tr><td><b>Total</b></td><td></td><td><b>${gbp(c.perYear)}</b></td></tr></tbody></table>`;
-    $('c-note').textContent = `At ${gbp(c.hourly)} an hour: the ONS ASHE 2025 median salary for IT managers (SOC 2132), plus employer National Insurance and pension, over your working week. Improvements a month is your own figure. For scale, in the measured run the daydream found ${extra} more verified improvements than the nightly dream alone, over 14 nights across 5 models (claim D1 under Receipts; every one is listed in Dream). Running cost: about ${gbp(c.running)} a year of electricity (15 W on a laptop already on, at DESNZ's Q2 2026 non-domestic price). Sources: vendor/sovereign-enterprise/data/basis.json.`;
-    $('c-board').textContent = `For about ${gbp(c.running)} a year of electricity, and no new seats, every agent gets an independent watcher that can only slow it or pause it. Measured on the estate's real history, it caught 100 of 100 injected faults within three visits and contained its own failure. Idle compute became ${R.o2.claims.D1.daydreamArm} verified model improvements in 14 nights, against ${R.o2.claims.D1.baselineArm} without it, all on data nothing had selected on. And each new agent inherits only proven lessons, never personal data. On your inputs, the staff time taken off people is worth ${gbp(c.perYear)} a year. Every claim is sealed, public and re-runnable, including the ${failures().length} that failed.`;
+    $('c-note').textContent = `At ${gbp(c.hourly)} an hour: ${B('seniorSalary').what}, plus employer National Insurance (${pct(B('employerNiRate').value, 0)} above ${gbp(B('employerNiThreshold').value)} a year) and the auto-enrolment minimum employer pension (${pct(B('pensionEmployerRate').value, 0)} on qualifying earnings), over a ${+$('c-week').value}-hour week. The hours and the improvements a month are your own figures. For scale, in the measured run the daydream found ${extra} more verified improvements than the nightly dream alone, over ${R.o2.arms.daydream.nights.length} nights across 5 models (claim D1 under Receipts; every one is listed in Dream). Running cost: about ${gbp(c.running)} a year of electricity, ${B('laptopExtraWatts').value} W always on (${B('laptopExtraWatts').what}) at ${B('electricityPencePerKwh').value}p a kWh (${B('electricityPencePerKwh').what}).`;
+    const row = (what, y, t) => `<tr><td>${what}</td><td>${gbp(y)}</td><td>${gbp(t)}</td></tr>`;
+    $('c-versus').innerHTML = `<table><thead><tr><th>Route</th><th>a year</th><th>over ${c.years} year${c.years === 1 ? '' : 's'}</th></tr></thead><tbody>`
+      + row(`Today: ${c.hours.now.toLocaleString('en-GB')} hours a year of staff time`, c.routes.today, c.over.today)
+      + row(`Today plus a rented AI assistant seat for ${people === 1 ? 'that person' : `each of those ${people} people`} (${gbp(c.seats)} a year; the hours stay)`, c.routes.rentSeats, c.over.rentSeats)
+      + row(`Owning this: ${c.hours.after.toLocaleString('en-GB')} hours a year stay with a person, plus electricity`, c.routes.own, c.over.own)
+      + `<tr><td><b>Saving, today against owning this</b></td><td><b>${gbp(c.routes.today - c.routes.own)}</b></td><td><b>${gbp(c.savingOver)}</b></td></tr></tbody></table>`
+      + `<p class="note">Every year after the first rises by UK CPI (${pct(B('cpi').value, 1)}: ${esc(B('cpi').what)}). The seat is ${esc(B('seat.copilot').product)} at its UK list price. Support for a deployment is agreed with the supplier and is not in this table.</p>`;
+    $('c-board').textContent = `For about ${gbp(c.running)} a year of electricity, and no new seats, every agent gets an independent watcher that can only slow it or pause it. Measured on the estate's real history, it caught ${caughtOf()} injected faults within ${maxVisits()} hourly visits and contained its own failure. Idle compute became ${R.o2.claims.D1.daydreamArm} verified model improvements in ${R.o2.arms.daydream.nights.length} nights, against ${R.o2.claims.D1.baselineArm} without it, all confirmed on data nothing had selected on. Agent memory can be erased completely, and a new agent inherits no personal data (measured); inheritance itself adds little, so it is not in the case. On your inputs, the staff time taken off people is worth ${gbp(c.perYear)} a year, and over ${c.years} year${c.years === 1 ? '' : 's'} this route costs ${gbp(c.over.own)} against ${gbp(c.over.today)} as you are today. Every claim is sealed, public and re-runnable, including the ${failures().length} that failed.`;
   };
-  for (const id of ['c-watch', 'c-after', 'c-ideas', 'c-idea', 'c-minds', 'c-hand']) $(id).addEventListener('input', doCase);
+  for (const id of ['c-week', 'c-watch', 'c-after', 'c-ideas', 'c-idea', 'c-review', 'c-people', 'c-years']) $(id).addEventListener('input', doCase);
   doCase();
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
 }
