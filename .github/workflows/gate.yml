@@ -33,6 +33,8 @@ jobs:
           node tools/data.mjs --check
           node tools/nodes.mjs --check
           node tools/nodes-fresh.mjs --check
+          node tools/nodes-burst.mjs --check
+          node tools/nodes-burst.mjs --check --out data/nodes-burst-2.json
       - name: unit suites
         run: node --test test/*.test.mjs
       - name: the page's gate table (data/witness-ci.json) still describes these exact kernels and tests
