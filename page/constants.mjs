@@ -9,6 +9,7 @@ import { SLICE_MS } from '../src/idle.mjs';
 import { MIN_N, MIN_LATER, SLICE } from '../src/memory.mjs';
 import { BATCH } from '../src/inherit.mjs';
 import { SHARE, MIN_ACTIONS, MAX_ACTIONS } from '../src/yours.mjs';
+import { BUDGET } from '../src/daydream.mjs';
 
 const n = (x) => x.toLocaleString('en-GB');
 export const K = Object.freeze({
@@ -17,5 +18,5 @@ export const K = Object.freeze({
   throttleBar: String(BAR.throttle), minWindows: n(MIN_WINDOWS), nMin: n(N_MIN),
   logCap: n(CAP), logAge: n(MAX_AGE), promote: n(PROMOTE), logBytes: n(MAX_BYTES), sliceMs: n(SLICE_MS),
   slice: n(SLICE), minN: n(MIN_N), minLater: n(MIN_LATER), batch: n(BATCH),
-  minActions: n(MIN_ACTIONS), maxActions: n(MAX_ACTIONS),
+  minActions: n(MIN_ACTIONS), maxActions: n(MAX_ACTIONS), calls: n(BUDGET.calls),
 });

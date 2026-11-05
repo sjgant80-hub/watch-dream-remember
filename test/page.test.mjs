@@ -109,3 +109,44 @@ test('every data file the page fetches is in the repository', () => {
   assert.ok(files.includes('data/witness-ci.json') && files.includes('vendor/sovereign-enterprise/data/basis.json'));
   for (const f of files) readFileSync(new URL(f, root));
 });
+
+test('every count the prose states is the receipts’ own: each data-r fallback equals page/facts.mjs on the files themselves', async () => {
+  const { factsOf } = await import('../page/facts.mjs');
+  const read = (p) => JSON.parse(readFileSync(new URL(p, root), 'utf8'));
+  const R = { nodes: read('data/nodes.json') };
+  for (const k of ['1', '1b', '2', '3', '3b', '3c', '3d']) R['o' + k] = read(`data/organ${k}-run.json`);
+  for (const k of ['1', '3']) R['p' + k] = read(`data/organ${k}-prereg.json`);
+  const F = factsOf(R);
+  const spans = [...html.matchAll(/<span data-r="([A-Za-z0-9]+)">([^<]*)<\/span>/g)];
+  assert.ok(spans.length >= 15, `${spans.length} counts in the prose`);
+  for (const [, k, text] of spans) assert.equal(text, F[k], `data-r="${k}"`);
+  assert.equal([...html.matchAll(/data-r="/g)].length, spans.length, 'every data-r is a plain span');
+  assert.ok(app.includes("document.querySelectorAll('[data-r]')"), 'the page writes them from the receipts');
+  // the first measurement's failures, as the prose names them
+  assert.equal(F.firstFailedIds, 'R1f, R3 and M2');
+});
+
+test('no count a receipt or a sealed bar holds is typed into the page script', () => {
+  const read = (p) => JSON.parse(readFileSync(new URL(p, root), 'utf8'));
+  const o1 = read('data/organ1-run.json'), o2 = read('data/organ2-run.json');
+  const visits = +o1.claims.R1r.measured.match(/^(\d+) records/)[1], jobs = +o2.claims.D2.measured.match(/^(\d+) real jobs/)[1];
+  for (const f of [visits.toLocaleString('en-GB'), String(visits), `${jobs} jobs`, `of ${o1.trials.length} faults`, `the ${o1.trials.length} trials`,
+    'of 5 children', 'of 5 better', 'of 10 parents', 'bar of 4', 'against 1 ms', '× 50', '50 times slower', 'batches of 200', '15-minute', 'two hours after',
+    'two new pauses in six hours', '0.001 nats', '≥ 0.001', 'on ten builds', 'the ten builds', 'ten never seen', 'five datasets', 'five fresh', 'five public', 'promote(daylog, 10)']) {
+    assert.ok(!app.includes(f), `typed into page/app.mjs: "${f}"`);
+  }
+});
+
+test('every sealed bar and receipt line the page reads by pattern is there to read', async () => {
+  const { m2BarOf, r3BarOf } = await import('../page/facts.mjs');
+  const read = (p) => JSON.parse(readFileSync(new URL(p, root), 'utf8'));
+  const p1 = read('data/organ1-prereg.json'), p3 = read('data/organ3-prereg.json'), o1 = read('data/organ1-run.json'), o2 = read('data/organ2-run.json');
+  assert.deepEqual(m2BarOf(p3), { gain: 0.001, need: 4, of: 5 }, 'M2: at least 0.001 nats, for at least 4 of the 5');
+  assert.deepEqual(r3BarOf(p1), { p99: 1, slower: 50 }, 'R3: p99 ≤ 1 ms, a device 50 times slower');
+  for (const [text, re] of [[o1.claims.R1r.measured, /^(\d+) records/], [o1.claims.R4.measured, /'regulator-drift' within (\d+ h)/],
+    [o2.claims.D2.measured, /^(\d+) real jobs/], [o2.claims.D2.measured, /dispatch max ([\d.]+) ms/],
+    [o2.claims.D3.measured, /(\d+) to anything else/], [o2.claims.D3.measured, /(\d+) cortex/], [o2.claims.D3.measured, /(\d+) actions/]]) {
+    assert.match(text, re);
+    assert.ok(app.includes(re.source), `the page reads ${re}`);
+  }
+});

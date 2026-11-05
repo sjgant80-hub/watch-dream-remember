@@ -36,4 +36,13 @@ Minds here are models of thought-patterns: never the people they are trained on,
 
 Supplied by AI Native Solutions (https://www.ai-nativesolutions.com).
 
+Vendored code — a few files are copied verbatim from other public estate builds, each under the MIT License like this
+one, at the commit and SHA-256 recorded beside it (a page test refuses any copy that differs by a byte):
+  - vendor/fall-kit/: identity (signing keys), SHA-256 and the LIGHT codec, from sjgant80-hub/fall-kit (MIT), commits in
+    vendor/SOURCES.json.
+  - vendor/dex-frontier/: the dataset loaders, from sjgant80-hub/dex-frontier (MIT), with the row splitter and SHA-256 it
+    vendors from sjgant80-hub/living-seed and sjgant80-hub/seed-library (both MIT), commit in vendor/dex-frontier/SOURCES.json.
+  - vendor/sovereign-enterprise/data/basis.json: the sourced cost basis, from sjgant80-hub/sovereign-enterprise (MIT);
+    each figure in it names its own public source.
+
 Everything else in this repository is original to this build and released under the MIT License (see LICENSE).

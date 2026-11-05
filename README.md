@@ -58,7 +58,7 @@ The page carries the brochure: benefits by role, what it needs from a buyer's sy
 
 - `src/`: pure kernels. `streams` `regulator` `envelope` `journal` `mesh` `inject` `yours` (watch, and your own build) · `model` `lab` `daydream` `daylog` `dream` `idle` (dream) · `mind` `memory` `inherit` (remember) · `costcase`.
 - `tools/`: the measuring tools (`organN-measure.mjs`; `mesh-claims.mjs`, the shared mesh and claims of organ 1b), the data fetchers (`nodes`, `nodes-fresh`, `nodes-burst`, `data`), the pre-emption timer, the gate receipt (`witness-receipt.mjs`), the regulator on any repository (`watch-repo.mjs`), and a local server (`node tools/serve.mjs`).
-- `page/`: the live page's script (`app.mjs`) and the kernels' constants in the words its prose uses (`constants.mjs`; a test keeps the prose equal to them).
+- `page/`: the live page's script (`app.mjs`), the kernels' constants in the words its prose uses (`constants.mjs`), and the counts its prose states read from the receipts (`facts.mjs`: builds, nights, datasets, which claims failed first, the sealed bars). Tests keep every fallback in the prose equal to them, and refuse a receipt's count typed into the script.
 - `data/`: the sealed preregistrations, the receipts, the node histories, the recorded local-model replies, and `witness-ci.json` (each kernel's mutation gate as GitHub's runner reported it).
 - `vendor/`: verbatim copies with pinned hashes. From fall-kit: identity, SHA-256 and the LIGHT codec. From dex-frontier: the dataset loaders. From sovereign-enterprise: the sourced cost basis.
 
