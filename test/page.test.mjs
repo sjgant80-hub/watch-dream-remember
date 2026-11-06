@@ -76,6 +76,17 @@ test('no sourced figure is typed into the page: the cost case reads every one fr
   assert.ok(app.includes('sourcesOf(basis)'), 'every figure cited from the basis');
 });
 
+test('a refused cost-case input is named by the box the reader typed in, and no figure from earlier inputs stays standing', async () => {
+  const { DEFAULTS } = await import('../src/costcase.mjs');
+  const box = Object.fromEntries([...app.match(/const BOX = \{([^}]+)\}/)[1].matchAll(/'(c-[a-z]+)': '([A-Za-z]+)'/g)].map((m) => [m[2], m[1]]));
+  assert.deepEqual(Object.keys(box).sort(), Object.keys(DEFAULTS).sort(), 'every input the kernel can refuse is a box on the page');
+  for (const id of Object.values(box)) assert.match(html, new RegExp(`<label>[^<]+<input id="${id}"`), `#${id} sits in a label that names it`);
+  assert.ok(app.includes('plainWhy(c.why)') && !app.includes('esc(c.why)'), 'the reader sees the box, not the kernel key');
+  const bound = +readFileSync(new URL('src/costcase.mjs', root), 'utf8').match(/hoursPerWeek <= (\d+)/)[1];
+  assert.equal(+html.match(/id="c-week"[^>]*\smax="(\d+)"/)[1], bound, 'the working-week box allows what the kernel allows, and the message reads its bound from the box');
+  assert.ok(app.includes("$('c-versus').innerHTML = ''; $('c-note').textContent = ''; $('c-board').textContent = boardOf(null);"), 'a refused input clears every figure on the reader’s inputs');
+});
+
 test('every constant the prose states is the kernel’s own: each data-k fallback equals page/constants.mjs', () => {
   const spans = [...html.matchAll(/<span data-k="([A-Za-z]+)">([^<]*)<\/span>/g)];
   assert.ok(spans.length >= 20, `${spans.length} constants in the prose`);

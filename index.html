@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-jI+l21VVNZD5FPH7POT4AhfATDC3sCFebOh8VvkePPs='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Watch · Dream · Remember</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Ccircle cx=%278%27 cy=%278%27 r=%277%27 fill=%27%232f5d8a%27/%3E%3Ccircle cx=%278%27 cy=%278%27 r=%273%27 fill=%27%23f7f6f2%27/%3E%3C/svg%3E">
 <meta name="description" content="Three upgrades for a self-running AI estate: an independent regulator that can only watch, slow and pause; an idle-time daydream tier whose ideas cannot act until a nightly gate proves them; and per-mind memory that passes only verified lessons to bred children. Every claim sealed before its code, measured on real data, failures kept.">
 <style>
 :root{--bg:#f7f6f2;--panel:#ffffff;--ink:#1d1f23;--soft:#5b616b;--line:#dcd9d0;--accent:#2f5d8a;--accent2:#8a5a2f;--ok:#2e7d4f;--bad:#b3372e;--warn:#a26b00;--watch:#c9a227;--throttle:#d97a2b;--pause:#b3372e;--steady:#9fb7a8;--code:#eeece6;--shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -94,7 +95,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
   <ol class="steps">
     <li><b>Watch a regulator catch a runaway.</b> In <a href="#watch">Watch</a>, pick one of <span data-r="builds">ten</span> real estate builds and an injected fault (for example "stuck loop"), then press <b>Run 24 hours</b>. The coloured band shows the regulator's verdict each hour. The dots show what the build tried to do and what got through.</li>
     <li><b>Kill it, or turn it rogue.</b> Press <b>Kill the regulator</b> or <b>Make it rogue</b>. Every build keeps working on its own safeguards, and each one raises an alert to the owner.</li>
-    <li><b>Run it on your own build.</b> In <a href="#yours">Your build</a>, give it the commit history of any git repository you have (one command, shown there), or try this page's own. It learns that build's normal from its first <span data-k="fitShare">60%</span> and replays the rest through the same regulator, in your browser. Nothing is uploaded.</li>
+    <li><b>Run it on your own build.</b> In <a href="#yours">Your build</a>, give it the commit history of any git repository you have (one command, shown there), or fill in one of the measured builds (<b>wishwood</b> holds the real burst of work the first rules paused). It learns that build's normal from its first <span data-k="fitShare">60%</span> and replays the rest through the same regulator, in your browser. Nothing is uploaded.</li>
     <li><b>See what daydreaming bought.</b> In <a href="#dream">Dream</a>, compare verified ideas over <span data-r="nights">14</span> nights with and without the daydream tier. Then try to make a daydream act: type any reply into the box, as if you were the local model, and see what the parser does with it.</li>
     <li><b>Breed two minds and delete a memory.</b> In <a href="#remember">Remember</a>, press <b>Breed</b>. You see which lessons the child inherited and that no personal note came with them. Then press <b>Delete 25 memories</b> and watch the scan come back clean.</li>
     <li><b>See a failure fixed, or not.</b> <span data-r="firstFailed">Three</span> claims failed on the first measurement (<span data-r="firstFailedIds">R1f, R3 and M2</span>), and every failure is kept. R1f and M2 each got a fix, sealed as a new step; R3, a speed bar, stays failed. In <a href="#watch">Watch</a>, pick <b>wishwood</b> and <b>no fault</b>, press <b>Run 24 hours</b>, then switch <b>Rules</b> between the first version and the fix and run it again: the first version pauses its real burst of work, the fix only slows it. In <a href="#remember">Remember</a>, press <b>Breed</b>, then <b>Live the early life</b>.</li>
@@ -272,7 +273,7 @@ footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--soft);f
     <p class="note">Every box is yours to change; the numbers in them are only where they start. Pay, National Insurance, pension, inflation, the assistant seat and electricity are read from the sourced basis listed below.</p>
     <div class="controls">
       <label>Hours a week someone checks agents now <input id="c-watch" type="number" min="0" step="0.5" style="width:80px"></label>
-      <label>after <input id="c-after" type="number" min="0" step="0.5" style="width:70px"></label>
+      <label>after, with this <input id="c-after" type="number" min="0" step="0.5" style="width:70px"></label>
     </div>
     <div class="controls">
       <label>Model improvements a month (0 if you run no predictive models over tables of data) <input id="c-ideas" type="number" min="0" step="1" style="width:70px"></label>
